@@ -1,4 +1,7 @@
+package net;
 import java.io.DataInputStream;
+
+import peer.Peer;
 
 public class ListenerThread implements Runnable {
 	public Peer peer;
@@ -14,14 +17,16 @@ public class ListenerThread implements Runnable {
 		while(true) {
 			try {
 				currentFocus = dis.readByte();
-				if(currentFocus == 0x00) {
-					System.out.println("Received ping!");
+				if(currentFocus == 0x13) {
+					//Got request: disconnect
+					peer.disconnect();
 				}
-				//if(currentFocus == 0x13) {
-				//	peer.disconnect();
-				//}
 				if(currentFocus == 0x01) {
-					//Receiving version
+					//Got request: version
+					peer.st.sendVersion();
+				}
+				if(currentFocus == 0x02) {
+					//Got data: version
 					peer.version = dis.readInt();
 				}
 			} catch (Exception e) { 

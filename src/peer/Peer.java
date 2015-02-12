@@ -1,6 +1,11 @@
+package peer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+
+import main.Core;
+import net.ListenerThread;
+import net.SenderThread;
 
 public class Peer implements Runnable {
 	public boolean connected;
@@ -9,13 +14,11 @@ public class Peer implements Runnable {
 	public DataOutputStream dos;
 	public DataInputStream dis;
 	public Socket ps;
-	public int version;
-	public long lastPing;
+	public int version = -1;
+	public long lastPing = 0;;
 	
 	public Peer(Socket ps) {
 		this.ps = ps;
-		version = -1;
-		lastPing = 0;
 	}
 	
 	public void run() {
@@ -31,7 +34,19 @@ public class Peer implements Runnable {
 			(new Thread(lt)).start();
 			st = new SenderThread(this, dos);
 			(new Thread(st)).start();
+			st.requestVersion();
+			//Disconnect from out dated peers
+			if(version < Core.version) {
+				disconnect();
+			}
 		} catch (Exception e) { e.printStackTrace(); }
+	}
+
+	public int getVersion() {
+		if(version == -1) {
+			st.requestVersion();
+		}
+		return version;
 	}
 	
 	public void disconnect() {

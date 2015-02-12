@@ -1,8 +1,14 @@
+package net;
 import java.io.DataOutputStream;
+
+import main.Core;
+import peer.Peer;
 
 public class SenderThread implements Runnable {
 	public Peer peer;
 	public DataOutputStream dos;
+	private boolean requestVersion = false;
+	private boolean sendVersion = false;
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		this.peer = peer;
@@ -17,7 +23,19 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					peer.lastPing = System.currentTimeMillis();
 				}
-				//Sleep
+				if(requestVersion) {
+					//Send request: version
+					dos.write(0x01);
+					dos.flush();
+					requestVersion = false;
+				} else if(sendVersion) {
+					//Send data: version
+					dos.write(0x02);
+					dos.flush();
+					dos.writeInt(Core.version);
+					dos.flush();
+					sendVersion = false;
+				}			
 				try {
 					Thread.sleep(25);
 				} catch (InterruptedException e) {
@@ -25,5 +43,13 @@ public class SenderThread implements Runnable {
 				}
 			} catch (Exception e) { }
 		}	
+	}
+	
+	public void requestVersion() {
+		requestVersion = true;
+	}
+	
+	public void sendVersion() {
+		sendVersion = true;
 	}
 }
