@@ -29,6 +29,14 @@ public class ListenerThread implements Runnable {
 					//Got data: version
 					peer.version = dis.readInt();
 				}
+				if(currentFocus == 0x03) {
+					//Got request: name list
+					peer.st.sendNameList();
+				}
+				if(currentFocus == 0x04) {
+					//Got data: base64 name list
+					NetUtils.readString(dis);
+				}
 			} catch (Exception e) { 
 				peer.disconnect(); 
 				System.out.println("Network error: peer disconnection");

@@ -7,8 +7,11 @@ import peer.Peer;
 public class SenderThread implements Runnable {
 	public Peer peer;
 	public DataOutputStream dos;
+	
 	private boolean requestVersion = false;
 	private boolean sendVersion = false;
+	private boolean requestNameList = false;
+	private boolean sendNameList = false;
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		this.peer = peer;
@@ -35,7 +38,19 @@ public class SenderThread implements Runnable {
 					dos.writeInt(Core.version);
 					dos.flush();
 					sendVersion = false;
-				}			
+				} else if(requestNameList) {
+					//Send request: name list
+					dos.write(0x03);
+					dos.flush();
+					requestNameList = false;
+				} else if(sendNameList) {
+					//Send data: base64 name list
+					dos.write(0x04);
+					dos.flush();
+					NetUtils.writeString("placeholder", dos);
+					dos.flush();
+					sendNameList = false;
+				}
 				try {
 					Thread.sleep(25);
 				} catch (InterruptedException e) {
@@ -51,5 +66,13 @@ public class SenderThread implements Runnable {
 	
 	public void sendVersion() {
 		sendVersion = true;
+	}
+	
+	public void requestNameList() {
+		requestNameList = true;
+	}
+	
+	public void sendNameList() {
+		sendNameList = true;
 	}
 }
