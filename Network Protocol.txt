@@ -1,0 +1,4 @@
+Send and receive on 0x01: version (integer)
+Send and receive on 0x02: name list (filenames)
+Send and receive on 0x03: md5sum query (Y/N to avail.)
+Send and receive on 0x04: actual data
