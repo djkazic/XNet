@@ -1,4 +1,14 @@
-Send and receive on 0x01: version (integer)
-Send and receive on 0x02: name list (filenames)
-Send and receive on 0x03: md5sum query (Y/N to avail.)
-Send and receive on 0x04: actual data
+Send on 0x01: version request
+Receive on 0x02: version answer
+
+Send on 0x03: name list request (filenames)
+Receive on 0x04: name list answer (filenames)
+
+Send on 0x05: md5sum request (availability)
+Receive on 0x06: md5sum answer (Y/N to avail.)
+
+Send on 0x07: actual data transfer request
+Receive on 0x07: actual data
+
+Send on 0x13: disconnect request
+Receive on 0x13: disconnect order
