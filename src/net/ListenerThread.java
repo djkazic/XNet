@@ -18,7 +18,7 @@ public class ListenerThread implements Runnable {
 		while(true) {
 			try {
 				currentFocus = dis.readByte();
-				if(currentFocus == 0x13) {
+				if(currentFocus == 0x14) {
 					//Got request: disconnect
 					peer.disconnect();
 				}
@@ -36,7 +36,7 @@ public class ListenerThread implements Runnable {
 				}
 				if(currentFocus == 0x04) {
 					//Got data: base64 name list
-					System.out.println("B64: " + Utils.readString(dis));
+					System.out.println(Utils.readString(dis));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

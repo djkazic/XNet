@@ -35,15 +35,11 @@ public class Peer implements Runnable {
 			st = new SenderThread(this, dos);
 			(new Thread(st)).start();
 			st.requestVersion();
-			//Disconnect from out dated peers
-			if(version < Core.version) {
-				disconnect();
-			}
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public void disconnect() {
-		try { dos.write(0x13); } catch (Exception e) {  }
+		try { dos.write(0x14); } catch (Exception e) {  }
 		try { dos.flush(); } catch (Exception e) {  }
 		try { dos.close(); } catch (Exception e) {  }
 		try { dis.close(); } catch (Exception e) {  }
