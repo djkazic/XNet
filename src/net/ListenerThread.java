@@ -8,6 +8,8 @@ public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
 	
+	private boolean listenForNameList = false;
+	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		this.peer = peer;
 		this.dis = dis;
@@ -37,7 +39,11 @@ public class ListenerThread implements Runnable {
 				}
 				if(currentFocus == 0x04) {
 					//Got data: base64 name list
-					System.out.println(Utils.readString(dis));
+					if(listenForNameList) {
+						String finString = Utils.decrypt((Utils.readString(dis)));
+						Utils.parse(peer, finString);
+						listenForNameList = false;
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -46,5 +52,9 @@ public class ListenerThread implements Runnable {
 				return;
 			}
 		} 
+	}
+	
+	public void listenForNameList() {
+		listenForNameList = true;
 	}
 }

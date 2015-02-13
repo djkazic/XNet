@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import main.Core;
+import main.Utils;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -65,6 +66,7 @@ public class MainWindow extends JFrame {
 				if(key == KeyEvent.VK_ENTER) {
 					//perform search
 					//listModel.addElement(searchInput.getText());
+					Utils.doSearch(searchInput.getText());
 					searchInput.setText("");
 				}
 			}

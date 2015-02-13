@@ -5,12 +5,17 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
+import peer.Peer;
+import sun.net.www.content.text.plain;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Utils {
@@ -104,5 +109,51 @@ public class Utils {
 	
 	public static String base64(String input) {
 		return Base64.encode(input.getBytes());
+	}
+	
+	public static String decrypt(String chain) {
+		String output = "";
+		String[] chunkSplit = chain.split(";");
+		for(int i=0; i < chunkSplit.length; i++) {
+			String[] fileSumSplit = chunkSplit[i].split("/");
+			output += debase64(fileSumSplit[0]) + "/" + fileSumSplit[1] + ";";
+		}
+		if(output.length() > 0) {
+			output = output.substring(0, output.length() - 1);
+		}
+		return output;
+	}
+	
+	public static String debase64(String base64) {
+		String output = "";
+		try {
+			output = new String(Base64.decode(base64.getBytes()), "UTF-8");
+		} catch (UnsupportedEncodingException | Base64DecodingException e) {
+			e.printStackTrace();
+		}
+		return output;
+	}
+	
+	//Search tools
+	public static void doSearch(String str) {
+		for(Peer p : Core.peerList) {
+			//Send out request to all peers
+			p.st.requestNameList(str);
+			//Enable listening for all listener threads
+			p.lt.listenForNameList();
+			//Sent data to parse()
+		}		
+	}
+	
+	public static void parse(Peer thisPeer, String str) {
+		//Receives data in form of:
+		/**
+		 * filename/checksum;filename/checksum etc.
+		**/
+		//Also copying into a HashMap for Core
+		
+		//And parses it into the Core ArrayList<String>
+		String[] fileSplit = str.split(";");
+		
 	}
 }
