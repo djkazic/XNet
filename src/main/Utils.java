@@ -158,7 +158,6 @@ public class Utils {
 		for(Peer p : Core.peerList) {
 			//Send out request to all peers
 			p.st.requestNameList(str);
-			//Sent data to parse()
 		}		
 	}
 	
@@ -173,12 +172,12 @@ public class Utils {
 		Core.index = new HashMap<Peer, String[]> ();
 		for(int i=0; i < Core.peerList.size(); i++) {
 			String[] slashSplit = pairSplit[i].split("/");
-			Core.plainText.add(slashSplit[0]);
+			Core.fileToHash.add(slashSplit);			
+			//Interpret this as a String[] when selected
 			Core.index.put(Core.peerList.get(i), slashSplit);
 		}
-		//And dump it into the Core ArrayList (plaintext)
-		for(String element : Core.plainText) {
-			Core.mainWindow.listModel.addElement(element);
+		for(String[] strA : Core.fileToHash) { 
+			Core.mainWindow.tableModel.addRow(strA);
 		}
 	}
 }

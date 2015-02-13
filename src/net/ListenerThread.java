@@ -41,7 +41,7 @@ public class ListenerThread implements Runnable {
 					//Got data: base64 name list
 					String preString = Utils.readString(dis);
 					if(preString.equals("")) {
-						Core.mainWindow.listModel.addElement("Sorry, no items found for your query.");
+						Core.mainWindow.out("Sorry, no items found for your query.");
 					} else {
 						String finString = Utils.decrypt(preString);
 						Utils.parse(peer, finString);
@@ -50,7 +50,7 @@ public class ListenerThread implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 
-				System.out.println("Network error: peer disconnection | ");
+				Core.mainWindow.out("Network error: peer disconnection");
 				return;
 			}
 		} 

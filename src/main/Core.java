@@ -4,7 +4,6 @@ import gui.MainWindow;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -16,16 +15,16 @@ public class Core {
 	
 	public static int version;
 	public static ArrayList <Peer> peerList;
-	public static ArrayList<String> plainText;
 	public static HashMap<Peer, String[]> index;
 	public static MainWindow mainWindow;
 	public static String md5dex = "";
+	public static ArrayList <String[]> fileToHash;
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Initialize vars
 		version = 1;
 		peerList = new ArrayList <Peer>();
-		plainText = new ArrayList <String>();
+		fileToHash = new ArrayList <String[]> ();
 		
 		//Directory work
 		Utils.initDir();
@@ -35,6 +34,7 @@ public class Core {
 		
 		//GUI init
 		mainWindow = new MainWindow();
+		mainWindow.out("Loading md5sum data, please wait...");
 		
 		//TODO: rewrite listDir dear god
 		try {
@@ -42,6 +42,9 @@ public class Core {
 		} catch (NoSuchAlgorithmException | IOException e) {
 			e.printStackTrace();
 		}
+
+		mainWindow.clearTable();
+		mainWindow.out("Enter your search query and press Enter.");
 		
 		boolean debugServer = false;
 		if(debugServer) {
@@ -51,8 +54,6 @@ public class Core {
 			PeerSeeker pst = new PeerSeeker();
 			(new Thread(pst)).start();
 		}
-		
-		System.out.println(md5dex);
 	}
 	
 	public static void sortPeers() {

@@ -55,7 +55,6 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					String finRes = Utils.listDirSearch(receivedQuery);
 					Utils.writeString(finRes, dos);
-					System.out.println("Send finRes: " + finRes + " based on query " + receivedQuery);
 					dos.flush();
 					receivedQuery = "";
 					sendNameList = false;
