@@ -13,7 +13,7 @@ import peer.PeerSeeker;
 
 public class Core {
 	
-	public static int version;
+	public static double version;
 	public static ArrayList <Peer> peerList;
 	public static HashMap<Peer, String[]> index;
 	public static MainWindow mainWindow;
@@ -22,7 +22,7 @@ public class Core {
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Initialize vars
-		version = 1;
+		version = 1.0;
 		peerList = new ArrayList <Peer>();
 		fileToHash = new ArrayList <String[]> ();
 		

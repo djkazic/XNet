@@ -14,7 +14,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public DataOutputStream dos;
 	public DataInputStream dis;
 	public Socket ps;
-	public int version = -1;
+	public double version = -1;
 	public long lastPing = 0;
 	public long ms;
 	

@@ -38,7 +38,7 @@ public class SenderThread implements Runnable {
 					//Send data: version
 					dos.write(0x02);
 					dos.flush();
-					dos.writeInt(Core.version);
+					dos.writeDouble(Core.version);
 					dos.flush();
 					sendVersion = false;
 				} else if(requestNameList) {

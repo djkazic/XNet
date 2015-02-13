@@ -29,7 +29,7 @@ public class ListenerThread implements Runnable {
 				}
 				if(currentFocus == 0x02) {
 					//Got data: version
-					peer.version = dis.readInt();
+					peer.version = dis.readDouble();
 				}
 				if(currentFocus == 0x03) {
 					//Got request: name list

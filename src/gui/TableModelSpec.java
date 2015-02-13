@@ -12,7 +12,7 @@ public class TableModelSpec extends DefaultTableModel {
 		return false;
 	}
 	
-	public Vector getColumnIdentifiers() {
+	public Vector<?> getColumnIdentifiers() {
         return columnIdentifiers;
     }
 }
