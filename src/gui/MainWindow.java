@@ -20,10 +20,9 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTextField searchInput;
 	private JList searchRes;
-	private DefaultListModel<String> listModel;
+	public DefaultListModel<String> listModel;
 	private boolean doneInit = false;
 	private CountDownLatch resLatch;
-	public CountDownLatch searchLatch;
 
 	/**
 	 * Create the frame.
@@ -41,7 +40,6 @@ public class MainWindow extends JFrame {
 		
 		listModel = new DefaultListModel<String>();
 		resLatch = new CountDownLatch(1);
-		searchLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
 		searchInput.setToolTipText("Enter your search query and press Enter.");
@@ -50,16 +48,17 @@ public class MainWindow extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ENTER) {
-					Utils.doSearch(searchInput.getText());
+					//clear any previous res
+					listModel.clear();
+					//clear core db
+					Core.plainText.clear();
+					String input = searchInput.getText();
+					if(input.equals("")) { 
+						listModel.addElement("You cannot search for a blank query.");
+					} else {
+						Utils.doSearch(input);
+					}
 					//dump results
-					try {
-						searchLatch.await();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					for(String str : Core.plainText) { 
-						listModel.addElement(str);
-					}
 					searchInput.setText("");
 				}
 			}

@@ -1,14 +1,13 @@
 package net;
 import java.io.DataInputStream;
 
+import main.Core;
 import main.Utils;
 import peer.Peer;
 
 public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
-	
-	private boolean listenForNameList = false;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		this.peer = peer;
@@ -35,26 +34,25 @@ public class ListenerThread implements Runnable {
 				if(currentFocus == 0x03) {
 					//Got request: name list
 					String receivedQuery = Utils.readString(dis);
+					System.out.println("Asked for namelist of " + receivedQuery);
 					peer.st.sendNameList(receivedQuery);
 				}
 				if(currentFocus == 0x04) {
 					//Got data: base64 name list
-					if(listenForNameList) {
-						String finString = Utils.decrypt((Utils.readString(dis)));
+					String preString = Utils.readString(dis);
+					if(preString.equals("")) {
+						Core.mainWindow.listModel.addElement("Sorry, no items found for your query.");
+					} else {
+						String finString = Utils.decrypt(preString);
 						Utils.parse(peer, finString);
-						listenForNameList = false;
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 
-				System.out.println("Network error: peer disconnection");
+				System.out.println("Network error: peer disconnection | ");
 				return;
 			}
 		} 
-	}
-	
-	public void listenForNameList() {
-		listenForNameList = true;
 	}
 }

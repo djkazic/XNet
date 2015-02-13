@@ -5,17 +5,16 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import peer.Peer;
-import sun.net.www.content.text.plain;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -73,7 +72,7 @@ public class Utils {
 		}
 	}
 	
-	public static String listDir(String str) throws NoSuchAlgorithmException, IOException {
+	public static String listDir() throws NoSuchAlgorithmException, IOException {
 		String file;
 		String totFiles = "";
 		File folder = new File(defineDir());
@@ -81,9 +80,7 @@ public class Utils {
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
 				file = listOfFiles[i].getName();
-				if(file.toLowerCase().contains(str.toLowerCase())) {
-					totFiles += base64(file) + "/" + checksum(defineDir() + "\\" + file) + ";";
-				}
+				totFiles += base64(file) + "/" + checksum(defineDir() + "\\" + file) + ";";
 			}
 		}
 		if(totFiles.length() > 0) {
@@ -92,21 +89,41 @@ public class Utils {
 		return totFiles;
 	}
 	
-	public static String checksum(String datafile) throws NoSuchAlgorithmException, IOException {
-		MessageDigest md = MessageDigest.getInstance("SHA1");
-		FileInputStream fis = new FileInputStream(datafile);
-		byte[] dataBytes = new byte[1024];
-		int nread = 0; 
-		while ((nread = fis.read(dataBytes)) != -1) {
-			md.update(dataBytes, 0, nread);
-		};
-		byte[] mdbytes = md.digest();
-		StringBuffer sb = new StringBuffer("");
-		for (int i = 0; i < mdbytes.length; i++) {
-			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+	public static String listDirSearch(String str) throws NoSuchAlgorithmException, IOException {
+		String file = "";
+		String totFiles = decrypt(Core.md5dex);
+		//Split and add only those that match condition
+		String[] totSplit = totFiles.split(";");
+		for(int i=0; i < totSplit.length; i++) {
+			String[] fSplit = totSplit[i].split("/");
+			if(fSplit[0].toLowerCase().contains(str.toLowerCase())) {
+				file += base64(fSplit[0]) + "/" + fSplit[1] + ";";
+			}
 		}
+		if(file.length() > 0) {
+			file = file.substring(0, file.length() - 1);
+		}
+		return file;
+	}
+
+	public static String checksum(String datafile) throws NoSuchAlgorithmException, IOException {
+		InputStream fis =  new FileInputStream(datafile);
+		byte[] buffer = new byte[1024];
+		MessageDigest complete = MessageDigest.getInstance("MD5");
+		int numRead;
+		do {
+			numRead = fis.read(buffer);
+			if (numRead > 0) {
+				complete.update(buffer, 0, numRead);
+			}
+		} while (numRead != -1);
 		fis.close();
-		return sb.toString();
+		byte[] bytes = complete.digest();
+		String result = "";
+		for (int i=0; i < bytes.length; i++) {
+			result += Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return result;
 	}
 	
 	public static String base64(String input) {
@@ -141,8 +158,6 @@ public class Utils {
 		for(Peer p : Core.peerList) {
 			//Send out request to all peers
 			p.st.requestNameList(str);
-			//Enable listening for all listener threads
-			p.lt.listenForNameList();
 			//Sent data to parse()
 		}		
 	}
@@ -158,10 +173,12 @@ public class Utils {
 		Core.index = new HashMap<Peer, String[]> ();
 		for(int i=0; i < Core.peerList.size(); i++) {
 			String[] slashSplit = pairSplit[i].split("/");
+			Core.plainText.add(slashSplit[0]);
 			Core.index.put(Core.peerList.get(i), slashSplit);
 		}
 		//And dump it into the Core ArrayList (plaintext)
-		//Trigger countdownlatch
-		Core.mainWindow.searchLatch.countDown();
+		for(String element : Core.plainText) {
+			Core.mainWindow.listModel.addElement(element);
+		}
 	}
 }

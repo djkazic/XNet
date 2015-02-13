@@ -19,6 +19,7 @@ public class Core {
 	public static ArrayList<String> plainText;
 	public static HashMap<Peer, String[]> index;
 	public static MainWindow mainWindow;
+	public static String md5dex = "";
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Initialize vars
@@ -29,27 +30,29 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
+		//Initialize sec lib
+		com.sun.org.apache.xml.internal.security.Init.init();
+		
 		//GUI init
 		mainWindow = new MainWindow();
 		
-		boolean debugServer = false;
+		//TODO: rewrite listDir dear god
 		try {
-			System.out.println(Utils.listDir(""));
+			md5dex = Utils.listDir();
 		} catch (NoSuchAlgorithmException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		boolean debugServer = false;
 		if(debugServer) {
 			GlobalListener gl = new GlobalListener();
 			(new Thread(gl)).start();
-			Thread.sleep(10500);
 		} else {
 			PeerSeeker pst = new PeerSeeker();
 			(new Thread(pst)).start();
-			Thread.sleep(10500);
-			peerList.get(0).st.requestNameList("sk");
-			
 		}
+		
+		System.out.println(md5dex);
 	}
 	
 	public static void sortPeers() {

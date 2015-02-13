@@ -19,9 +19,9 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public long ms;
 	
 	public Peer(Socket ps, Long ms) {
+		Core.peerList.add(this);
 		this.ps = ps;
 		this.ms = ms;
-		Core.peerList.add(this);
 		Core.sortPeers();
 	}
 	
