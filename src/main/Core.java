@@ -2,6 +2,8 @@ package main;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import net.GlobalListener;
 import peer.Peer;
@@ -39,5 +41,9 @@ public class Core {
 			peerList.get(0).st.requestNameList("sk");
 			
 		}
+	}
+	
+	public static void sortPeers() {
+		Collections.sort(peerList);
 	}
 }

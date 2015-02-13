@@ -7,7 +7,7 @@ import main.Core;
 import net.ListenerThread;
 import net.SenderThread;
 
-public class Peer implements Runnable {
+public class Peer implements Runnable, Comparable<Peer> {
 	public boolean connected;
 	public ListenerThread lt;
 	public SenderThread st;
@@ -15,17 +15,20 @@ public class Peer implements Runnable {
 	public DataInputStream dis;
 	public Socket ps;
 	public int version = -1;
-	public long lastPing = 0;;
+	public long lastPing = 0;
+	public long ms;
 	
-	public Peer(Socket ps) {
+	public Peer(Socket ps, Long ms) {
 		this.ps = ps;
+		this.ms = ms;
+		Core.peerList.add(this);
+		Core.sortPeers();
 	}
 	
 	public void run() {
 		try {
 			dos = new DataOutputStream(ps.getOutputStream());
 			dis = new DataInputStream(ps.getInputStream());
-			Core.peerList.add(this);
 			ps.setSoTimeout(3500);
 			dos.write(0x00);
 			dos.flush();
@@ -39,11 +42,25 @@ public class Peer implements Runnable {
 	}
 	
 	public void disconnect() {
+		Core.peerList.remove(this);
 		try { dos.write(0x14); } catch (Exception e) {  }
 		try { dos.flush(); } catch (Exception e) {  }
 		try { dos.close(); } catch (Exception e) {  }
 		try { dis.close(); } catch (Exception e) {  }
 		try { ps.close(); } catch (Exception e) {  }
 		connected = false;
+	}
+	
+	public int compareTo(Peer peer) {
+		if(this.ms < peer.ms) {
+			return -1;
+		} else if(this.ms > peer.ms) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	public String toString() {
+		return ps.getInetAddress().getHostAddress() + " @ " + ms + "ms";
 	}
 }

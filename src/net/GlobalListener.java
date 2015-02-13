@@ -21,9 +21,11 @@ public class GlobalListener implements Runnable {
 		Socket tempSocket;
 		while(true) {
 			try {
+				long start = System.currentTimeMillis();
 				tempSocket = ss.accept();
+				long end = System.currentTimeMillis();
 				System.out.println("Creating peer [in]");
-				(new Thread(new Peer(tempSocket))).start();
+				(new Thread(new Peer(tempSocket, end - start))).start();
 			} catch (Exception e) {  }
 		}
 	}

@@ -18,9 +18,11 @@ public class PeerSeeker implements Runnable {
 			Socket peerSocket = new Socket();
 			InetSocketAddress peerAddr = new InetSocketAddress("127.0.0.1", 26606);
 			try {
+				long start = System.currentTimeMillis();
 				peerSocket.connect(peerAddr);
+				long end = System.currentTimeMillis();
 				System.out.println("Creating peer [out]");
-				(new Thread(new Peer(peerSocket))).start();
+				(new Thread(new Peer(peerSocket, end - start))).start();
 				System.out.println("Established connection");
 				found = true;
 			} catch (IOException e) {}
