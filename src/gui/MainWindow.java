@@ -2,20 +2,21 @@ package gui;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Enumeration;
+import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import main.Core;
 import main.Utils;
-
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -26,11 +27,13 @@ public class MainWindow extends JFrame {
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
 	private JScrollPane scrollPane;
+	private boolean searchMode;
 
 	/**
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		searchMode = false;
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,7 +44,7 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(null);
 		
 		tableModel = new TableModelSpec();
-		tableModel.addColumn("Filename");
+		tableModel.addColumn("Status");
 		
 		resLatch = new CountDownLatch(1);
 		
@@ -62,6 +65,12 @@ public class MainWindow extends JFrame {
 						if(input.equals("")) {
 							out("You cannot search for a blank query.");
 						} else {
+							if(!searchMode) {
+								removeColumnAndData(searchRes, 0);
+								tableModel.addColumn("Filename");
+								tableModel.addColumn("Checksum");
+								searchMode = true;
+							}
 							Utils.doSearch(input);
 						}
 						//dump results
@@ -91,6 +100,13 @@ public class MainWindow extends JFrame {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		if(searchMode) {
+			removeColumnAndData(searchRes, 0);
+			removeColumnAndData(searchRes, 0);
+			tableModel.addColumn("Status");
+			searchMode = false;
+		}
+		clearTable();
 		tableModel.addRow(new String[]{str});
 	}
 	
@@ -98,5 +114,28 @@ public class MainWindow extends JFrame {
 		for(int i=0; i < tableModel.getRowCount(); i++) {
 			tableModel.removeRow(i);
 		}
+	}
+	
+	public void removeColumnAndData(JTable table, int vColIndex) {
+	    TableModelSpec model = (TableModelSpec)table.getModel();
+	    TableColumn col = table.getColumnModel().getColumn(vColIndex);
+	    int columnModelIndex = col.getModelIndex();
+	    Vector<?> data = model.getDataVector();
+	    Vector<?> colIds = model.getColumnIdentifiers();
+	    table.removeColumn(col);
+	    colIds.removeElementAt(columnModelIndex);
+	    for (int r=0; r<data.size(); r++) {
+	        Vector<?> row = (Vector<?>)data.get(r);
+	        row.removeElementAt(columnModelIndex);
+	    }
+	    model.setDataVector(data, colIds);
+	    Enumeration<?> enumer = table.getColumnModel().getColumns();
+	    for(;enumer.hasMoreElements();) {
+	        TableColumn c = (TableColumn)enumer.nextElement();
+	        if (c.getModelIndex() >= columnModelIndex) {
+	            c.setModelIndex(c.getModelIndex()-1);
+	        }
+	    }
+	    model.fireTableStructureChanged();
 	}
 }

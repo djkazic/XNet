@@ -43,7 +43,6 @@ public class Core {
 			e.printStackTrace();
 		}
 
-		mainWindow.clearTable();
 		mainWindow.out("Enter your search query and press Enter.");
 		
 		boolean debugServer = false;
