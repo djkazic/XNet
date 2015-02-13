@@ -48,7 +48,7 @@ public class SenderThread implements Runnable {
 					//Send data: base64 name list
 					dos.write(0x04);
 					dos.flush();
-					Utils.writeString("placeholder", dos);
+					Utils.writeString(Utils.encryptList(Utils.listDir()), dos);
 					dos.flush();
 					sendNameList = false;
 				}

@@ -8,7 +8,7 @@ public class GlobalListener implements Runnable {
 	public ServerSocket ss;
 	
 	public GlobalListener() {
-		System.out.println("GL");
+		System.out.println("INITIALIZING GL");
 		try {
 			ss = new ServerSocket(26606);
 		} catch (Exception e) {

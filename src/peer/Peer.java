@@ -41,13 +41,6 @@ public class Peer implements Runnable {
 			}
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-
-	public int getVersion() {
-		if(version == -1) {
-			st.requestVersion();
-		}
-		return version;
-	}
 	
 	public void disconnect() {
 		try { dos.write(0x13); } catch (Exception e) {  }

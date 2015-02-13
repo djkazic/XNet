@@ -8,7 +8,7 @@ public class PeerSeeker implements Runnable {
 	public boolean found = false;
 	
 	public PeerSeeker() {
-		System.out.println("PS");
+		System.out.println("INITIALIZING PS");
 	}
 	
 	public void run() {
