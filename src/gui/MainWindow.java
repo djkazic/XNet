@@ -14,6 +14,8 @@ import main.Core;
 import main.Utils;
 
 import javax.swing.JTable;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -23,6 +25,7 @@ public class MainWindow extends JFrame {
 	private JTable searchRes;
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Create the frame.
@@ -37,7 +40,7 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		tableModel = new DefaultTableModel();
+		tableModel = new TableModelSpec();
 		tableModel.addColumn("Filename");
 		
 		resLatch = new CountDownLatch(1);
@@ -71,11 +74,14 @@ public class MainWindow extends JFrame {
 		contentPane.add(searchInput);
 		searchInput.setColumns(10);
 		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 44, 414, 207);
+		contentPane.add(scrollPane);
+		
 		searchRes = new JTable(tableModel);
+		scrollPane.setViewportView(searchRes);
 		searchRes.setCellSelectionEnabled(true);
 		searchRes.setColumnSelectionAllowed(true);
-		searchRes.setBounds(10, 44, 414, 207);
-		contentPane.add(searchRes);
 		resLatch.countDown();
 	}
 	
