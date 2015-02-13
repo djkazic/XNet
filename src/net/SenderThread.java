@@ -53,7 +53,7 @@ public class SenderThread implements Runnable {
 					//Send data: base64 name list
 					dos.write(0x04);
 					dos.flush();
-					String finRes = Utils.encryptList(Utils.listDir(receivedQuery));
+					String finRes = Utils.listDir(receivedQuery);
 					Utils.writeString(finRes, dos);
 					dos.flush();
 					receivedQuery = "";

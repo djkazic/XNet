@@ -3,7 +3,10 @@ package main;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -63,7 +66,7 @@ public class Utils {
 		}
 	}
 	
-	public static String listDir(String str) {
+	public static String listDir(String str) throws NoSuchAlgorithmException, IOException {
 		String file;
 		String totFiles = "";
 		File folder = new File(defineDir());
@@ -72,7 +75,7 @@ public class Utils {
 			if(listOfFiles[i].isFile()) {
 				file = listOfFiles[i].getName();
 				if(file.toLowerCase().contains(str.toLowerCase())) {
-					totFiles += file + "/";
+					totFiles += base64(file) + "/" + checksum(defineDir() + "\\" + file) + ";";
 				}
 			}
 		}
@@ -82,15 +85,21 @@ public class Utils {
 		return totFiles;
 	}
 	
-	//Encryption utils
-	public static String encryptList(String list) {
-		String output = "";
-		String[] split = list.split("/");
-		for(int i=0; i < split.length; i++) {
-			output += base64(split[i]) + ":";
+	public static String checksum(String datafile) throws NoSuchAlgorithmException, IOException {
+		MessageDigest md = MessageDigest.getInstance("SHA1");
+		FileInputStream fis = new FileInputStream(datafile);
+		byte[] dataBytes = new byte[1024];
+		int nread = 0; 
+		while ((nread = fis.read(dataBytes)) != -1) {
+			md.update(dataBytes, 0, nread);
+		};
+		byte[] mdbytes = md.digest();
+		StringBuffer sb = new StringBuffer("");
+		for (int i = 0; i < mdbytes.length; i++) {
+			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
-		output = output.substring(0, output.length() - 1);
-		return output;
+		fis.close();
+		return sb.toString();
 	}
 	
 	public static String base64(String input) {

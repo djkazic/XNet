@@ -1,4 +1,6 @@
 package main;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import net.GlobalListener;
@@ -19,7 +21,13 @@ public class Core {
 		Utils.initDir();
 		
 		boolean debugServer = false;
-	
+
+		try {
+			System.out.println(Utils.listDir(""));
+		} catch (NoSuchAlgorithmException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(debugServer) {
 			GlobalListener gl = new GlobalListener();
 			(new Thread(gl)).start();
