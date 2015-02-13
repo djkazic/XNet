@@ -13,6 +13,8 @@ public class SenderThread implements Runnable {
 	private boolean sendVersion = false;
 	private boolean requestNameList = false;
 	private boolean sendNameList = false;
+	private String sendQuery = "";
+	private String receivedQuery = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		this.peer = peer;
@@ -43,13 +45,18 @@ public class SenderThread implements Runnable {
 					//Send request: name list
 					dos.write(0x03);
 					dos.flush();
+					Utils.writeString(sendQuery, dos);
+					dos.flush();
+					sendQuery = "";
 					requestNameList = false;
 				} else if(sendNameList) {
 					//Send data: base64 name list
 					dos.write(0x04);
 					dos.flush();
-					Utils.writeString(Utils.encryptList(Utils.listDir()), dos);
+					String finRes = Utils.encryptList(Utils.listDir(receivedQuery));
+					Utils.writeString(finRes, dos);
 					dos.flush();
+					receivedQuery = "";
 					sendNameList = false;
 				}
 				try {
@@ -69,11 +76,13 @@ public class SenderThread implements Runnable {
 		sendVersion = true;
 	}
 	
-	public void requestNameList() {
+	public void requestNameList(String str) {
+		sendQuery = str;
 		requestNameList = true;
 	}
 	
-	public void sendNameList() {
+	public void sendNameList(String str) {
+		receivedQuery = str; 
 		sendNameList = true;
 	}
 }

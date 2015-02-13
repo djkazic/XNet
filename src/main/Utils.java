@@ -63,7 +63,7 @@ public class Utils {
 		}
 	}
 	
-	public static String listDir() {
+	public static String listDir(String str) {
 		String file;
 		String totFiles = "";
 		File folder = new File(defineDir());
@@ -71,7 +71,9 @@ public class Utils {
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
 				file = listOfFiles[i].getName();
-				totFiles += file + "/";
+				if(file.toLowerCase().contains(str.toLowerCase())) {
+					totFiles += file + "/";
+				}
 			}
 		}
 		if(totFiles.length() > 0) {

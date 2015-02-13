@@ -28,8 +28,8 @@ public class Core {
 			PeerSeeker pst = new PeerSeeker();
 			(new Thread(pst)).start();
 			Thread.sleep(10500);
-			peerList.get(0).st.requestVersion();
-			System.out.println(peerList.get(0).version);
+			peerList.get(0).st.requestNameList("sk");
+			
 		}
 	}
 }
