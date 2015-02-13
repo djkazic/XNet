@@ -161,5 +161,7 @@ public class Utils {
 			Core.index.put(Core.peerList.get(i), slashSplit);
 		}
 		//And dump it into the Core ArrayList (plaintext)
+		//Trigger countdownlatch
+		Core.mainWindow.searchLatch.countDown();
 	}
 }

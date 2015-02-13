@@ -23,6 +23,7 @@ public class MainWindow extends JFrame {
 	private DefaultListModel<String> listModel;
 	private boolean doneInit = false;
 	private CountDownLatch resLatch;
+	public CountDownLatch searchLatch;
 
 	/**
 	 * Create the frame.
@@ -40,6 +41,7 @@ public class MainWindow extends JFrame {
 		
 		listModel = new DefaultListModel<String>();
 		resLatch = new CountDownLatch(1);
+		searchLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
 		searchInput.setToolTipText("Enter your search query and press Enter.");
@@ -48,9 +50,13 @@ public class MainWindow extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ENTER) {
-					//start thread for doSearch
 					Utils.doSearch(searchInput.getText());
 					//dump results
+					try {
+						searchLatch.await();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					for(String str : Core.plainText) { 
 						listModel.addElement(str);
 					}
