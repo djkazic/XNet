@@ -1,13 +1,10 @@
 package gui;
 
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -23,23 +20,9 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTextField searchInput;
 	private JList searchRes;
-	private DefaultListModel listModel;
-
-	/**
-	 * Tester launch of GUI.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow frame = new MainWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private DefaultListModel<String> listModel;
+	private boolean doneInit = false;
+	private CountDownLatch resLatch;
 
 	/**
 	 * Create the frame.
@@ -56,6 +39,7 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(null);
 		
 		listModel = new DefaultListModel<String>();
+		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
 		searchInput.setToolTipText("Enter your search query and press Enter.");
@@ -64,9 +48,12 @@ public class MainWindow extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ENTER) {
-					//perform search
-					//listModel.addElement(searchInput.getText());
+					//start thread for doSearch
 					Utils.doSearch(searchInput.getText());
+					//dump results
+					for(String str : Core.plainText) { 
+						listModel.addElement(str);
+					}
 					searchInput.setText("");
 				}
 			}
@@ -78,5 +65,15 @@ public class MainWindow extends JFrame {
 		searchRes = new JList<String>(listModel);
 		searchRes.setBounds(10, 44, 414, 207);
 		contentPane.add(searchRes);
+		resLatch.countDown();
+	}
+	
+	public void setResults(String str) {
+		try {
+			resLatch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		listModel.addElement(str);
 	}
 }

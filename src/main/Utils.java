@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -150,10 +152,14 @@ public class Utils {
 		/**
 		 * filename/checksum;filename/checksum etc.
 		**/
+		//Create ArrayList of just filenames
+		String[] pairSplit = str.split(";");
 		//Also copying into a HashMap for Core
-		
-		//And parses it into the Core ArrayList<String>
-		String[] fileSplit = str.split(";");
-		
+		Core.index = new HashMap<Peer, String[]> ();
+		for(int i=0; i < Core.peerList.size(); i++) {
+			String[] slashSplit = pairSplit[i].split("/");
+			Core.index.put(Core.peerList.get(i), slashSplit);
+		}
+		//And dump it into the Core ArrayList (plaintext)
 	}
 }
