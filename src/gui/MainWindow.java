@@ -1,23 +1,31 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import main.Core;
 
+@SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
+	private JTextField searchInput;
+	private JList searchRes;
+	private DefaultListModel listModel;
 
 	/**
-	 * Launch the application.
+	 * Tester launch of GUI.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -35,7 +43,9 @@ public class MainWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public MainWindow() {
+		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -44,13 +54,27 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(10, 231, 325, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		listModel = new DefaultListModel<String>();
 		
-		JButton btnEnter = new JButton("Enter");
-		btnEnter.setBounds(349, 230, 75, 23);
-		contentPane.add(btnEnter);
+		searchInput = new JTextField();
+		searchInput.setToolTipText("Enter your search query and press Enter.");
+		searchInput.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				int key = arg0.getKeyCode();
+				if(key == KeyEvent.VK_ENTER) {
+					//perform search
+					//listModel.addElement(searchInput.getText());
+					searchInput.setText("");
+				}
+			}
+		});
+		searchInput.setBounds(10, 13, 414, 20);
+		contentPane.add(searchInput);
+		searchInput.setColumns(10);
+		
+		searchRes = new JList<String>(listModel);
+		searchRes.setBounds(10, 44, 414, 207);
+		contentPane.add(searchRes);
 	}
 }
