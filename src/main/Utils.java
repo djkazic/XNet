@@ -1,11 +1,12 @@
-package net;
+package main;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class NetUtils {
+public class Utils {
 
+	//Net Utils
 	public static String readString(DataInputStream par0DataInputStream) throws IOException {
 		short word0 = par0DataInputStream.readShort();
 		StringBuilder stringbuilder = new StringBuilder();

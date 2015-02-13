@@ -1,6 +1,7 @@
 package net;
 import java.io.DataInputStream;
 
+import main.Utils;
 import peer.Peer;
 
 public class ListenerThread implements Runnable {
@@ -35,7 +36,7 @@ public class ListenerThread implements Runnable {
 				}
 				if(currentFocus == 0x04) {
 					//Got data: base64 name list
-					NetUtils.readString(dis);
+					Utils.readString(dis);
 				}
 			} catch (Exception e) { 
 				peer.disconnect(); 

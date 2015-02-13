@@ -2,6 +2,7 @@ package net;
 import java.io.DataOutputStream;
 
 import main.Core;
+import main.Utils;
 import peer.Peer;
 
 public class SenderThread implements Runnable {
@@ -47,7 +48,7 @@ public class SenderThread implements Runnable {
 					//Send data: base64 name list
 					dos.write(0x04);
 					dos.flush();
-					NetUtils.writeString("placeholder", dos);
+					Utils.writeString("placeholder", dos);
 					dos.flush();
 					sendNameList = false;
 				}
