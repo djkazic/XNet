@@ -46,10 +46,10 @@ public class Utils {
 		JFileChooser fr = new JFileChooser();
 		FileSystemView fw = fr.getFileSystemView();
 		directory = fw.getDefaultDirectory().toString();
-		if(System.getProperty("os.name").indexOf("mac") >= 0) {
-			directory += "/Documents/XNet";
-		} else { 
+		if(System.getProperty("os.name").indexOf("win") >= 0) {
 			directory += "\\XNet";
+		} else { 
+			directory += "/Documents/XNet";
 		}
 		System.out.println("Post-XNET dir: " + directory);
 		return directory;
