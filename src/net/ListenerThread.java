@@ -1,6 +1,8 @@
 package net;
 import java.io.DataInputStream;
 
+import net.io.FileAcceptor;
+import net.io.FileSender;
 import main.Core;
 import main.Utils;
 import peer.Peer;

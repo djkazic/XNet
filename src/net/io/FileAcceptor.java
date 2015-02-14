@@ -1,6 +1,5 @@
-package net;
+package net.io;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -10,6 +9,7 @@ import main.Utils;
 import peer.Peer;
 
 public class FileAcceptor implements Runnable {
+	
 	private Peer peer;
 	private String filename;
 	
@@ -19,7 +19,6 @@ public class FileAcceptor implements Runnable {
 	}
 	
 	public void run() {
-		System.out.println("FileAcceptor started.");
 		try {
 			byte[] mybytearray = new byte[1024];
 		    InputStream is = peer.ps.getInputStream();
@@ -31,8 +30,6 @@ public class FileAcceptor implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("FileAcceptor stopped.");
 		Core.mainWindow.out("File transfer of \"" + filename + "\" successful");
 	}
-
 }

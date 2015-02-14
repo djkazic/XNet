@@ -9,13 +9,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-
 import peer.Peer;
-
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -145,6 +141,16 @@ public class Utils {
 		return Base64.encode(input.getBytes());
 	}
 	
+	public static String debase64(String base64) {
+		String output = "";
+		try {
+			output = new String(Base64.decode(base64.getBytes()), "UTF-8");
+		} catch (UnsupportedEncodingException | Base64DecodingException e) {
+			e.printStackTrace();
+		}
+		return output;
+	}
+	
 	public static String decrypt(String chain) {
 		String output = "";
 		String[] chunkSplit = chain.split(";");
@@ -154,16 +160,6 @@ public class Utils {
 		}
 		if(output.length() > 0) {
 			output = output.substring(0, output.length() - 1);
-		}
-		return output;
-	}
-	
-	public static String debase64(String base64) {
-		String output = "";
-		try {
-			output = new String(Base64.decode(base64.getBytes()), "UTF-8");
-		} catch (UnsupportedEncodingException | Base64DecodingException e) {
-			e.printStackTrace();
 		}
 		return output;
 	}

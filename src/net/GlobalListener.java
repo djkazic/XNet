@@ -29,5 +29,4 @@ public class GlobalListener implements Runnable {
 			} catch (Exception e) {  }
 		}
 	}
-
 }
