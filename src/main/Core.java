@@ -1,12 +1,8 @@
 package main;
 import gui.MainWindow;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
 import net.GlobalListener;
 import peer.Peer;
 import peer.PeerSeeker;
@@ -20,9 +16,9 @@ public class Core {
 	public static String md5dex = "";
 	public static ArrayList <String[]> fileToHash;
 	
+	public static boolean debugServer = true;
+	
 	public static void main(String[] args) throws InterruptedException {
-		//Debug
-		boolean debugServer = false;
 		
 		//Initialize vars
 		version = 1.0;
@@ -40,19 +36,19 @@ public class Core {
 		//Create md5dex
 		try {
 			md5dex = Utils.listDir();
-		} catch (NoSuchAlgorithmException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		mainWindow.out("Enter your search query and press Enter.");
 		
-		if(debugServer) {
-			GlobalListener gl = new GlobalListener();
-			(new Thread(gl)).start();
-		} else {
-			PeerSeeker pst = new PeerSeeker();
-			(new Thread(pst)).start();
-		}
+		//if(debugServer) {
+		GlobalListener gl = new GlobalListener();
+		(new Thread(gl)).start();
+		//} else {
+		PeerSeeker pst = new PeerSeeker(debugServer);
+		(new Thread(pst)).start();
+		//}
 	}
 	
 	public static void sortPeers() {

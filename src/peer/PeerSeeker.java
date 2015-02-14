@@ -2,21 +2,39 @@ package peer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
+
+import main.Core;
 
 public class PeerSeeker implements Runnable {
 	
 	public boolean found = false;
+	private String host = null;
 	
-	public PeerSeeker() {
+	public PeerSeeker(boolean debugServer) {
 		System.out.println("INITIALIZING PS");
+		if(debugServer) {
+			System.out.println("Debug mode active, prompting connection");
+			Core.mainWindow.out("Please enter the debug server IP");
+			CountDownLatch debugLatch = new CountDownLatch(1);
+			Core.mainWindow.setDebugLatch(debugLatch);
+			try {
+				debugLatch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			host = Core.mainWindow.debugHost;
+		} else {
+			host = "127.0.0.1";
+		}
 	}
 	
 	public void run() {
 		while(!found) {
 		//TODO: change found variable to "done iterating"
-			System.out.println("Attempting hardcode connect");
+			System.out.println("Attempting hardcode connect to host " + host);
 			Socket peerSocket = new Socket();
-			InetSocketAddress peerAddr = new InetSocketAddress("127.0.0.1", 26606);
+			InetSocketAddress peerAddr = new InetSocketAddress(host, 26606);
 			try {
 				long start = System.currentTimeMillis();
 				peerSocket.connect(peerAddr);

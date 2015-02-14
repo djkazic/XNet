@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import peer.Peer;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Utils {
@@ -76,7 +74,7 @@ public class Utils {
 				if(checksum(listOfFiles[i]).equals(sum)) {
 					return listOfFiles[i];
 				}
-			} catch (NoSuchAlgorithmException | IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -145,7 +143,7 @@ public class Utils {
 		String output = "";
 		try {
 			output = new String(Base64.decode(base64.getBytes()), "UTF-8");
-		} catch (UnsupportedEncodingException | Base64DecodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return output;

@@ -1,8 +1,11 @@
 package gui;
 
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,6 +13,7 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,15 +24,7 @@ import javax.swing.table.TableColumn;
 
 import main.Core;
 import main.Utils;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JLabel;
-
 import peer.Peer;
-
-import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -38,9 +34,11 @@ public class MainWindow extends JFrame {
 	private JTable searchRes;
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
+	private CountDownLatch debugLatch;
 	private JScrollPane scrollPane;
 	private JLabel lblPeers;
 	private boolean searchMode;
+	public String debugHost;
 
 	/**
 	 * Create the frame.
@@ -63,6 +61,7 @@ public class MainWindow extends JFrame {
 		
 		searchInput = new JTextField();
 		searchInput.setBounds(10, 13, 454, 20);
+		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -74,24 +73,39 @@ public class MainWindow extends JFrame {
 					Core.fileToHash.clear();
 					//clear core index
 					Core.index.clear();
-					if(Core.peerList.size() == 0) {
-						out("No peers connected. Query is not possible.");
-					} else {
-						String input = searchInput.getText();
-						if(input.equals("")) {
-							out("You cannot search for a blank query.");
-						} else if(input.equals("listpeers")) {
-							out(Core.peersCount());
+					if(Core.debugServer) {
+						debugHost = searchInput.getText();
+						if(debugHost.equals("")) {
+							out("You cannot enter a blank IP.");
 						} else {
-							if(!searchMode) {
-								removeColumnAndData(searchRes, 0);
-								tableModel.addColumn("Filename");
-								tableModel.addColumn("Checksum");
-								searchMode = true;
-							}
-							Utils.doSearch(input);
+							out("Debug host set!");
+							debugLatch.countDown();
 						}
-						//dump results
+						Core.debugServer = false;
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						out("Enter your search query and press Enter.");
+					} else {
+						if(Core.peerList.size() == 0) {
+							out("No peers connected. Query is not possible.");
+						} else {
+							String input = searchInput.getText();
+							if(input.equals("")) {
+								out("You cannot search for a blank query.");
+							} else {
+								if(!searchMode) {
+									removeColumnAndData(searchRes, 0);
+									tableModel.addColumn("Filename");
+									tableModel.addColumn("Checksum");
+									searchMode = true;
+								}
+								Utils.doSearch(input);
+							}
+							//dump results
+						}
 					}
 					searchInput.setText("");
 				}
@@ -192,5 +206,9 @@ public class MainWindow extends JFrame {
 	
 	public void updatePeerCount() {
 		lblPeers.setText("Peers: " + Core.peersCount());
+	}
+	
+	public void setDebugLatch(CountDownLatch debugLatch) {
+		this.debugLatch = debugLatch;
 	}
 }
