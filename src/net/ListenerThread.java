@@ -39,6 +39,21 @@ public class ListenerThread implements Runnable {
 						Utils.parse(peer, finString);
 					}
 				}
+				if(currentFocus == 0x05) {
+					//Got request: transfer file
+					String fileSum = Utils.readString(dis);
+					peer.dos.write(0x06);
+					peer.dos.flush();
+					Utils.writeString(Utils.findBySum(fileSum).getName(), peer.dos);
+					FileSender fs = new FileSender(peer, fileSum);
+					(new Thread(fs)).start();
+				}
+				if(currentFocus == 0x06) {
+					//Got data: transfer file
+					String fileName = Utils.readString(dis);
+					FileAcceptor fa = new FileAcceptor(peer, fileName);
+					(new Thread(fa)).start();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 

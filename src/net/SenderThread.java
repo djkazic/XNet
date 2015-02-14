@@ -10,8 +10,11 @@ public class SenderThread implements Runnable {
 	
 	private boolean requestNameList = false;
 	private boolean sendNameList = false;
+	private boolean requestTransfer = false;
+	
 	private String sendQuery = "";
 	private String receivedQuery = "";
+	private String requestedFile = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		this.peer = peer;
@@ -26,7 +29,6 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					peer.lastPing = System.currentTimeMillis();
 				}
-
 				if(requestNameList) {
 					//Send request: name list
 					dos.write(0x03);
@@ -44,6 +46,18 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					receivedQuery = "";
 					sendNameList = false;
+				} else if(requestTransfer) {
+					//Send request: file transfer
+					dos.write(0x05);
+					dos.flush();
+					Utils.writeString(requestedFile, dos);
+					dos.flush();
+					requestedFile = "";
+					requestTransfer = false;
+					
+				//=============== 0x06 is handled in ListenerThread ===============\\
+				//======================= DO NOT DEFINE ===========================\\
+				
 				}
 				try {
 					Thread.sleep(25);
@@ -62,5 +76,10 @@ public class SenderThread implements Runnable {
 	public void sendNameList(String str) {
 		receivedQuery = str; 
 		sendNameList = true;
+	}
+	
+	public void requestTransfer(String str) {
+		requestedFile = str;
+		requestTransfer = true;
 	}
 }

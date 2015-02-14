@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 
@@ -21,7 +23,11 @@ import main.Utils;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.JLabel;
+
+import peer.Peer;
+
 import java.awt.Font;
 
 @SuppressWarnings("serial")
@@ -66,6 +72,8 @@ public class MainWindow extends JFrame {
 					clearTable();
 					//clear fileToHash matcher
 					Core.fileToHash.clear();
+					//clear core index
+					Core.index.clear();
 					if(Core.peerList.size() == 0) {
 						out("No peers connected. Query is not possible.");
 					} else {
@@ -110,7 +118,23 @@ public class MainWindow extends JFrame {
 					Point clickPoint = arg0.getPoint();
 					int tableRow = searchRes.rowAtPoint(clickPoint);
 					if(arg0.getClickCount() == 2) {
-						System.out.println("Md5sum was selected: " + Core.fileToHash.get(tableRow)[1]);
+						String md5sum = Core.fileToHash.get(tableRow)[1];
+						//Go through hashtable and select peer
+						@SuppressWarnings("rawtypes")
+						Iterator it = Core.index.entrySet().iterator();
+						while(it.hasNext()) {
+					        @SuppressWarnings("rawtypes")
+							Map.Entry pairs = (Map.Entry) it.next();
+					        Peer mapPeer = (Peer) pairs.getKey();
+					        String[] mapStrArr = (String[]) pairs.getValue();
+					        if(mapStrArr[1].equals(md5sum)) {
+					        	//mapPeer is the peer you want a transfer with
+					        	mapPeer.st.requestTransfer(md5sum);
+					        	out("");
+					        	clearTable();
+					        }
+					        it.remove();
+					    }
 					}
 				}
 			}

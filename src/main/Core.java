@@ -21,10 +21,14 @@ public class Core {
 	public static ArrayList <String[]> fileToHash;
 	
 	public static void main(String[] args) throws InterruptedException {
+		//Debug
+		boolean debugServer = false;
+		
 		//Initialize vars
 		version = 1.0;
 		peerList = new ArrayList <Peer>();
 		fileToHash = new ArrayList <String[]> ();
+		index = new HashMap<Peer, String[]> ();
 		
 		//Directory work
 		Utils.initDir();
@@ -33,7 +37,7 @@ public class Core {
 		mainWindow = new MainWindow();
 		mainWindow.out("Loading md5sum data, please wait...");
 		
-		//TODO: rewrite listDir dear god
+		//Create md5dex
 		try {
 			md5dex = Utils.listDir();
 		} catch (NoSuchAlgorithmException | IOException e) {
@@ -42,7 +46,6 @@ public class Core {
 
 		mainWindow.out("Enter your search query and press Enter.");
 		
-		boolean debugServer = false;
 		if(debugServer) {
 			GlobalListener gl = new GlobalListener();
 			(new Thread(gl)).start();

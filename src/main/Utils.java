@@ -72,6 +72,21 @@ public class Utils {
 		}
 	}
 	
+	public static File findBySum(String sum) {
+		File directory = new File(defineDir());
+		File[] listOfFiles = directory.listFiles();
+		for(int i=0; i < listOfFiles.length; i++) {
+			try {
+				if(checksum(listOfFiles[i]).equals(sum)) {
+					return listOfFiles[i];
+				}
+			} catch (NoSuchAlgorithmException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	public static String listDir() throws NoSuchAlgorithmException, IOException {
 		String file;
 		String totFiles = "";
@@ -80,7 +95,7 @@ public class Utils {
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
 				file = listOfFiles[i].getName();
-				totFiles += base64(file) + "/" + checksum(defineDir() + "\\" + file) + ";";
+				totFiles += base64(file) + "/" + checksum(listOfFiles[i]) + ";";
 			}
 		}
 		if(totFiles.length() > 0) {
@@ -106,7 +121,7 @@ public class Utils {
 		return file;
 	}
 
-	public static String checksum(String datafile) throws NoSuchAlgorithmException, IOException {
+	public static String checksum(File datafile) throws NoSuchAlgorithmException, IOException {
 		InputStream fis =  new FileInputStream(datafile);
 		byte[] buffer = new byte[1024];
 		MessageDigest complete = MessageDigest.getInstance("MD5");
@@ -169,7 +184,6 @@ public class Utils {
 		//Create ArrayList of just filenames
 		String[] pairSplit = str.split(";");
 		//Also copying into a HashMap for Core
-		Core.index = new HashMap<Peer, String[]> ();
 		for(int i=0; i < Core.peerList.size(); i++) {
 			String[] slashSplit = pairSplit[i].split("/");
 			Core.fileToHash.add(slashSplit);			
