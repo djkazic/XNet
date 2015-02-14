@@ -34,7 +34,7 @@ public class MainWindow extends JFrame {
 	private JTable searchRes;
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
-	private CountDownLatch debugLatch;
+	public CountDownLatch debugLatch;
 	private JScrollPane scrollPane;
 	private JLabel lblPeers;
 	private boolean searchMode;
@@ -87,7 +87,7 @@ public class MainWindow extends JFrame {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						out("Enter your search query and press Enter.");
+						Core.resetTable();
 					} else {
 						if(Core.peerList.size() == 0) {
 							out("No peers connected. Query is not possible.");

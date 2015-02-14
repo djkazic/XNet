@@ -1,7 +1,6 @@
 package net;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import peer.Peer;
 
 public class GlobalListener implements Runnable {

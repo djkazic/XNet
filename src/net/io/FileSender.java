@@ -17,7 +17,6 @@ public class FileSender implements Runnable {
 	public FileSender(Peer peer, String file) {
 		this.targetPeer = peer;
 		sending = Utils.findBySum(file);
-		System.out.println("Target: " + sending.getName());
 	}
 
 	public void run() {

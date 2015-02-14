@@ -6,11 +6,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+
 import peer.Peer;
+
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Utils {
@@ -42,10 +47,11 @@ public class Utils {
 		FileSystemView fw = fr.getFileSystemView();
 		directory = fw.getDefaultDirectory().toString();
 		if(System.getProperty("os.name").indexOf("mac") >= 0) {
-			directory += "\\Documents\\XNet";
+			directory += "/Documents/XNet";
 		} else { 
 			directory += "\\XNet";
 		}
+		System.out.println("Post-XNET dir: " + directory);
 		return directory;
 	}
 	
@@ -187,5 +193,23 @@ public class Utils {
 		for(String[] strA : Core.fileToHash) { 
 			Core.mainWindow.tableModel.addRow(strA);
 		}
+	}
+	
+	//HWID utils
+	public static String getHWID() {
+		InetAddress ip;
+		try {
+			ip = InetAddress.getLocalHost();
+			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+			byte[] mac = network.getHardwareAddress();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < mac.length; i++) {
+				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));		
+			}
+			return base64(sb.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

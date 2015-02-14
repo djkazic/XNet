@@ -1,8 +1,10 @@
 package main;
 import gui.MainWindow;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+
 import net.GlobalListener;
 import peer.Peer;
 import peer.PeerSeeker;
@@ -14,11 +16,18 @@ public class Core {
 	public static HashMap<Peer, String[]> index;
 	public static MainWindow mainWindow;
 	public static String md5dex = "";
+	public static String hwid = "";
 	public static ArrayList <String[]> fileToHash;
 	
+	public static GlobalListener gl;
+	public static PeerSeeker pst;
+	
 	public static boolean debugServer = true;
+	public static boolean foundOutgoing = false;
 	
 	public static void main(String[] args) throws InterruptedException {
+		//Calculate HWID
+		hwid = Utils.getHWID();
 		
 		//Initialize vars
 		version = 1.0;
@@ -40,14 +49,16 @@ public class Core {
 			e.printStackTrace();
 		}
 
-		mainWindow.out("Enter your search query and press Enter.");
+		resetTable();
 		
-		//if(debugServer) {
-		GlobalListener gl = new GlobalListener();
-		(new Thread(gl)).start();
+		//int sep = 1;
+		//if(sep == 0) {
+			gl = new GlobalListener();
+			(new Thread(gl)).start();
 		//} else {
-		PeerSeeker pst = new PeerSeeker(debugServer);
-		(new Thread(pst)).start();
+			//debugServer = false;
+			pst = new PeerSeeker(debugServer);
+			(new Thread(pst)).start();
 		//}
 	}
 	
@@ -66,5 +77,29 @@ public class Core {
 			}
 		}
 		return "["+ in +"|"+ out +"]";
+	}
+
+	public static boolean checkHWID(String hwid) {
+		int hCount = 0;
+		for(Peer peer : peerList) {
+			if(peer.hwid.equals(hwid)) {
+				hCount++;
+			}
+		}
+		if(hCount > 1) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static void incomingDebugReset() {
+		foundOutgoing = true;
+		mainWindow.debugLatch.countDown();
+		debugServer = false;
+		resetTable();
+	}
+	
+	public static void resetTable() {
+		mainWindow.out("Enter your search query and press Enter.");
 	}
 }

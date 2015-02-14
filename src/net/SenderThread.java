@@ -1,6 +1,7 @@
 package net;
 import java.io.DataOutputStream;
 
+import main.Core;
 import main.Utils;
 import peer.Peer;
 
@@ -8,9 +9,13 @@ public class SenderThread implements Runnable {
 	public Peer peer;
 	public DataOutputStream dos;
 	
+	private boolean disconnect = false;
+	
 	private boolean requestNameList = false;
 	private boolean sendNameList = false;
 	private boolean requestTransfer = false;
+	private boolean requestHWID = false;
+	private boolean sendHWID = false;
 	
 	private String sendQuery = "";
 	private String receivedQuery = "";
@@ -58,6 +63,22 @@ public class SenderThread implements Runnable {
 				//=============== 0x06 is handled in ListenerThread ===============\\
 				//======================= DO NOT DEFINE ===========================\\
 				
+				} else if(requestHWID) {
+					//Send request: HWID
+					dos.write(0x07);
+					dos.flush();
+					requestHWID = false;
+				} else if(sendHWID) {
+					//Send data: HWID
+					dos.write(0x08);
+					dos.flush();
+					Utils.writeString(Core.hwid, dos);
+					dos.flush();
+					sendHWID = false;
+				} else if(disconnect) {
+					dos.write(0x14);
+					dos.flush();
+					disconnect = false;
 				}
 				try {
 					Thread.sleep(25);
@@ -66,6 +87,10 @@ public class SenderThread implements Runnable {
 				}
 			} catch (Exception e) { }
 		}	
+	}
+	
+	public void disconnect() {
+		disconnect = true;
 	}
 	
 	public void requestNameList(String str) {
@@ -81,5 +106,13 @@ public class SenderThread implements Runnable {
 	public void requestTransfer(String str) {
 		requestedFile = str;
 		requestTransfer = true;
+	}
+	
+	public void requestHWID() {
+		requestHWID = true;
+	}
+	
+	public void sendHWID() {
+		sendHWID = true;
 	}
 }

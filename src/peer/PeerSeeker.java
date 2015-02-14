@@ -8,7 +8,7 @@ import main.Core;
 
 public class PeerSeeker implements Runnable {
 	
-	public boolean found = false;
+	public CountDownLatch debugLatch;
 	private String host = null;
 	
 	public PeerSeeker(boolean debugServer) {
@@ -16,7 +16,7 @@ public class PeerSeeker implements Runnable {
 		if(debugServer) {
 			System.out.println("Debug mode active, prompting connection");
 			Core.mainWindow.out("Please enter the debug server IP");
-			CountDownLatch debugLatch = new CountDownLatch(1);
+			debugLatch = new CountDownLatch(1);
 			Core.mainWindow.setDebugLatch(debugLatch);
 			try {
 				debugLatch.await();
@@ -30,7 +30,7 @@ public class PeerSeeker implements Runnable {
 	}
 	
 	public void run() {
-		while(!found) {
+		while(!Core.foundOutgoing) {
 		//TODO: change found variable to "done iterating"
 			System.out.println("Attempting hardcode connect to host " + host);
 			Socket peerSocket = new Socket();
@@ -42,8 +42,14 @@ public class PeerSeeker implements Runnable {
 				System.out.println("Creating peer [out]");
 				(new Thread(new Peer(peerSocket, end - start, 0))).start();
 				System.out.println("Established connection");
-				found = true;
+				Core.foundOutgoing = true;
 			} catch (IOException e) {}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		System.out.println("PeerSeeker terminated");
 	}
 }

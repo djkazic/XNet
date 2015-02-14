@@ -20,11 +20,13 @@ public class ListenerThread implements Runnable {
 		byte currentFocus;
 		while(true) {
 			try {
+				/** === BLOCK === **/
 				currentFocus = dis.readByte();
 				if(currentFocus == 0x14) {
 					//Got request: disconnect
 					peer.disconnect();
 				}
+				/** === BLOCK === **/
 				if(currentFocus == 0x03) {
 					//Got request: name list
 					String receivedQuery = Utils.readString(dis);
@@ -41,6 +43,7 @@ public class ListenerThread implements Runnable {
 						Utils.parse(peer, finString);
 					}
 				}
+				/** === BLOCK === **/
 				if(currentFocus == 0x05) {
 					//Got request: transfer file
 					String fileSum = Utils.readString(dis);
@@ -55,6 +58,17 @@ public class ListenerThread implements Runnable {
 					String fileName = Utils.readString(dis);
 					FileAcceptor fa = new FileAcceptor(peer, fileName);
 					(new Thread(fa)).start();
+				}
+				/** === BLOCK === **/
+				if(currentFocus == 0x07) {
+					//Got request: HWID
+					peer.st.sendHWID();
+				}
+				if(currentFocus == 0x08) {
+					//Got data: HWID
+					String incomingHWID = Utils.readString(dis);
+					peer.hwid = incomingHWID;
+					peer.hwidLatch.countDown();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

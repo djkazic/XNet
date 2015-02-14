@@ -15,7 +15,7 @@ public class FileAcceptor implements Runnable {
 	
 	public FileAcceptor(Peer peer, String filename) {
 		this.peer = peer;
-		this.filename = filename + "acc";
+		this.filename = filename;
 	}
 	
 	public void run() {

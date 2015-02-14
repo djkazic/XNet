@@ -2,6 +2,7 @@ package peer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 
 import main.Core;
 import net.ListenerThread;
@@ -18,6 +19,8 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public double version = -1;
 	public long lastPing = 0;
 	public long ms;
+	public String hwid = null;
+	public CountDownLatch hwidLatch;
 	
 	public Peer(Socket ps, Long ms, int inout) {
 		Core.peerList.add(this);
@@ -26,6 +29,11 @@ public class Peer implements Runnable, Comparable<Peer> {
 		this.inout = inout;
 		Core.sortPeers();
 		Core.mainWindow.updatePeerCount();
+		hwidLatch = new CountDownLatch(1);
+		//If in debug mode, trigger latch w/ incoming
+		if(Core.debugServer && inout == 1) {
+			Core.incomingDebugReset();
+		}
 	}
 	
 	public void run() {
@@ -40,13 +48,19 @@ public class Peer implements Runnable, Comparable<Peer> {
 			(new Thread(lt)).start();
 			st = new SenderThread(this, dos);
 			(new Thread(st)).start();
+			Thread.sleep(200);
+			st.requestHWID();
+			hwidLatch.await();
+			if(Core.checkHWID(hwid) == false) {
+				disconnect();
+			}
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public void disconnect() {
 		Core.peerList.remove(this);
-		try { dos.write(0x14); } catch (Exception e) {  }
-		try { dos.flush(); } catch (Exception e) {  }
+		Core.mainWindow.updatePeerCount();
+		st.disconnect();
 		try { dos.close(); } catch (Exception e) {  }
 		try { dis.close(); } catch (Exception e) {  }
 		try { ps.close(); } catch (Exception e) {  }
