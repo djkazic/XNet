@@ -30,7 +30,6 @@ public class ListenerThread implements Runnable {
 				if(currentFocus == 0x03) {
 					//Got request: name list
 					String receivedQuery = Utils.readString(dis);
-					System.out.println("Asked for namelist of " + receivedQuery);
 					peer.st.sendNameList(receivedQuery);
 				}
 				if(currentFocus == 0x04) {
@@ -73,7 +72,6 @@ public class ListenerThread implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 
-				Core.mainWindow.out("Network error: peer disconnection");
 				return;
 			}
 		} 
