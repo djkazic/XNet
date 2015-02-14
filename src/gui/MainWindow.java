@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
@@ -18,6 +19,11 @@ import javax.swing.table.TableColumn;
 import main.Core;
 import main.Utils;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
@@ -27,21 +33,22 @@ public class MainWindow extends JFrame {
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
 	private JScrollPane scrollPane;
+	private JLabel lblPeers;
 	private boolean searchMode;
 
 	/**
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		setResizable(false);
 		searchMode = false;
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 480, 320);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
 		tableModel = new TableModelSpec();
 		tableModel.addColumn("Status");
@@ -49,6 +56,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
+		searchInput.setBounds(10, 13, 454, 20);
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -64,6 +72,8 @@ public class MainWindow extends JFrame {
 						String input = searchInput.getText();
 						if(input.equals("")) {
 							out("You cannot search for a blank query.");
+						} else if(input.equals("listpeers")) {
+							out(Core.peersCount());
 						} else {
 							if(!searchMode) {
 								removeColumnAndData(searchRes, 0);
@@ -79,15 +89,32 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-		searchInput.setBounds(10, 13, 414, 20);
+		contentPane.setLayout(null);
 		contentPane.add(searchInput);
 		searchInput.setColumns(10);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 44, 414, 207);
+		scrollPane.setBounds(10, 44, 454, 233);
 		contentPane.add(scrollPane);
 		
+		lblPeers = new JLabel("Peers: [0|0]");
+		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblPeers.setBounds(406, 278, 58, 14);
+		contentPane.add(lblPeers);
+		
 		searchRes = new JTable(tableModel);
+		searchRes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(searchMode) {
+					Point clickPoint = arg0.getPoint();
+					int tableRow = searchRes.rowAtPoint(clickPoint);
+					if(arg0.getClickCount() == 2) {
+						System.out.println("Md5sum was selected: " + Core.fileToHash.get(tableRow)[1]);
+					}
+				}
+			}
+		});
 		scrollPane.setViewportView(searchRes);
 		searchRes.setCellSelectionEnabled(true);
 		searchRes.setColumnSelectionAllowed(true);
@@ -101,7 +128,7 @@ public class MainWindow extends JFrame {
 			e.printStackTrace();
 		}
 		if(searchMode) {
-			removeColumnAndData(searchRes, 0);
+			removeColumnAndData(searchRes, 1);
 			removeColumnAndData(searchRes, 0);
 			tableModel.addColumn("Status");
 			searchMode = false;
@@ -137,5 +164,9 @@ public class MainWindow extends JFrame {
 	        }
 	    }
 	    model.fireTableStructureChanged();
+	}
+	
+	public void updatePeerCount() {
+		lblPeers.setText("Peers: " + Core.peersCount());
 	}
 }

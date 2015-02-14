@@ -28,10 +28,7 @@ public class Core {
 		
 		//Directory work
 		Utils.initDir();
-		
-		//Initialize sec lib
-		com.sun.org.apache.xml.internal.security.Init.init();
-		
+
 		//GUI init
 		mainWindow = new MainWindow();
 		mainWindow.out("Loading md5sum data, please wait...");
@@ -57,5 +54,18 @@ public class Core {
 	
 	public static void sortPeers() {
 		Collections.sort(peerList);
+	}
+	
+	public static String peersCount() {
+		int in = 0; 
+		int out = 0;
+		for(Peer peer : peerList) {
+			if(peer.inout == 1) {
+				in++;
+			} else if(peer.inout == 0) {
+				out++;
+			}
+		}
+		return "["+ in +"|"+ out +"]";
 	}
 }

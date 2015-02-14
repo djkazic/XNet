@@ -9,6 +9,7 @@ import net.SenderThread;
 
 public class Peer implements Runnable, Comparable<Peer> {
 	public boolean connected;
+	public int inout;
 	public ListenerThread lt;
 	public SenderThread st;
 	public DataOutputStream dos;
@@ -18,11 +19,13 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public long lastPing = 0;
 	public long ms;
 	
-	public Peer(Socket ps, Long ms) {
+	public Peer(Socket ps, Long ms, int inout) {
 		Core.peerList.add(this);
 		this.ps = ps;
 		this.ms = ms;
+		this.inout = inout;
 		Core.sortPeers();
+		Core.mainWindow.updatePeerCount();
 	}
 	
 	public void run() {
@@ -37,7 +40,6 @@ public class Peer implements Runnable, Comparable<Peer> {
 			(new Thread(lt)).start();
 			st = new SenderThread(this, dos);
 			(new Thread(st)).start();
-			st.requestVersion();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	

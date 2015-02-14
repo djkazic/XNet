@@ -1,7 +1,6 @@
 package net;
 import java.io.DataOutputStream;
 
-import main.Core;
 import main.Utils;
 import peer.Peer;
 
@@ -9,8 +8,6 @@ public class SenderThread implements Runnable {
 	public Peer peer;
 	public DataOutputStream dos;
 	
-	private boolean requestVersion = false;
-	private boolean sendVersion = false;
 	private boolean requestNameList = false;
 	private boolean sendNameList = false;
 	private String sendQuery = "";
@@ -29,19 +26,8 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					peer.lastPing = System.currentTimeMillis();
 				}
-				if(requestVersion) {
-					//Send request: version
-					dos.write(0x01);
-					dos.flush();
-					requestVersion = false;
-				} else if(sendVersion) {
-					//Send data: version
-					dos.write(0x02);
-					dos.flush();
-					dos.writeDouble(Core.version);
-					dos.flush();
-					sendVersion = false;
-				} else if(requestNameList) {
+
+				if(requestNameList) {
 					//Send request: name list
 					dos.write(0x03);
 					dos.flush();
@@ -66,14 +52,6 @@ public class SenderThread implements Runnable {
 				}
 			} catch (Exception e) { }
 		}	
-	}
-	
-	public void requestVersion() {
-		requestVersion = true;
-	}
-	
-	public void sendVersion() {
-		sendVersion = true;
 	}
 	
 	public void requestNameList(String str) {

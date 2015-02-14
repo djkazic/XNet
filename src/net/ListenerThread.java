@@ -23,14 +23,6 @@ public class ListenerThread implements Runnable {
 					//Got request: disconnect
 					peer.disconnect();
 				}
-				if(currentFocus == 0x01) {
-					//Got request: version
-					peer.st.sendVersion();
-				}
-				if(currentFocus == 0x02) {
-					//Got data: version
-					peer.version = dis.readDouble();
-				}
 				if(currentFocus == 0x03) {
 					//Got request: name list
 					String receivedQuery = Utils.readString(dis);

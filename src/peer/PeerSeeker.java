@@ -22,7 +22,7 @@ public class PeerSeeker implements Runnable {
 				peerSocket.connect(peerAddr);
 				long end = System.currentTimeMillis();
 				System.out.println("Creating peer [out]");
-				(new Thread(new Peer(peerSocket, end - start))).start();
+				(new Thread(new Peer(peerSocket, end - start, 0))).start();
 				System.out.println("Established connection");
 				found = true;
 			} catch (IOException e) {}
