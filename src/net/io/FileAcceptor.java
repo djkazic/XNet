@@ -31,7 +31,7 @@ public class FileAcceptor implements Runnable {
 			serverSocketMakerThread.setName("Server Socket Maker Thread");
 			serverSocketMakerThread.start();
 			fsLatch.await();
-			System.out.println("FSL connected with incoming");
+			System.out.println("File server socket connected with incoming");
 			Socket newFS = ssm.getRes();
 			peer.setFS(newFS);
 			
@@ -44,8 +44,18 @@ public class FileAcceptor implements Runnable {
 				remaining -= read;
 				fos.write(buffer, 0, read);
 			}
-			fos.close();
-			dis.close();
+			boolean disconnectPacketReceived = false;
+			byte packet;
+			while(!disconnectPacketReceived) {
+				packet = dis.readByte();
+				if(packet == 0x15) {
+					System.out.println("Disconnecting file server socket");
+					disconnectPacketReceived = true;
+					fos.close();
+					dis.close();
+					peer.fs.close();
+				}
+			}
 			Core.mainWindow.out("File transfer of " + filename + " complete.");
 		} catch (Exception e) {
 			e.printStackTrace();

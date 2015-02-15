@@ -51,7 +51,7 @@ public class Core {
 
 		resetTable();
 		debugServer = false;
-		int sep = 1;
+		int sep = 0;
 		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
