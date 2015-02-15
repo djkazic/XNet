@@ -143,6 +143,7 @@ public class MainWindow extends JFrame {
 					        String[] mapStrArr = (String[]) pairs.getValue();
 					        if(mapStrArr[1].equals(md5sum)) {
 					        	//mapPeer is the peer you want a transfer with
+					        	mapPeer.lt.inputFileName = mapStrArr[0];
 					        	mapPeer.st.requestTransfer(md5sum);
 					        	out("");
 					        	clearTable();

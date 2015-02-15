@@ -1,17 +1,22 @@
 package net;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
+
+import main.Core;
 import peer.Peer;
 
 public class GlobalListener implements Runnable {
 	public ServerSocket ss;
+	public ServerSocket fs;
+	public Socket fsSocket;
 	
 	public GlobalListener() {
 		System.out.println("INITIALIZING GL");
 		try {
 			ss = new ServerSocket(26606);
 		} catch (Exception e) {
-			System.out.println("Global listener failed");
+			System.out.println("Global listeners failed");
 			e.printStackTrace();
 		}
 	}

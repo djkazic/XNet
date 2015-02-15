@@ -1,10 +1,14 @@
 package net.io;
 
-import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 
+import net.ServerSocketMaker;
 import main.Utils;
 import peer.Peer;
 
@@ -13,6 +17,7 @@ public class FileSender implements Runnable {
 
 	private Peer targetPeer;
 	private File sending;
+	private CountDownLatch socketDone;
 	
 	public FileSender(Peer peer, String file) {
 		this.targetPeer = peer;
@@ -21,15 +26,20 @@ public class FileSender implements Runnable {
 
 	public void run() {
 		try {
-			byte[] mybytearray = new byte[(int) sending.length()];
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sending));
-			bis.read(mybytearray, 0, mybytearray.length);
-			OutputStream os = targetPeer.ps.getOutputStream();
-			os.write(mybytearray, 0, mybytearray.length);
-			os.flush();
-			bis.close();
+			socketDone = new CountDownLatch(1);
+			targetPeer.createFS(socketDone);
+			socketDone.await();
+			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
+			FileInputStream fis = new FileInputStream(sending);
+			byte[] buffer = new byte[4096];
+			while (fis.read(buffer) > 0) {
+				dos.write(buffer);
+			}
+			fis.close();
+			dos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 }

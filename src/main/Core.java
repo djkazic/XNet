@@ -50,16 +50,16 @@ public class Core {
 		}
 
 		resetTable();
-		
-		//int sep = 1;
-		//if(sep == 0) {
+		debugServer = false;
+		int sep = 1;
+		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		//} else {
+		} else {
 			//debugServer = false;
 			pst = new PeerSeeker(debugServer);
 			(new Thread(pst)).start();
-		//}
+		}
 	}
 	
 	public static void sortPeers() {

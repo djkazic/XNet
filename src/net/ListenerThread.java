@@ -10,6 +10,8 @@ import peer.Peer;
 public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
+	public String inputFileName = null;
+	public FileAcceptor fa;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		this.peer = peer;
@@ -48,15 +50,16 @@ public class ListenerThread implements Runnable {
 					String fileSum = Utils.readString(dis);
 					peer.dos.write(0x06);
 					peer.dos.flush();
-					Utils.writeString(Utils.findBySum(fileSum).getName(), peer.dos);
+					peer.dos.writeLong(Utils.findBySum(fileSum).length());
 					FileSender fs = new FileSender(peer, fileSum);
 					(new Thread(fs)).start();
 				}
 				if(currentFocus == 0x06) {
 					//Got data: transfer file
-					String fileName = Utils.readString(dis);
-					FileAcceptor fa = new FileAcceptor(peer, fileName);
+					int filesize = (int) dis.readLong();
+					fa = new FileAcceptor(peer, inputFileName, filesize);
 					(new Thread(fa)).start();
+					inputFileName = null;
 				}
 				/** === BLOCK === **/
 				if(currentFocus == 0x07) {

@@ -46,7 +46,7 @@ public class Utils {
 		JFileChooser fr = new JFileChooser();
 		FileSystemView fw = fr.getFileSystemView();
 		directory = fw.getDefaultDirectory().toString();
-		if(System.getProperty("os.name").indexOf("win") >= 0) {
+		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
 			directory += "\\XNet";
 		} else { 
 			directory += "/Documents/XNet";
