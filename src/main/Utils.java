@@ -3,20 +3,18 @@ package main;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import peer.Peer;
 
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+
+import crypto.MD5;
 
 public class Utils {
 
@@ -121,24 +119,8 @@ public class Utils {
 		return file;
 	}
 
-	public static String checksum(File datafile) throws NoSuchAlgorithmException, IOException {
-		InputStream fis =  new FileInputStream(datafile);
-		byte[] buffer = new byte[1024];
-		MessageDigest complete = MessageDigest.getInstance("MD5");
-		int numRead;
-		do {
-			numRead = fis.read(buffer);
-			if (numRead > 0) {
-				complete.update(buffer, 0, numRead);
-			}
-		} while (numRead != -1);
-		fis.close();
-		byte[] bytes = complete.digest();
-		String result = "";
-		for (int i=0; i < bytes.length; i++) {
-			result += Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1);
-		}
-		return result;
+	public static String checksum(File dataFile) throws NoSuchAlgorithmException, IOException {
+		return new String(MD5.asHex(MD5.getHash(dataFile)));
 	}
 	
 	public static String base64(String input) {

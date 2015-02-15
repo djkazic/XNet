@@ -1,9 +1,6 @@
 package net;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
-
-import main.Core;
 import peer.Peer;
 
 public class GlobalListener implements Runnable {

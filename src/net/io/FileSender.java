@@ -1,14 +1,9 @@
 package net.io;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
-
-import net.ServerSocketMaker;
 import main.Utils;
 import peer.Peer;
 
@@ -18,7 +13,7 @@ public class FileSender implements Runnable {
 	private Peer targetPeer;
 	private File sending;
 	private CountDownLatch socketDone;
-	
+
 	public FileSender(Peer peer, String file) {
 		this.targetPeer = peer;
 		sending = Utils.findBySum(file);
@@ -41,9 +36,6 @@ public class FileSender implements Runnable {
 			fis.close();
 			dos.close();
 			targetPeer.fs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		} catch (Exception e) {}
 	}
 }

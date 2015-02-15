@@ -45,13 +45,14 @@ public class Core {
 		//Create md5dex
 		try {
 			md5dex = Utils.listDir();
+			System.out.println(md5dex);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		resetTable();
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
