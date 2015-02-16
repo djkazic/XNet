@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
@@ -49,7 +50,6 @@ public class Utils {
 		} else { 
 			directory += "/Documents/XNet";
 		}
-		System.out.println("Post-XNET dir: " + directory);
 		return directory;
 	}
 	
@@ -193,5 +193,9 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void print(Object sourceClass, String msg) {
+		System.out.println("[" + sourceClass.getClass().getName() + "]: " + msg);
 	}
 }

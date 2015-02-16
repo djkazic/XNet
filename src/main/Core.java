@@ -4,8 +4,11 @@ import gui.MainWindow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 import net.GlobalListener;
+import peer.DiscoveryServer;
+import peer.DiscoveryThread;
 import peer.Peer;
 import peer.PeerConnector;
 
@@ -24,7 +27,8 @@ public class Core {
 	public static PeerConnector pst;
 	
 	public static boolean debugServer = true;
-	public static boolean foundOutgoing = false;
+	public static boolean killPeerConnector = false;
+	public static CountDownLatch discoveryLatch;
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Calculate HWID
@@ -36,6 +40,7 @@ public class Core {
 		fileToHash = new ArrayList<String[]> ();
 		index = new HashMap<Peer, String[]> ();
 		potentialPeers = new ArrayList<String> ();
+		discoveryLatch = new CountDownLatch(1);
 		
 		//Directory work
 		Utils.initDir();
@@ -47,10 +52,13 @@ public class Core {
 		//Create md5dex
 		try {
 			md5dex = Utils.listDir();
-			System.out.println(md5dex);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//Scan for local peers
+		(new Thread(new DiscoveryServer())).start();
+		(new Thread(new DiscoveryThread())).start();
 
 		resetTable();
 		debugServer = false;
@@ -96,7 +104,7 @@ public class Core {
 	}
 	
 	public static void incomingDebugReset() {
-		foundOutgoing = true;
+		killPeerConnector = true;
 		mainWindow.debugLatch.countDown();
 		debugServer = false;
 		resetTable();

@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
 import main.Core;
+import main.Utils;
 import net.ListenerThread;
 import net.SenderThread;
 
@@ -93,7 +94,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 				boolean whoa = false;
 				while(!whoa) {
 					try {
-						System.out.println("Attempting to connect to peer FS at " + ps.getInetAddress());
+						Utils.print(this, "Attempting to connect to peer FS at " + ps.getInetAddress());
 						InetSocketAddress fsEndpoint = new InetSocketAddress("127.0.0.1", 26607);
 						fs.connect(fsEndpoint);
 						whoa = true;
@@ -103,7 +104,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 						//e.printStackTrace();
 					}
 				}
-				System.out.println("Connected to peer FS");
+				Utils.print(this, "Connected to peer FS");
 				done.countDown();
 			}
 		};

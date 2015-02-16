@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 
 import main.Core;
+import main.Utils;
 
 public class PeerConnector implements Runnable {
 	
@@ -12,9 +13,9 @@ public class PeerConnector implements Runnable {
 	private String host = null;
 	
 	public PeerConnector(boolean debugServer) {
-		System.out.println("INITIALIZING PS");
+		Utils.print(this, "INITIALIZING PS");
 		if(debugServer) {
-			System.out.println("Debug mode active, prompting connection");
+			Utils.print(this, "Debug mode active, prompting connection");
 			Core.mainWindow.out("Please enter the debug server IP");
 			debugLatch = new CountDownLatch(1);
 			Core.mainWindow.setDebugLatch(debugLatch);
@@ -24,25 +25,39 @@ public class PeerConnector implements Runnable {
 				e.printStackTrace();
 			}
 			host = Core.mainWindow.debugHost;
-		} else {
-			host = "127.0.0.1";
 		}
 	}
 	
 	public void run() {
-		while(!Core.foundOutgoing) {
-		//TODO: change found variable to "done iterating"
-			System.out.println("Attempting outgoing connection to potential peer " + host);
+		int attempts = 0;
+		try {
+			Core.discoveryLatch.await();
+		} catch (InterruptedException e1) {e1.printStackTrace();}
+		while(!Core.killPeerConnector && Core.potentialPeers.size() > 0) {
+			//Pick a host from the potentialPeers
+			host = Core.potentialPeers.get(0);
+			host = host.substring(1, host.length());
+			//If attempted, show marker
+			if(attempts > 0) {
+				Utils.print(this, "Attempting outgoing connection to potential peer " + host + " (x" + attempts + ")");
+			} else {
+				Utils.print(this, "Attempting outgoing connection to potential peer " + host);
+			}
+			//If already attempted 5 times, remove from potential peers
+			if(attempts == 5) {
+				Core.potentialPeers.remove(0);
+			}
+			attempts++;
 			Socket peerSocket = new Socket();
 			InetSocketAddress peerAddr = new InetSocketAddress(host, 26606);
 			try {
 				long start = System.currentTimeMillis();
 				peerSocket.connect(peerAddr);
 				long end = System.currentTimeMillis();
-				System.out.println("Creating peer [out]");
+				Utils.print(this, "Creating peer [out]");
 				(new Thread(new Peer(peerSocket, end - start, 0))).start();
-				System.out.println("Established connection");
-				Core.foundOutgoing = true;
+				Utils.print(this, "Established connection");
+				Core.killPeerConnector = true;
 			} catch (IOException e) {}
 			try {
 				Thread.sleep(1000);
@@ -50,6 +65,6 @@ public class PeerConnector implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("PeerSeeker terminated");
+		Utils.print(this, "PeerSeeker terminated");
 	}
 }

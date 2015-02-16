@@ -2,6 +2,8 @@ package crypto;
 
 import java.io.*;
 
+import main.Utils;
+
 public class MD5InputStream extends FilterInputStream {
 	/**
 	 * MD5 context
@@ -29,7 +31,7 @@ public class MD5InputStream extends FilterInputStream {
 			return -1;
 
 		if ((c & ~0xff) != 0) {
-			System.out.println("MD5InputStream.read() got character with (c & ~0xff) != 0)!");
+			Utils.print(this, "MD5InputStream.read() got character with (c & ~0xff) != 0)!");
 		} else {
 			md5.Update(c);
 		}
