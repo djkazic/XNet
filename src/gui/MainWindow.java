@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import blocks.BlockedFile;
+import blocks.BlockedFileDL;
 import main.Core;
 import main.Utils;
 import peer.Peer;
@@ -69,8 +72,6 @@ public class MainWindow extends JFrame {
 				if(key == KeyEvent.VK_ENTER) {
 					//clear any previous res
 					clearTable();
-					//clear fileToHash matcher
-					Core.fileToHash.clear();
 					//clear core index
 					Core.index.clear();
 					if(Core.debugServer) {
@@ -132,7 +133,8 @@ public class MainWindow extends JFrame {
 					Point clickPoint = arg0.getPoint();
 					int tableRow = searchRes.rowAtPoint(clickPoint);
 					if(arg0.getClickCount() == 2) {
-						String md5sum = Core.fileToHash.get(tableRow)[1];
+						String fileName = (String) tableModel.getValueAt(tableRow, 0);
+						String blockListStr = (String) tableModel.getValueAt(tableRow, 1);
 						//Go through hashtable and select peer
 						@SuppressWarnings("rawtypes")
 						Iterator it = Core.index.entrySet().iterator();
@@ -140,11 +142,12 @@ public class MainWindow extends JFrame {
 					        @SuppressWarnings("rawtypes")
 							Map.Entry pairs = (Map.Entry) it.next();
 					        Peer mapPeer = (Peer) pairs.getKey();
-					        String[] mapStrArr = (String[]) pairs.getValue();
-					        if(mapStrArr[1].equals(md5sum)) {
-					        	//mapPeer is the peer you want a transfer with
-					        	mapPeer.lt.inputFileName = mapStrArr[0];
-					        	mapPeer.st.requestTransfer(md5sum);
+					        @SuppressWarnings("unchecked")
+							ArrayList<String> blockList = (ArrayList<String>) pairs.getValue();
+					        if(blockList.toString().equals(blockListStr)) {
+					        	BlockedFile bf = new BlockedFile(fileName);
+					        	BlockedFileDL bfdl = new BlockedFileDL(bf);
+					        	//TODO: add launch for blockedFileManager
 					        	out("");
 					        	clearTable();
 					        }

@@ -12,7 +12,7 @@ public class SenderThread implements Runnable {
 	private boolean disconnect = false;
 	
 	private boolean requestNameList = false;
-	private boolean sendNameList = false;
+	private boolean sendBlockList = false;
 	private boolean requestTransfer = false;
 	private boolean requestHWID = false;
 	private boolean sendHWID = false;
@@ -46,15 +46,15 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					sendQuery = "";
 					requestNameList = false;
-				} else if(sendNameList) {
-					//Send data: base64 name list
+				} else if(sendBlockList) {
+					//Send data: serialized ArrayList<Block>
 					dos.write(0x04);
 					dos.flush();
 					String finRes = Utils.listDirSearch(receivedQuery);
 					Utils.writeString(finRes, dos);
 					dos.flush();
 					receivedQuery = "";
-					sendNameList = false;
+					sendBlockList = false;
 				} else if(requestTransfer) {
 					//Send request: file transfer
 					dos.write(0x05);
@@ -110,12 +110,12 @@ public class SenderThread implements Runnable {
 	}
 	
 	/**
-	 * Sends file list data to the parent peer
+	 * Sends serialized ArrayList of blocks for keyword
 	 * @param str: keyword received from request
 	 */
-	public void sendNameList(String str) {
+	public void sendBlockList(String str) {
 		receivedQuery = str; 
-		sendNameList = true;
+		sendBlockList = true;
 	}
 	
 	/**

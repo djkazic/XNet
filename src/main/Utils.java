@@ -4,15 +4,17 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
-
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-
 import peer.Peer;
-
+import blocks.BlockedFile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import crypto.MD5;
@@ -53,6 +55,31 @@ public class Utils {
 		return directory;
 	}
 	
+	public static String defineAppDataDir() {
+		String workingDirectory;
+		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+		    workingDirectory = System.getenv("AppData") + "\\XNet\\";
+		} else {
+		    workingDirectory = System.getProperty("user.home");
+		    workingDirectory += "/Library/Application Support/XNet/";
+		}
+		return workingDirectory;
+	}
+	
+	public static boolean initAppDataDir(String basename) {
+		File workingDirectoryFile = new File(defineAppDataDir() + basename);
+		boolean attempt = false;
+		if(!workingDirectoryFile.exists()) {
+			try {
+				workingDirectoryFile.mkdir();
+				attempt = true;
+			} catch (SecurityException se) {
+				se.printStackTrace();
+			}
+		}
+		return attempt;
+	}
+	
 	public static void initDir() {
 		File findir = new File(defineDir());
 		if(!findir.exists()) {
@@ -85,32 +112,27 @@ public class Utils {
 		return null;
 	}
 	
-	public static String listDir() throws NoSuchAlgorithmException, IOException {
-		String file;
-		String totFiles = "";
+	/**
+	 * Goes through directory and creates BlockedFile object for each file
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static void blockifyDir() throws NoSuchAlgorithmException, IOException {
 		File folder = new File(defineDir());
 		File[] listOfFiles = folder.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
-				file = listOfFiles[i].getName();
-				totFiles += base64(file) + "/" + checksum(listOfFiles[i]) + ";";
+				Core.blockDex.add(new BlockedFile(listOfFiles[i]));
 			}
 		}
-		if(totFiles.length() > 0) {
-			totFiles = totFiles.substring(0, totFiles.length() - 1);
-		}
-		return totFiles;
 	}
 	
 	public static String listDirSearch(String str) throws NoSuchAlgorithmException, IOException {
+		//TODO: conversion finished
 		String file = "";
-		String totFiles = decrypt(Core.md5dex);
-		//Split and add only those that match condition
-		String[] totSplit = totFiles.split(";");
-		for(int i=0; i < totSplit.length; i++) {
-			String[] fSplit = totSplit[i].split("/");
-			if(fSplit[0].toLowerCase().contains(str.toLowerCase())) {
-				file += base64(fSplit[0]) + "/" + fSplit[1] + ";";
+		for(BlockedFile bf : Core.blockDex) {
+			if(bf.relevant(str)) {
+				file += bf + ";";
 			}
 		}
 		if(file.length() > 0) {
@@ -159,21 +181,22 @@ public class Utils {
 	}
 	
 	public static void parse(Peer thisPeer, String str) {
-		//Receives data in form of:
+		//Receives serialized data in form of:
 		/**
-		 * filename/checksum;filename/checksum etc.
-		**/
-		//Create ArrayList of just filenames
+		 * Base64 filename and serialized arraylist of string
+		 * Delimeters are / and ;
+		 * ex. dDkg=fgfDggN/blocklist
+		 */
+		Gson gson = new Gson();
 		String[] pairSplit = str.split(";");
 		//Also copying into a HashMap for Core
 		for(int i=0; i < Core.peerList.size(); i++) {
 			String[] slashSplit = pairSplit[i].split("/");
-			Core.fileToHash.add(slashSplit);			
-			//Interpret this as a String[] when selected
-			Core.index.put(Core.peerList.get(i), slashSplit);
-		}
-		for(String[] strA : Core.fileToHash) { 
-			Core.mainWindow.tableModel.addRow(strA);
+			//Separates the base64 name from the serialized arraylist
+			Type type = new TypeToken<ArrayList<String>> () {}.getType();
+			ArrayList<String> blockList = gson.fromJson(slashSplit[1], type);
+			Core.index.put(Core.peerList.get(i), blockList);
+			Core.mainWindow.tableModel.addRow(new String[]{debase64(slashSplit[0]), blockList.toString()});
 		}
 	}
 	

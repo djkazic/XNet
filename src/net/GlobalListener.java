@@ -12,7 +12,7 @@ public class GlobalListener implements Runnable {
 	
 	public GlobalListener() {
 		Thread.currentThread().setName("GlobalListener");
-		Utils.print(this, "INITIALIZING GL");
+		Utils.print(this, "INITIALIZING >> GL");
 		try {
 			ss = new ServerSocket(26606);
 		} catch (Exception e) {

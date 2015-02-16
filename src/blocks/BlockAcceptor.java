@@ -1,25 +1,37 @@
-package net.io;
+package blocks;
 
 import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
-
 import main.Core;
-import main.Utils;
 import net.FileListener;
 import peer.Peer;
 
-public class FileAcceptor implements Runnable {
+/**
+ * Is used by BlockedFileManager to accept incoming blocks
+ * @author Kevin
+ *
+ */
+public class BlockAcceptor implements Runnable {
 	
 	private Peer peer;
+	private BlockedFile file;
 	private String filename;
 	private int filesize;
 	private CountDownLatch fsLatch;
 	
-	public FileAcceptor(Peer peer, String filename, int filesize) {
+	/**
+	 * 
+	 * @param peer
+	 * @param filename: sent in earlier
+	 * @param file
+	 * @param filesize
+	 */
+	public BlockAcceptor(Peer peer, String filename, BlockedFile file, int filesize) {
 		this.peer = peer;
 		this.filename = filename;
+		this.file = file;
 		this.filesize = filesize;
 	}
 	
@@ -36,26 +48,17 @@ public class FileAcceptor implements Runnable {
 			peer.setFS(newFS);
 			
 			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
-			FileOutputStream fos = new FileOutputStream(Utils.defineDir() + "\\" + "RECV" + filename);
-			byte[] buffer = new byte[4096];
+			FileOutputStream fos = new FileOutputStream(file.getDir() + "/" + filename);
+			byte[] buffer = new byte[(int) Core.chunkSize];
 			int read = 0;
 			int remaining = filesize;
 			while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
 				remaining -= read;
 				fos.write(buffer, 0, read);
 			}
-			boolean disconnectPacketReceived = false;
-			byte packet;
-			while(!disconnectPacketReceived) {
-				packet = dis.readByte();
-				if(packet == 0x15) {
-					System.out.println("Disconnecting file server socket");
-					disconnectPacketReceived = true;
-					fos.close();
-					dis.close();
-					peer.fs.close();
-				}
-			}
+			fos.close();
+			dis.close();
+			peer.fs.close();
 			Core.mainWindow.out("File transfer of " + filename + " complete.");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
+import blocks.BlockedFile;
 import net.GlobalListener;
 import peer.DiscoveryServer;
 import peer.DiscoveryThread;
@@ -16,11 +16,10 @@ public class Core {
 	
 	public static double version;
 	public static ArrayList <Peer> peerList;
-	public static HashMap<Peer, String[]> index;
+	public static HashMap<Peer, ArrayList<String>> index;
 	public static MainWindow mainWindow;
-	public static String md5dex = "";
+	public static ArrayList<BlockedFile> blockDex;
 	public static String hwid = "";
-	public static ArrayList <String[]> fileToHash;
 	public static ArrayList <String> potentialPeers;
 	
 	public static GlobalListener gl;
@@ -29,6 +28,7 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
+	public static long chunkSize = 100000; //100kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Calculate HWID
@@ -37,8 +37,8 @@ public class Core {
 		//Initialize vars
 		version = 1.0;
 		peerList = new ArrayList<Peer> ();
-		fileToHash = new ArrayList<String[]> ();
-		index = new HashMap<Peer, String[]> ();
+		blockDex = new ArrayList<BlockedFile> ();
+		index = new HashMap<Peer, ArrayList<String>> ();
 		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
 		
@@ -49,9 +49,9 @@ public class Core {
 		mainWindow = new MainWindow();
 		mainWindow.out("Loading md5sum data, please wait...");
 		
-		//Create md5dex
+		//Create blockdex
 		try {
-			md5dex = Utils.listDir();
+			Utils.blockifyDir();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

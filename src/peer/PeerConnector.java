@@ -13,7 +13,7 @@ public class PeerConnector implements Runnable {
 	private String host = null;
 	
 	public PeerConnector(boolean debugServer) {
-		Utils.print(this, "INITIALIZING PS");
+		Utils.print(this, "INITIALIZING >> PCONN");
 		if(debugServer) {
 			Utils.print(this, "Debug mode active, prompting connection");
 			Core.mainWindow.out("Please enter the debug server IP");
