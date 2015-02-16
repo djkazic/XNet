@@ -9,10 +9,14 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+
 import peer.Peer;
 import blocks.BlockedFile;
+import blocks.BlockedFileDL;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -58,15 +62,16 @@ public class Utils {
 	public static String defineAppDataDir() {
 		String workingDirectory;
 		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-		    workingDirectory = System.getenv("AppData") + "\\XNet\\";
+		    workingDirectory = System.getenv("AppData") + "/XNet";
 		} else {
 		    workingDirectory = System.getProperty("user.home");
-		    workingDirectory += "/Library/Application Support/XNet/";
+		    workingDirectory += "/Library/Application Support/XNet";
 		}
 		return workingDirectory;
 	}
 	
-	public static boolean initAppDataDir(String basename) {
+	public static boolean initAppDataDir(String plainName) {
+		String basename = base64(plainName);
 		File workingDirectoryFile = new File(defineAppDataDir() + basename);
 		boolean attempt = false;
 		if(!workingDirectoryFile.exists()) {
@@ -97,9 +102,17 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * Checks AppData directory to see if this block is had
+	 * @param baseForFile
+	 * @param block
+	 * @return
+	 */
 	public static File findBlock(String baseForFile, String block) {
-		String decrypted = Utils.debase64(baseForFile);
-		File directory = new File(defineDir() + "/" + decrypted);
+		File directory = new File(defineAppDataDir() + "/" + baseForFile);
+		if(!directory.exists()) {
+			return null;
+		}
 		File[] listOfFiles = directory.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			try {
@@ -123,7 +136,8 @@ public class Utils {
 		File[] listOfFiles = folder.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
-				Core.blockDex.add(new BlockedFile(listOfFiles[i].getAbsolutePath()));
+				//Create BlockedFile to represent an existent file
+				new BlockedFile(listOfFiles[i]);
 			}
 		}
 	}
@@ -199,7 +213,7 @@ public class Utils {
 			Type type = new TypeToken<ArrayList<String>> () {}.getType();
 			ArrayList<String> blockList = gson.fromJson(slashSplit[1], type);
 			Core.index.put(Core.peerList.get(i), blockList);
-			Core.mainWindow.tableModel.addRow(new String[]{debase64(slashSplit[0]), blockList.toString()});
+			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), blockList.toString()});
 		}
 	}
 	
@@ -223,5 +237,17 @@ public class Utils {
 	
 	public static void print(Object sourceClass, String msg) {
 		System.out.println("[" + sourceClass.getClass().getName() + "]: " + msg);
+	}
+	
+	public static BlockedFileDL getBlockedFileDLForBlock(String baseName, String block) {
+		String forFile = debase64(baseName);
+		for(BlockedFile bf : Core.blockDex) {
+			if(bf.getName().equals(forFile)) {
+				if(bf.getBlockList().contains(block)) {
+					return bf.getDL();
+				}
+			}
+		}
+		return null;
 	}
 }

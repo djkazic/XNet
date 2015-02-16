@@ -11,7 +11,7 @@ import peer.Peer;
 public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
-	public BlockAcceptor fa;
+	public BlockAcceptor ba;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		Thread.currentThread().setName("Peer Listener");
@@ -58,7 +58,9 @@ public class ListenerThread implements Runnable {
 					 */
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
+					//Check to see if we have this block in AppData
 					if(Utils.findBlock(split[0], split[1]) != null) {
+						Utils.print(this, "Request approved for block " + split[1] + " from " + split[0]);
 						File foundBlock = Utils.findBlock(split[0], split[1]);
 						peer.dos.write(0x06);
 						peer.dos.flush();
@@ -66,21 +68,27 @@ public class ListenerThread implements Runnable {
 						peer.dos.flush();
 						peer.dos.writeLong(foundBlock.length());
 						peer.dos.flush();
+						BlockSender fs = new BlockSender(peer, foundBlock);
+						//(new Thread(fs)).start();
+					} else {
+						Utils.print(this, "Request denied for block " + split[1] + " from " + split[0]);
 					}
-					//TODO: shift away from listenerthread and use blockfilemanager
-					//BlockSender fs = new BlockSender(peer, fileSum);
-					//(new Thread(fs)).start();
 				}
 				if(currentFocus == 0x06) {
-					//Got data: specific block
+					//Got response data: specific block
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
 					String forFile = split[0];
 					String blockName = split[1];
 					int filesize = (int) dis.readLong();
-					//TODO: shift waay from listenerthread and use blockfilemanager
-					//fa = new BlockAcceptor(peer, inputFileName, filesize);
-					//(new Thread(fa)).start();
+					Utils.print(this, "Got block data! Name = " + split[1] + " for " + split[0]);
+					//Somehow communicate to the right BlockAcceptor that this is a chunk for it
+					if(Utils.getBlockedFileDLForBlock(forFile, blockName) != null) {
+						Utils.print(this, "Confirmed block " + blockName + " is needed");
+						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
+						//(new Thread(ba)).start();
+						Utils.getBlockedFileDLForBlock(forFile, blockName).logBlock(blockName);
+					}
 				}
 				/** === BLOCK === **/
 				if(currentFocus == 0x07) {

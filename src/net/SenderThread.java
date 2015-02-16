@@ -20,6 +20,7 @@ public class SenderThread implements Runnable {
 	private String sendQuery = "";
 	private String receivedQuery = "";
 	private String requestedBlock = "";
+	private String requestedBlockParent = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		Thread.currentThread().setName("Peer Sender");
@@ -57,15 +58,16 @@ public class SenderThread implements Runnable {
 					sendBlockList = false;
 				} else if(requestBlock) {
 					//Send request: file transfer
+					/**
+					 * forFile / blockName
+					 */
 					dos.write(0x05);
 					dos.flush();
-					Utils.writeString(requestedBlock, dos);
+					Utils.writeString(Utils.base64(requestedBlockParent) + "/" + requestedBlock, dos);
 					dos.flush();
+					requestedBlockParent = "";
 					requestedBlock = "";
 					requestBlock = false;
-					
-				 //=========== 0x05 and 06 is handled in BlockedFileDL ===========\\
-				//======================= DO NOT DEFINE ===========================\\
 				
 				} else if(requestHWID) {
 					//Send request: HWID
@@ -119,10 +121,12 @@ public class SenderThread implements Runnable {
 	}
 	
 	/**
-	 * Sends a request to the parent peer for this block
-	 * @param str: md5sum of wanted file
+	 * Sends request for specific block
+	 * @param forFile: block's parent BlockedFile
+	 * @param block: block name
 	 */
-	public void requestBlock(String basename, String block) {
+	public void requestBlock(String forFile, String block) {
+		requestedBlockParent = forFile;
 		requestedBlock = block;
 		requestBlock = true;
 	}

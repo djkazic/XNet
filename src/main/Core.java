@@ -56,20 +56,25 @@ public class Core {
 			e.printStackTrace();
 		}
 		
+		//Local development tools
+		debugServer = false;
+		int sep = 0;
+		
 		//Scan for local peers
-		(new Thread(new DiscoveryServer())).start();
-		(new Thread(new DiscoveryThread())).start();
+		//(new Thread(new DiscoveryServer())).start();
+		//(new Thread(new DiscoveryThread())).start();
 
 		resetTable();
-		debugServer = false;
-		int sep = 1;
+		
 		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
 		} else {
 			//debugServer = false;
 			pst = new PeerConnector(debugServer);
+			Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
+			Core.discoveryLatch.countDown();
 		}
 	}
 	

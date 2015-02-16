@@ -4,35 +4,31 @@ import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
+
 import main.Core;
+import main.Utils;
 import net.FileListener;
 import peer.Peer;
 
 /**
- * Is used by BlockedFileManager to accept incoming blocks
- * @author Kevin
+ * Accepts blocks confirmed to be needed
+ * @author caik
  *
  */
 public class BlockAcceptor implements Runnable {
 	
 	private Peer peer;
-	private BlockedFile file;
-	private String filename;
-	private int filesize;
+	private String forFile;
+	private String blockName;
+	private int fileSize;
 	private CountDownLatch fsLatch;
 	
-	/**
-	 * 
-	 * @param peer
-	 * @param filename: sent in earlier
-	 * @param file
-	 * @param filesize
-	 */
-	public BlockAcceptor(Peer peer, String filename, BlockedFile file, int filesize) {
+
+	public BlockAcceptor(Peer peer, String forFile, String blockName, int fileSize) {
 		this.peer = peer;
-		this.filename = filename;
-		this.file = file;
-		this.filesize = filesize;
+		this.forFile = forFile;
+		this.blockName = blockName;
+		this.fileSize = fileSize;
 	}
 	
 	public void run() {
@@ -48,10 +44,13 @@ public class BlockAcceptor implements Runnable {
 			peer.setFS(newFS);
 			
 			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
-			FileOutputStream fos = new FileOutputStream(file.getDir() + "/" + filename);
+			FileOutputStream fos = new FileOutputStream(Utils.defineAppDataDir() 
+														+ "/" 
+														+ Utils.base64(forFile) 
+														+ "/" + blockName);
 			byte[] buffer = new byte[(int) Core.chunkSize];
 			int read = 0;
-			int remaining = filesize;
+			int remaining = fileSize;
 			while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
 				remaining -= read;
 				fos.write(buffer, 0, read);
@@ -59,7 +58,7 @@ public class BlockAcceptor implements Runnable {
 			fos.close();
 			dis.close();
 			peer.fs.close();
-			Core.mainWindow.out("File transfer of " + filename + " complete.");
+			Core.mainWindow.out("File transfer of block " + blockName + " for " + forFile + " complete.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

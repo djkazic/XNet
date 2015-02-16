@@ -13,41 +13,75 @@ import main.Utils;
 import com.google.gson.Gson;
 
 //Represents files as a file and group of Blocks
+//Add self to blockDex so can be searched for
+//Folder is directory for chunks if downloading
+//Otherwise no folder needed, just get tempBlocks
+
 public class BlockedFile {
 
-	private String filePath;
+	private File file;
 	private ArrayList<String> blockList;
-	private ArrayList<String> presentBlocks;
+	private ArrayList<String> presentBlocks = new ArrayList<String> ();
 	private Gson gson = new Gson();
+	private BlockedFileDL bfdl;
 
 	/**
-	 * BlockDex constructor; when you don't have the blockList
+	 * Existing file set (path)
 	 * @param filePath
 	 */
 	public BlockedFile(String filePath) {
-		this.filePath = filePath;
+		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
+		Core.blockDex.add(this);
 	}
 	
 	/**
-	 * MainWindow constructor; when you DO have the blockList
+	 * Existing file set (direct)
+	 * @param file
 	 */
-	public BlockedFile(String file, ArrayList<String> blockList) {
-		this.filePath = file;
-		this.blockList = blockList;
+	public BlockedFile(File file) {
+		this.file = file;
+		blockList = new ArrayList<String> ();
+		getTempBlocks();
+		Core.blockDex.add(this);
 	}
 	
-	public static void main(String[] args) {
-		BlockedFile bf = new BlockedFile("C:\\Users\\caik\\Documents\\XNet\\Minecraft.exe");
-		System.out.println(bf);
+	/**
+	 * File does not yet exist
+	 * Create download directory
+	 * Filepath file set
+	 * blockList set
+	 */
+	public BlockedFile(String file, ArrayList<String> blockList) {
+		this.file = new File(file);
+		this.blockList = blockList;
+		Utils.initAppDataDir(file);
+		Core.blockDex.add(this);
 	}
+	
+	/**
+	 * Tester main
+	public static void main(String[] args) {
+		Core.blockDex = new ArrayList<BlockedFile> ();
+		BlockedFile bf = new BlockedFile("C:/Users/caik/Documents/XNet/Minecraft.exe");
+		System.out.println(bf);
+		System.out.println(bf.getNeededBlock());
+		//Simulate completely done
+		ArrayList<String> allBlocks = bf.getBlockList();
+		for(String bl : allBlocks) {
+			bf.logBlock(bl);
+		}
+		System.out.println(bf.getNeededBlock());
+		//System.out.println(bf.getChunksDir());
+	}
+	**/
 	
 	/**
 	 * Splits BlockedFile into temporary blocks to generate blockList
 	 */
 	private void getTempBlocks() {
-		File mFile = new File(filePath);
+		File mFile = file;
 		try {
 			double fileLen = (double) mFile.length();
 			double numberOfBlocks = (fileLen / Core.chunkSize);
@@ -94,7 +128,7 @@ public class BlockedFile {
 		}
 	}
 	
-	public void processBlock(String block) {
+	public void logBlock(String block) {
 		for(String str : blockList) {
 			if(block.equals(str)) {
 				presentBlocks.add(block);
@@ -102,22 +136,31 @@ public class BlockedFile {
 		}
 	}
 	
-	//Used to create a FileSender
-	public int getSendBlockNumber() {
+	/**
+	 * Returns the name of a missing block for this BlockedFile
+	 * @return
+	 */
+	public String getNeededBlock() {
 		for(int i=0; i < blockList.size(); i++) {
 			if(!presentBlocks.contains(blockList.get(i))) {
-				return i;
+				return blockList.get(i);
 			}
 		}
-		return -1;
+		return null;
+		//Completely done, all blocks accounted for
 	}
 	
+	/**
+	 * Run when all pieces are received; unifies all blocks and deposits
+	 * in regular directory (chunksDir -> regDir)
+	 * Also deletes chunksDir, as it is no longer needed
+	 * @throws IOException
+	 */
 	public void unify() throws IOException {
 		int numberParts = blockList.size();
-		String correctedName = filePath;
-		// now, assume that the files are correctly numbered in order (that some joker didn't delete any part)
-		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(correctedName));
-		File[] blocks = new File(getDir()).listFiles();
+		String outputPath = Utils.defineDir() + "/" + file.getName();
+		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
+		File[] blocks = new File(getBlocksDir()).listFiles();
 		for(int part = 0; part < numberParts; part++) {
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(blocks[part]));
 			int pointer;
@@ -127,20 +170,47 @@ public class BlockedFile {
 			in.close();
 		}
 		out.close();
+		new File(getBlocksDir()).delete();
 	}
 	
-	public String getDir() {
-		return Utils.defineAppDataDir() + "/" + filePath;
+	/**
+	 * Return plaintext name
+	 * @return
+	 */
+	public String getName() {
+		return file.getName();
+	}
+	
+	/**
+	 * Returns base64 directory in AppData where blocks are stored
+	 * @return
+	 */
+	public String getBlocksDir() {
+		return Utils.defineAppDataDir() + "/" + Utils.base64(file.getName());
 	}
 	
 	public boolean relevant(String str) {
-		if(filePath.toLowerCase().contains(str.toLowerCase())) {
+		if(file.getName().toLowerCase().contains(str.toLowerCase())) {
 			return true;
 		}
 		return false;
 	}
 	
 	public String toString() {
-		return Utils.base64(filePath) + "/" + gson.toJson(blockList);
+		return Utils.base64(file.getName()) + "/" + gson.toJson(blockList);
+	}
+	
+	public void download() {
+		Utils.print(this, "Created BlockedFileDL thread in preparation of blocks download");
+		bfdl = new BlockedFileDL(this);
+		(new Thread(bfdl)).start();
+	}
+	
+	public BlockedFileDL getDL() {
+		return bfdl;
+	}
+	
+	public ArrayList<String> getBlockList() {
+		return blockList;
 	}
 }

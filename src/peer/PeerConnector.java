@@ -36,12 +36,17 @@ public class PeerConnector implements Runnable {
 		while(!Core.killPeerConnector && Core.potentialPeers.size() > 0) {
 			//Pick a host from the potentialPeers
 			host = Core.potentialPeers.get(0);
-			host = host.substring(1, host.length());
+			String phost = "";
+			if(host.startsWith("/")) {
+				phost = host.substring(1, host.length());
+			} else {
+				phost = host;
+			}
 			//If attempted, show marker
 			if(attempts > 0) {
-				Utils.print(this, "Attempting outgoing connection to potential peer " + host + " (x" + attempts + ")");
+				Utils.print(this, "Attempting outgoing connection to potential peer " + phost + " (x" + attempts + ")");
 			} else {
-				Utils.print(this, "Attempting outgoing connection to potential peer " + host);
+				Utils.print(this, "Attempting outgoing connection to potential peer " + phost);
 			}
 			//If already attempted 5 times, remove from potential peers
 			if(attempts == 5) {
