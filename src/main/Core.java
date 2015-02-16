@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import net.GlobalListener;
 import peer.Peer;
-import peer.PeerSeeker;
+import peer.PeerConnector;
 
 public class Core {
 	
@@ -18,9 +18,10 @@ public class Core {
 	public static String md5dex = "";
 	public static String hwid = "";
 	public static ArrayList <String[]> fileToHash;
+	public static ArrayList <String> potentialPeers;
 	
 	public static GlobalListener gl;
-	public static PeerSeeker pst;
+	public static PeerConnector pst;
 	
 	public static boolean debugServer = true;
 	public static boolean foundOutgoing = false;
@@ -31,9 +32,10 @@ public class Core {
 		
 		//Initialize vars
 		version = 1.0;
-		peerList = new ArrayList <Peer>();
-		fileToHash = new ArrayList <String[]> ();
+		peerList = new ArrayList<Peer> ();
+		fileToHash = new ArrayList<String[]> ();
 		index = new HashMap<Peer, String[]> ();
+		potentialPeers = new ArrayList<String> ();
 		
 		//Directory work
 		Utils.initDir();
@@ -58,7 +60,7 @@ public class Core {
 			(new Thread(gl)).start();
 		} else {
 			//debugServer = false;
-			pst = new PeerSeeker(debugServer);
+			pst = new PeerConnector(debugServer);
 			(new Thread(pst)).start();
 		}
 	}

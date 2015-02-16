@@ -9,6 +9,7 @@ public class GlobalListener implements Runnable {
 	public Socket fsSocket;
 	
 	public GlobalListener() {
+		Thread.currentThread().setName("GlobalListener");
 		System.out.println("INITIALIZING GL");
 		try {
 			ss = new ServerSocket(26606);

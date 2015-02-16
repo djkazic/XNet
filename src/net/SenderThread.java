@@ -22,6 +22,7 @@ public class SenderThread implements Runnable {
 	private String requestedFile = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
+		Thread.currentThread().setName("Peer Sender ");
 		this.peer = peer;
 		this.dos = dos;
 	}

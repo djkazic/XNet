@@ -4,12 +4,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 
-public class ServerSocketMaker implements Runnable {
+public class FileListener implements Runnable {
 	
 	private CountDownLatch fsLatch;
 	private Socket fsSocket;
 	
-	public ServerSocketMaker(CountDownLatch incoming) {
+	public FileListener(CountDownLatch incoming) {
+		Thread.currentThread().setName("FileListener");
 		fsLatch = incoming;
 	}
 	

@@ -69,6 +69,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 		try { dis.close(); } catch (Exception e) {  }
 		try { ps.close(); } catch (Exception e) {  }
 		connected = false;
+		
 	}
 	
 	public int compareTo(Peer peer) {

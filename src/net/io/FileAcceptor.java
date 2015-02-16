@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 
 import main.Core;
 import main.Utils;
-import net.ServerSocketMaker;
+import net.FileListener;
 import peer.Peer;
 
 public class FileAcceptor implements Runnable {
@@ -26,7 +26,7 @@ public class FileAcceptor implements Runnable {
 	public void run() {
 		try {
 			fsLatch = new CountDownLatch(1);
-			ServerSocketMaker ssm = new ServerSocketMaker(fsLatch);
+			FileListener ssm = new FileListener(fsLatch);
 			Thread serverSocketMakerThread = new Thread(ssm);
 			serverSocketMakerThread.setName("Server Socket Maker Thread");
 			serverSocketMakerThread.start();

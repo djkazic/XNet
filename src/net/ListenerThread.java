@@ -14,6 +14,7 @@ public class ListenerThread implements Runnable {
 	public FileAcceptor fa;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
+		Thread.currentThread().setName("Peer Listener");
 		this.peer = peer;
 		this.dis = dis;
 	}
