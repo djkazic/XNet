@@ -1,5 +1,8 @@
 package blocks;
 
+import main.Core;
+import peer.Peer;
+
 public class BlockedFileDL implements Runnable {
 
 	private BlockedFile bf;

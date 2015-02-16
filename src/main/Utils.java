@@ -97,12 +97,12 @@ public class Utils {
 		}
 	}
 	
-	public static File findBySum(String sum) {
+	public static File findBlock(String forFile, String block) {
 		File directory = new File(defineDir());
 		File[] listOfFiles = directory.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			try {
-				if(checksum(listOfFiles[i]).equals(sum)) {
+				if(checksum(listOfFiles[i]).equals(block)) {
 					return listOfFiles[i];
 				}
 			} catch (Exception e) {
@@ -160,15 +160,13 @@ public class Utils {
 	}
 	
 	public static String decrypt(String chain) {
-		Gson gson = new Gson();
 		String output = "";
 		String[] chunkSplit = chain.split(";");
 		for(int i=0; i < chunkSplit.length; i++) {
 			String[] fileSumSplit = chunkSplit[i].split("/");
 			String base64name = fileSumSplit[0];
-			Type type = new TypeToken<ArrayList<String>> () {}.getType();
-			ArrayList<String> blockList = gson.fromJson(fileSumSplit[1], type);
-			output += debase64(base64name) + "/" + blockList.toString() + ";";
+			String serializedArrayList = fileSumSplit[1];
+			output += debase64(base64name) + "/" + serializedArrayList + ";";
 		}
 		if(output.length() > 0) {
 			output = output.substring(0, output.length() - 1);
@@ -187,7 +185,7 @@ public class Utils {
 	public static void parse(Peer thisPeer, String str) {
 		//Receives serialized data in form of:
 		/**
-		 * Base64 filename and serialized arraylist of string
+		 * Base64 filename and arraylist of string toString
 		 * Delimeters are / and ;
 		 * ex. dDkg=fgfDggN/blocklist
 		 */

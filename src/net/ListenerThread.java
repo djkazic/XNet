@@ -38,19 +38,12 @@ public class ListenerThread implements Runnable {
 					peer.st.sendBlockList(receivedQuery);
 				}
 				if(currentFocus == 0x04) {
-					//Got data: base64 name list
-					/**
-					 * base64 filename
-					 * (/)
-					 * serialized blocklist
-					 */
-					//TODO: replace string reply with serialized arraylist
+					//Got data: base64 name / block list
 					String preString = Utils.readString(dis);
 					if(preString.equals("")) {
-						Core.mainWindow.out("Sorry, no items found for your query.");
+						Core.mainWindow.out("Sorry, no files were found for your query.");
 					} else {
 						String finString = Utils.decrypt(preString);
-						//TODO: make parse use peer parameter and link hashmap with arraylist
 						Utils.parse(peer, finString);
 					}
 				}

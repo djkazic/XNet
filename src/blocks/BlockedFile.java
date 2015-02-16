@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -16,17 +15,17 @@ import com.google.gson.Gson;
 //Represents files as a file and group of Blocks
 public class BlockedFile {
 
-	private String file;
+	private String filePath;
 	private ArrayList<String> blockList;
 	private ArrayList<String> presentBlocks;
 	private Gson gson = new Gson();
 
 	/**
 	 * BlockDex constructor; when you don't have the blockList
-	 * @param file
+	 * @param filePath
 	 */
-	public BlockedFile(String file) {
-		this.file = file;
+	public BlockedFile(String filePath) {
+		this.filePath = filePath;
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
 	}
@@ -35,7 +34,7 @@ public class BlockedFile {
 	 * MainWindow constructor; when you DO have the blockList
 	 */
 	public BlockedFile(String file, ArrayList<String> blockList) {
-		this.file = file;
+		this.filePath = file;
 		this.blockList = blockList;
 	}
 	
@@ -48,7 +47,7 @@ public class BlockedFile {
 	 * Splits BlockedFile into temporary blocks to generate blockList
 	 */
 	private void getTempBlocks() {
-		File mFile = new File(file);
+		File mFile = new File(filePath);
 		try {
 			double fileLen = (double) mFile.length();
 			double numberOfBlocks = (fileLen / Core.chunkSize);
@@ -115,7 +114,7 @@ public class BlockedFile {
 	
 	public void unify() throws IOException {
 		int numberParts = blockList.size();
-		String correctedName = file;
+		String correctedName = filePath;
 		// now, assume that the files are correctly numbered in order (that some joker didn't delete any part)
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(correctedName));
 		File[] blocks = new File(getDir()).listFiles();
@@ -131,17 +130,17 @@ public class BlockedFile {
 	}
 	
 	public String getDir() {
-		return Utils.defineAppDataDir() + "/" + file;
+		return Utils.defineAppDataDir() + "/" + filePath;
 	}
 	
 	public boolean relevant(String str) {
-		if(file.toLowerCase().contains(str.toLowerCase())) {
+		if(filePath.toLowerCase().contains(str.toLowerCase())) {
 			return true;
 		}
 		return false;
 	}
 	
 	public String toString() {
-		return Utils.base64(file) + "/" + gson.toJson(blockList);
+		return Utils.base64(filePath) + "/" + gson.toJson(blockList);
 	}
 }
