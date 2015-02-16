@@ -72,7 +72,7 @@ public class Utils {
 	
 	public static boolean initAppDataDir(String plainName) {
 		String basename = base64(plainName);
-		File workingDirectoryFile = new File(defineAppDataDir() + basename);
+		File workingDirectoryFile = new File(defineAppDataDir() + "/" + basename);
 		boolean attempt = false;
 		if(!workingDirectoryFile.exists()) {
 			try {
@@ -127,7 +127,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Goes through directory and creates BlockedFile object for each file
+	 * Goes through directory and creates BlockedFile object for each complete file
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
@@ -239,12 +239,13 @@ public class Utils {
 		System.out.println("[" + sourceClass.getClass().getName() + "]: " + msg);
 	}
 	
-	public static BlockedFileDL getBlockedFileDLForBlock(String baseName, String block) {
-		String forFile = debase64(baseName);
+	public static BlockedFileDL getBlockedFileDLForBlock(String block) {
 		for(BlockedFile bf : Core.blockDex) {
-			if(bf.getName().equals(forFile)) {
-				if(bf.getBlockList().contains(block)) {
-					return bf.getDL();
+			System.out.println(bf.getBlockList());
+			if(bf.getBlockList().contains(block)) {
+				if(bf.getDL() == null) {
+					System.out.println("Got block but DL is null");
+					return null;
 				}
 			}
 		}

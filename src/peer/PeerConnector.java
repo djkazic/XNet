@@ -50,7 +50,7 @@ public class PeerConnector implements Runnable {
 			}
 			//If already attempted 5 times, remove from potential peers
 			if(attempts == 5) {
-				Core.potentialPeers.remove(0);
+				Core.potentialPeers.remove(host);
 			}
 			attempts++;
 			Socket peerSocket = new Socket();
@@ -63,6 +63,7 @@ public class PeerConnector implements Runnable {
 				(new Thread(new Peer(peerSocket, end - start, 0))).start();
 				Utils.print(this, "Established connection");
 				Core.killPeerConnector = true;
+				Core.potentialPeers.remove(host);
 			} catch (IOException e) {}
 			try {
 				Thread.sleep(1000);

@@ -21,13 +21,11 @@ public class BlockedFileDL implements Runnable {
 	 * BlockedFile
 	 */
 	public void run() {
-		System.out.println(bf);
-		String block = "";
-		while((block = bf.getNeededBlock()) != null) {
-			broadcast(bf.getName(), block);
+		while(bf.getNeededBlock() != null) {
+			System.out.println(bf.getNeededBlock());
+			broadcast(bf.getName(), bf.getNeededBlock());
 			try {
-				Utils.print(this, "Waiting for response...");
-				Thread.sleep(2000);
+				Thread.sleep(6500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -50,7 +48,7 @@ public class BlockedFileDL implements Runnable {
 	 * Record block has been received
 	 * @param blockName
 	 */
-	public void logBlock(String blockName) {
-		bf.logBlock(blockName);
+	public BlockedFile getBfInstance() {
+		return bf;
 	}
 }

@@ -94,12 +94,12 @@ public class Peer implements Runnable, Comparable<Peer> {
 				boolean whoa = false;
 				while(!whoa) {
 					try {
-						Utils.print(this, "Attempting to connect to peer FS at " + ps.getInetAddress());
-						InetSocketAddress fsEndpoint = new InetSocketAddress("127.0.0.1", 26607);
+						Utils.print(this, "Attempting to connect to peer FS at ");
+						InetSocketAddress fsEndpoint = new InetSocketAddress(ps.getInetAddress(), 26607);
 						fs.connect(fsEndpoint);
 						whoa = true;
 						fs.setSoTimeout(3500);
-						Thread.sleep(500);
+						Thread.sleep(800);
 					} catch (Exception e) {
 						//e.printStackTrace();
 					}

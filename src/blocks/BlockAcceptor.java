@@ -46,8 +46,8 @@ public class BlockAcceptor implements Runnable {
 			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
 			FileOutputStream fos = new FileOutputStream(Utils.defineAppDataDir() 
 														+ "/" 
-														+ Utils.base64(forFile) 
-														+ "/" + blockName);
+														+ (forFile) //(already base64'd)
+														+ "/" + blockName + ".dat", false);
 			byte[] buffer = new byte[(int) Core.chunkSize];
 			int read = 0;
 			int remaining = fileSize;
@@ -59,6 +59,7 @@ public class BlockAcceptor implements Runnable {
 			dis.close();
 			peer.fs.close();
 			Core.mainWindow.out("File transfer of block " + blockName + " for " + forFile + " complete.");
+			Utils.print(this, "Got block successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

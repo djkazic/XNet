@@ -23,11 +23,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import blocks.BlockedFile;
-import blocks.BlockedFileDL;
 import main.Core;
 import main.Utils;
-import peer.Peer;
+import blocks.BlockedFile;
+import blocks.BlockedFileDL;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -141,7 +140,8 @@ public class MainWindow extends JFrame {
 						while(it.hasNext()) {
 					        @SuppressWarnings("rawtypes")
 							Map.Entry pairs = (Map.Entry) it.next();
-					        Peer mapPeer = (Peer) pairs.getKey();
+					        //TODO: use HashMap to contact known peers first
+					        //Peer mapPeer = (Peer) pairs.getKey();
 					        @SuppressWarnings("unchecked")
 							ArrayList<String> blockList = (ArrayList<String>) pairs.getValue();
 					        if(blockList.toString().equals(blockListStr)) {

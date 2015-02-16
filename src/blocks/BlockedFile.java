@@ -8,8 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
 import main.Core;
 import main.Utils;
+
 import com.google.gson.Gson;
 
 //Represents files as a file and group of Blocks
@@ -24,16 +26,17 @@ public class BlockedFile {
 	private ArrayList<String> presentBlocks = new ArrayList<String> ();
 	private Gson gson = new Gson();
 	private BlockedFileDL bfdl;
+	public boolean allAccountedFor = false;
 
 	/**
 	 * Existing file set (path)
 	 * @param filePath
 	 */
 	public BlockedFile(String filePath) {
+		Core.blockDex.add(this);
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
-		Core.blockDex.add(this);
 	}
 	
 	/**
@@ -41,10 +44,10 @@ public class BlockedFile {
 	 * @param file
 	 */
 	public BlockedFile(File file) {
+		Core.blockDex.add(this);
 		this.file = file;
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
-		Core.blockDex.add(this);
 	}
 	
 	/**
@@ -54,10 +57,10 @@ public class BlockedFile {
 	 * blockList set
 	 */
 	public BlockedFile(String file, ArrayList<String> blockList) {
+		Core.blockDex.add(this);
 		this.file = new File(file);
 		this.blockList = blockList;
 		Utils.initAppDataDir(file);
-		Core.blockDex.add(this);
 	}
 	
 	/**
@@ -129,6 +132,7 @@ public class BlockedFile {
 	}
 	
 	public void logBlock(String block) {
+		System.out.println(this.hashCode() + " logging block.");
 		for(String str : blockList) {
 			if(block.equals(str)) {
 				presentBlocks.add(block);
@@ -142,10 +146,13 @@ public class BlockedFile {
 	 */
 	public String getNeededBlock() {
 		for(int i=0; i < blockList.size(); i++) {
-			if(!presentBlocks.contains(blockList.get(i))) {
-				return blockList.get(i);
+			String currentBlock = blockList.get(i);
+			File test = new File(getBlocksDir() + "/" + currentBlock);
+			if(!test.exists()) {
+				return test.getName();
 			}
 		}
+		allAccountedFor = true;
 		return null;
 		//Completely done, all blocks accounted for
 	}
@@ -201,9 +208,15 @@ public class BlockedFile {
 	}
 	
 	public void download() {
-		Utils.print(this, "Created BlockedFileDL thread in preparation of blocks download");
 		bfdl = new BlockedFileDL(this);
-		(new Thread(bfdl)).start();
+		Thread bfdlThread = (new Thread(bfdl));
+		bfdlThread.start();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Utils.print(this, "Starting BlockedFileDL thread in preparation of blocks download, STATUS: " + (bfdl != null));
 	}
 	
 	public BlockedFileDL getDL() {

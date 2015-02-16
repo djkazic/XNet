@@ -58,7 +58,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();
@@ -72,7 +72,7 @@ public class Core {
 		} else {
 			//debugServer = false;
 			pst = new PeerConnector(debugServer);
-			Core.potentialPeers.add("127.0.0.1");
+			Core.potentialPeers.add("136.167.230.136");
 			(new Thread(pst)).start();
 			Core.discoveryLatch.countDown();
 		}

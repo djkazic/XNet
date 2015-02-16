@@ -4,6 +4,7 @@ import java.io.File;
 
 import blocks.BlockAcceptor;
 import blocks.BlockSender;
+import blocks.BlockedFileDL;
 import main.Core;
 import main.Utils;
 import peer.Peer;
@@ -68,8 +69,8 @@ public class ListenerThread implements Runnable {
 						peer.dos.flush();
 						peer.dos.writeLong(foundBlock.length());
 						peer.dos.flush();
-						BlockSender fs = new BlockSender(peer, foundBlock);
-						//(new Thread(fs)).start();
+						BlockSender bs = new BlockSender(peer, foundBlock);
+						(new Thread(bs)).start();
 					} else {
 						Utils.print(this, "Request denied for block " + split[1] + " from " + split[0]);
 					}
@@ -81,13 +82,13 @@ public class ListenerThread implements Runnable {
 					String forFile = split[0];
 					String blockName = split[1];
 					int filesize = (int) dis.readLong();
-					Utils.print(this, "Got block data! Name = " + split[1] + " for " + split[0]);
-					//Somehow communicate to the right BlockAcceptor that this is a chunk for it
-					if(Utils.getBlockedFileDLForBlock(forFile, blockName) != null) {
-						Utils.print(this, "Confirmed block " + blockName + " is needed");
+					//Communicate to the right BlockAcceptor that this is a chunk for it
+					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
+					if(bfdlTest != null) {
 						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
-						//(new Thread(ba)).start();
-						Utils.getBlockedFileDLForBlock(forFile, blockName).logBlock(blockName);
+						(new Thread(ba)).start();
+						Utils.print(this, "Logging block now");
+						bfdlTest.getBfInstance().logBlock(blockName);
 					}
 				}
 				/** === BLOCK === **/
