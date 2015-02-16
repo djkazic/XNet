@@ -113,8 +113,4 @@ public class Core {
 	public static void resetTable() {
 		mainWindow.out("Enter your search query and press Enter.");
 	}
-	
-	public static boolean haveBlock(String fromFile, String blockName) {
-		String decrypt = Utils.debase64(fromFile);
-	}
 }

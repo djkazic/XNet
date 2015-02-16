@@ -1,5 +1,6 @@
 package net;
 import java.io.DataInputStream;
+import java.io.File;
 
 import blocks.BlockAcceptor;
 import blocks.BlockSender;
@@ -57,18 +58,25 @@ public class ListenerThread implements Runnable {
 					 */
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
-					if(Core.haveBlock(split[0], split[1])) {
+					if(Utils.findBlock(split[0], split[1]) != null) {
+						File foundBlock = Utils.findBlock(split[0], split[1]);
 						peer.dos.write(0x06);
 						peer.dos.flush();
-						peer.dos.writeLong(Utils.findBySum(fileSum).length());
+						Utils.writeString(split[0] + "/" + foundBlock.getName(), peer.dos);
+						peer.dos.flush();
+						peer.dos.writeLong(foundBlock.length());
+						peer.dos.flush();
 					}
 					//TODO: shift away from listenerthread and use blockfilemanager
 					//BlockSender fs = new BlockSender(peer, fileSum);
 					//(new Thread(fs)).start();
 				}
 				if(currentFocus == 0x06) {
-					//Got data: transfer file
-					String inputFileName = Utils.readString(dis);
+					//Got data: specific block
+					String allData = Utils.readString(dis);
+					String[] split = allData.split("/");
+					String forFile = split[0];
+					String blockName = split[1];
 					int filesize = (int) dis.readLong();
 					//TODO: shift waay from listenerthread and use blockfilemanager
 					//fa = new BlockAcceptor(peer, inputFileName, filesize);

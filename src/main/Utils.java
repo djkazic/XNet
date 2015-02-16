@@ -97,8 +97,9 @@ public class Utils {
 		}
 	}
 	
-	public static File findBlock(String forFile, String block) {
-		File directory = new File(defineDir());
+	public static File findBlock(String baseForFile, String block) {
+		String decrypted = Utils.debase64(baseForFile);
+		File directory = new File(defineDir() + "/" + decrypted);
 		File[] listOfFiles = directory.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			try {
