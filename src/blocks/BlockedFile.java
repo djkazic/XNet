@@ -60,6 +60,7 @@ public class BlockedFile {
 		Core.blockDex.add(this);
 		this.file = new File(file);
 		this.blockList = blockList;
+		bfdl = new BlockedFileDL(this);
 		Utils.initAppDataDir(file);
 	}
 	
@@ -208,7 +209,7 @@ public class BlockedFile {
 	}
 	
 	public void download() {
-		bfdl = new BlockedFileDL(this);
+		
 		Thread bfdlThread = (new Thread(bfdl));
 		bfdlThread.start();
 		try {

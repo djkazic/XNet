@@ -245,6 +245,7 @@ public class Utils {
 			if(bf.getBlockList().contains(block)) {
 				if(bf.getDL() == null) {
 					System.out.println("Got block but DL is null");
+					//TODO: figure out if this means BF is complete
 					return null;
 				}
 			}
