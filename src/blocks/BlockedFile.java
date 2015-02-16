@@ -19,56 +19,61 @@ public class BlockedFile {
 	private String file;
 	private ArrayList<String> blockList;
 	private ArrayList<String> presentBlocks;
-	private Gson gson;
+	private Gson gson = new Gson();
 
-	//First-time constructor
-	public BlockedFile(String file, boolean share) {
+	/**
+	 * BlockDex constructor; when you don't have the blockList
+	 * @param file
+	 */
+	public BlockedFile(String file) {
 		this.file = file;
 		blockList = new ArrayList<String> ();
-		gson = new Gson();
-		getBlocks();
+		getTempBlocks();
 	}
 	
-	public BlockedFile() {
-		//This is empty so you can load when you deserialize
+	/**
+	 * MainWindow constructor; when you DO have the blockList
+	 */
+	public BlockedFile(String file, ArrayList<String> blockList) {
+		this.file = file;
+		this.blockList = blockList;
 	}
 	
 	public static void main(String[] args) {
-		BlockedFile bf = new BlockedFile("C:/install.exe");
+		BlockedFile bf = new BlockedFile("C:\\Users\\caik\\Documents\\XNet\\Minecraft.exe");
 		System.out.println(bf);
 	}
 	
-	private void getBlocks() {
-		//First time
+	/**
+	 * Splits BlockedFile into temporary blocks to generate blockList
+	 */
+	private void getTempBlocks() {
 		File mFile = new File(file);
 		try {
-			//calculate number of blocks
 			double fileLen = (double) mFile.length();
-			System.out.println(fileLen);
 			double numberOfBlocks = (fileLen / Core.chunkSize);
-			System.out.println(numberOfBlocks);
-			//Process all blocks but one
+			//System.out.println(numberOfBlocks);
+			//Process all complete blocks
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(mFile));
 			int i;
-			for(i = 0; i < (fileLen/Core.chunkSize) - 1; i++) {
-				System.out.println("Regular proc: " + i);
-				//make blocks into temp, checksum, then delete
-				//File temp = File.createTempFile("temp", "block");
-				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Users/Kevin/Desktop/installParts/p" + "." + i + ".dat")));
+			for(i = 0; i < numberOfBlocks - 1; i++) {
+				File temp = File.createTempFile("temp", "block");
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
 				for (int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
 					out.write(in.read());
 				}
 				out.close();
 				try {
-					blockList.add(Utils.checksum(new File("C:/Users/Kevin/Desktop/installParts/p" + "." + i + ".dat")));
+					blockList.add(Utils.checksum(temp));
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
-				//temp.delete();
+				temp.delete();
 			}
 			//Process last block separately
-			if(fileLen != Core.chunkSize * i) {
-				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Users/Kevin/Desktop/installParts/p" + "." + i + ".dat")));
+			if(fileLen != (Core.chunkSize * i)) {
+				File temp = File.createTempFile("temp", "block");
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
 				//Read rest
 				int b;
 				while((b = in.read()) != -1) {
@@ -76,18 +81,18 @@ public class BlockedFile {
 				}
 				out.close();
 				try {
-					blockList.add(Utils.checksum(new File("C:/Users/Kevin/Desktop/installParts/p" + "." + i + ".dat")));
+					blockList.add(Utils.checksum(temp));
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
+				temp.delete();
+			} else {
+				Utils.print(this, "Temp block sizes check! " + fileLen + " | " + (Core.chunkSize * i));
 			}
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(blockList);
-		//Make temporary file chunks to checksum them, then delete
-		//One time, as once generated blockList, can simply serialize
 	}
 	
 	public void processBlock(String block) {
