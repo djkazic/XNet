@@ -16,4 +16,10 @@ public class BlockedFileDL implements Runnable {
 		//Make BlockAcceptor
 		BlockAcceptor ba = new BlockAcceptor(null, null, bf, 0);
 	}
+	
+	private void broadcast() {
+		for(Peer peer : Core.peerList) {
+			
+		}
+	}
 }

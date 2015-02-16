@@ -145,7 +145,7 @@ public class MainWindow extends JFrame {
 					        @SuppressWarnings("unchecked")
 							ArrayList<String> blockList = (ArrayList<String>) pairs.getValue();
 					        if(blockList.toString().equals(blockListStr)) {
-					        	BlockedFile bf = new BlockedFile(fileName);
+					        	BlockedFile bf = new BlockedFile(fileName, blockList);
 					        	BlockedFileDL bfdl = new BlockedFileDL(bf);
 					        	//TODO: add launch for blockedFileManager
 					        	out("");

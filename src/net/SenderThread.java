@@ -11,15 +11,15 @@ public class SenderThread implements Runnable {
 	
 	private boolean disconnect = false;
 	
-	private boolean requestNameList = false;
+	private boolean requestBlockList = false;
 	private boolean sendBlockList = false;
-	private boolean requestTransfer = false;
+	private boolean requestBlock = false;
 	private boolean requestHWID = false;
 	private boolean sendHWID = false;
 	
 	private String sendQuery = "";
 	private String receivedQuery = "";
-	private String requestedFile = "";
+	private String requestedBlock = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		Thread.currentThread().setName("Peer Sender");
@@ -38,14 +38,14 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					peer.lastPing = System.currentTimeMillis();
 				}
-				if(requestNameList) {
+				if(requestBlockList) {
 					//Send request: name list
 					dos.write(0x03);
 					dos.flush();
 					Utils.writeString(sendQuery, dos);
 					dos.flush();
 					sendQuery = "";
-					requestNameList = false;
+					requestBlockList = false;
 				} else if(sendBlockList) {
 					//Send data: serialized ArrayList<Block>
 					dos.write(0x04);
@@ -55,16 +55,16 @@ public class SenderThread implements Runnable {
 					dos.flush();
 					receivedQuery = "";
 					sendBlockList = false;
-				} else if(requestTransfer) {
+				} else if(requestBlock) {
 					//Send request: file transfer
 					dos.write(0x05);
 					dos.flush();
-					Utils.writeString(requestedFile, dos);
+					Utils.writeString(requestedBlock, dos);
 					dos.flush();
-					requestedFile = "";
-					requestTransfer = false;
+					requestedBlock = "";
+					requestBlock = false;
 					
-				//=============== 0x06 is handled in ListenerThread ===============\\
+				 //=========== 0x05 and 06 is handled in BlockedFileDL ===========\\
 				//======================= DO NOT DEFINE ===========================\\
 				
 				} else if(requestHWID) {
@@ -101,30 +101,30 @@ public class SenderThread implements Runnable {
 	}
 	
 	/**
-	 * Sends a request to the parent peer for a file list
-	 * @param str: keyword being sent
+	 * Sends a request to the parent peer for a block list
+	 * @param query: keyword being sent
 	 */
-	public void requestNameList(String str) {
-		sendQuery = str;
-		requestNameList = true;
+	public void requestBlockList(String query) {
+		sendQuery = query;
+		requestBlockList = true;
 	}
 	
 	/**
 	 * Sends serialized ArrayList of blocks for keyword
-	 * @param str: keyword received from request
+	 * @param wanted: keyword received from request
 	 */
-	public void sendBlockList(String str) {
-		receivedQuery = str; 
+	public void sendBlockList(String wanted) {
+		receivedQuery = wanted; 
 		sendBlockList = true;
 	}
 	
 	/**
-	 * Sends a request to the parent peer for file transfer
+	 * Sends a request to the parent peer for this block
 	 * @param str: md5sum of wanted file
 	 */
-	public void requestTransfer(String str) {
-		requestedFile = str;
-		requestTransfer = true;
+	public void requestBlock(String basename, String block) {
+		requestedBlock = block;
+		requestBlock = true;
 	}
 	
 	/**

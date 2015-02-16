@@ -33,13 +33,17 @@ public class ListenerThread implements Runnable {
 				}
 				/** === BLOCK === **/
 				if(currentFocus == 0x03) {
-					//Got request: name list
+					//Got request: block list
 					String receivedQuery = Utils.readString(dis);
 					peer.st.sendBlockList(receivedQuery);
 				}
-				//TODO: revamp entire namelisting system
 				if(currentFocus == 0x04) {
 					//Got data: base64 name list
+					/**
+					 * base64 filename
+					 * (/)
+					 * serialized blocklist
+					 */
 					//TODO: replace string reply with serialized arraylist
 					String preString = Utils.readString(dis);
 					if(preString.equals("")) {
@@ -52,22 +56,30 @@ public class ListenerThread implements Runnable {
 				}
 				/** === BLOCK === **/
 				if(currentFocus == 0x05) {
-					//Got request: transfer file
-					String fileSum = Utils.readString(dis);
-					peer.dos.write(0x06);
-					peer.dos.flush();
-					peer.dos.writeLong(Utils.findBySum(fileSum).length());
+					//Got request: specific block
+					/**
+					 * base64name
+					 * (/)
+					 * blockName
+					 */
+					String allData = Utils.readString(dis);
+					String[] split = allData.split("/");
+					if(Core.haveBlock(split[0], split[1])) {
+						peer.dos.write(0x06);
+						peer.dos.flush();
+						peer.dos.writeLong(Utils.findBySum(fileSum).length());
+					}
 					//TODO: shift away from listenerthread and use blockfilemanager
-					BlockSender fs = new BlockSender(peer, fileSum);
-					(new Thread(fs)).start();
+					//BlockSender fs = new BlockSender(peer, fileSum);
+					//(new Thread(fs)).start();
 				}
 				if(currentFocus == 0x06) {
 					//Got data: transfer file
 					String inputFileName = Utils.readString(dis);
 					int filesize = (int) dis.readLong();
 					//TODO: shift waay from listenerthread and use blockfilemanager
-					fa = new BlockAcceptor(peer, inputFileName, filesize);
-					(new Thread(fa)).start();
+					//fa = new BlockAcceptor(peer, inputFileName, filesize);
+					//(new Thread(fa)).start();
 				}
 				/** === BLOCK === **/
 				if(currentFocus == 0x07) {

@@ -122,7 +122,7 @@ public class Utils {
 		File[] listOfFiles = folder.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
-				Core.blockDex.add(new BlockedFile(listOfFiles[i]));
+				Core.blockDex.add(new BlockedFile(listOfFiles[i].getAbsolutePath()));
 			}
 		}
 	}
@@ -160,11 +160,15 @@ public class Utils {
 	}
 	
 	public static String decrypt(String chain) {
+		Gson gson = new Gson();
 		String output = "";
 		String[] chunkSplit = chain.split(";");
 		for(int i=0; i < chunkSplit.length; i++) {
 			String[] fileSumSplit = chunkSplit[i].split("/");
-			output += debase64(fileSumSplit[0]) + "/" + fileSumSplit[1] + ";";
+			String base64name = fileSumSplit[0];
+			Type type = new TypeToken<ArrayList<String>> () {}.getType();
+			ArrayList<String> blockList = gson.fromJson(fileSumSplit[1], type);
+			output += debase64(base64name) + "/" + blockList.toString() + ";";
 		}
 		if(output.length() > 0) {
 			output = output.substring(0, output.length() - 1);
@@ -173,10 +177,10 @@ public class Utils {
 	}
 	
 	//Search tools
-	public static void doSearch(String str) {
+	public static void doSearch(String keyword) {
 		for(Peer p : Core.peerList) {
 			//Send out request to all peers
-			p.st.requestNameList(str);
+			p.st.requestBlockList(keyword);
 		}		
 	}
 	
