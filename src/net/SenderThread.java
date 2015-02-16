@@ -22,11 +22,14 @@ public class SenderThread implements Runnable {
 	private String requestedFile = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
-		Thread.currentThread().setName("Peer Sender ");
+		Thread.currentThread().setName("Peer Sender");
 		this.peer = peer;
 		this.dos = dos;
 	}
-
+	
+	/**
+	 * Processes, in a loop pending outgoing data via the DataOutputStream
+	 */
 	public void run() {
 		while(peer.connected) {
 			try {
@@ -90,29 +93,50 @@ public class SenderThread implements Runnable {
 		}	
 	}
 	
+	/**
+	 * Sends a disconnect packet to the parent peer
+	 */
 	public void disconnect() {
 		disconnect = true;
 	}
 	
+	/**
+	 * Sends a request to the parent peer for a file list
+	 * @param str: keyword being sent
+	 */
 	public void requestNameList(String str) {
 		sendQuery = str;
 		requestNameList = true;
 	}
 	
+	/**
+	 * Sends file list data to the parent peer
+	 * @param str: keyword received from request
+	 */
 	public void sendNameList(String str) {
 		receivedQuery = str; 
 		sendNameList = true;
 	}
 	
+	/**
+	 * Sends a request to the parent peer for file transfer
+	 * @param str: md5sum of wanted file
+	 */
 	public void requestTransfer(String str) {
 		requestedFile = str;
 		requestTransfer = true;
 	}
 	
+	/**
+	 * Sends a request for the parent peer's HWID
+	 */
 	public void requestHWID() {
 		requestHWID = true;
 	}
 	
+	/**
+	 * Sends HWID data to the parent peer
+	 */
 	public void sendHWID() {
 		sendHWID = true;
 	}

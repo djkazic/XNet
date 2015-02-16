@@ -18,7 +18,10 @@ public class ListenerThread implements Runnable {
 		this.peer = peer;
 		this.dis = dis;
 	}
-
+	
+	/**
+	 * Processes, in a loop, incoming bytes from the DataInputStream
+	 */
 	public void run() {
 		byte currentFocus;
 		while(true) {
