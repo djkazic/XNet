@@ -58,9 +58,11 @@ public class BlockSender implements Runnable {
 				RandomAccessFile raf = new RandomAccessFile(sending, "r");
 				raf.seek(Core.chunkSize * blockPos); //position of block to send
 				byte[] buffer = new byte[(int) Core.chunkSize];
-				raf.readFully(buffer);
+				//Potentially do this by having a totalCount, reading in 4096 bytes each time
 				Utils.print(this, "Writing buffer to DataOutputStream");
-				dos.write(buffer);
+				if(raf.read(buffer) > 0) {
+					dos.write(buffer);
+				}
 				dos.flush();
 				raf.close();
 			}
