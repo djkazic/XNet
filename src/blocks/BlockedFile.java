@@ -142,7 +142,7 @@ public class BlockedFile {
 		for(int i=0; i < blockList.size(); i++) {
 			String currentBlock = blockList.get(i);
 			File test = new File(getBlocksDir() + "/" + currentBlock);
-			if(!test.exists()) {
+			if(!test.exists() || test.length() == 0) {
 				return test.getName();
 			}
 		}
@@ -155,13 +155,17 @@ public class BlockedFile {
 	 * Run when all pieces are received; unifies all blocks and deposits
 	 * in regular directory (chunksDir -> regDir)
 	 * Also deletes chunksDir, to prevent duplicates
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public void unify() throws IOException {
+	@SuppressWarnings("resource")
+	public void unify() throws Exception {
 		int numberParts = blockList.size();
 		String outputPath = Utils.defineDir() + "/" + file.getName();
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
 		File[] blocks = new File(getBlocksDir()).listFiles();
+		if(blocks.length != numberParts) {
+			throw new Exception("Number of blocks present != number of parts");
+		}
 		for(int part = 0; part < numberParts; part++) {
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(blocks[part]));
 			int pointer;
