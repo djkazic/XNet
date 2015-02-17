@@ -134,9 +134,9 @@ public class MainWindow extends JFrame {
 					if(arg0.getClickCount() == 2) {
 						String fileName = (String) tableModel.getValueAt(tableRow, 0);
 						String blockListStr = (String) tableModel.getValueAt(tableRow, 1);
-						//Go through hashtable and select peer
 						@SuppressWarnings("rawtypes")
 						Iterator it = Core.index.entrySet().iterator();
+						//Iterate through HashMap until a match by blockListStr is found
 						while(it.hasNext()) {
 					        @SuppressWarnings("rawtypes")
 							Map.Entry pairs = (Map.Entry) it.next();
@@ -144,8 +144,16 @@ public class MainWindow extends JFrame {
 					        //Peer mapPeer = (Peer) pairs.getKey();
 					        @SuppressWarnings("unchecked")
 							ArrayList<String> blockList = (ArrayList<String>) pairs.getValue();
+					        //Check to see if the HashMap's matching is accurate
 					        if(blockList.toString().equals(blockListStr)) {
-					        	BlockedFile bf = new BlockedFile(fileName, blockList);
+					        	BlockedFile bf;
+					        	//Check if this BlockedFile exists
+					        	if(Utils.getBlockedFile(blockList) != null) {
+					        		bf = Utils.getBlockedFile(blockList);
+					        	} else {
+					        		//If not, create a new BlockedFile instance
+					        		bf = new BlockedFile(fileName, blockList);
+					        	}
 					        	bf.download();
 					        	out("");
 					        	clearTable();

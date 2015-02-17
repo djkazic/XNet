@@ -261,7 +261,18 @@ public class Utils {
 					System.out.println("Got block but DL is null");
 					//TODO: figure out if this means BF is complete
 					return null;
+				} else {
+					return bf.getDL();
 				}
+			}
+		}
+		return null;
+	}
+	
+	public static BlockedFile getBlockedFile(ArrayList<String> blockList) {
+		for(BlockedFile bf: Core.blockDex) {
+			if(bf.getBlockList().containsAll(blockList) && blockList.containsAll(bf.getBlockList())) {
+				return bf;
 			}
 		}
 		return null;

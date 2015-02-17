@@ -98,6 +98,7 @@ public class ListenerThread implements Runnable {
 					String blockName = split[1];
 					int filesize = (int) dis.readLong();
 					//Communicate to the right BlockAcceptor that this is a chunk for it
+					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
 						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
