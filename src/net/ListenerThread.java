@@ -102,8 +102,6 @@ public class ListenerThread implements Runnable {
 					if(bfdlTest != null) {
 						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
 						(new Thread(ba)).start();
-						Utils.print(this, "Logging block now");
-						bfdlTest.getBfInstance().logBlock(blockName);
 					}
 				}
 				/** === BLOCK === **/
