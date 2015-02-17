@@ -50,9 +50,7 @@ public class BlockAcceptor implements Runnable {
 														+ "/" + blockName + ".dat", false);
 			byte[] buffer = new byte[(int) Core.chunkSize];
 			int read = 0;
-			int remaining = fileSize;
-			while((read = dis.read(buffer, 0, Math.min(buffer.length, remaining))) > 0) {
-				remaining -= read;
+			while((read = dis.read(buffer)) > 0) {
 				fos.write(buffer, 0, read);
 			}
 			fos.close();
