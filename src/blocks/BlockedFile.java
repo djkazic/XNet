@@ -23,7 +23,6 @@ public class BlockedFile {
 
 	private File file;
 	private ArrayList<String> blockList;
-	private ArrayList<String> presentBlocks = new ArrayList<String> ();
 	private Gson gson = new Gson();
 	private BlockedFileDL bfdl;
 	public boolean allAccountedFor = false;
@@ -41,6 +40,7 @@ public class BlockedFile {
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
+		bfdl = new BlockedFileDL(this);
 	}
 	
 	/**
@@ -56,6 +56,7 @@ public class BlockedFile {
 		this.file = file;
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
+		bfdl = new BlockedFileDL(this);
 	}
 	
 	/**
@@ -164,7 +165,7 @@ public class BlockedFile {
 	/**
 	 * Run when all pieces are received; unifies all blocks and deposits
 	 * in regular directory (chunksDir -> regDir)
-	 * Also deletes chunksDir, as it is no longer needed
+	 * Also deletes chunksDir, to prevent duplicates
 	 * @throws IOException
 	 */
 	public void unify() throws IOException {
@@ -212,7 +213,6 @@ public class BlockedFile {
 	}
 	
 	public void download() {
-		
 		Thread bfdlThread = (new Thread(bfdl));
 		bfdlThread.start();
 		try {

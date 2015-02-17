@@ -51,14 +51,14 @@ public class Core {
 		
 		//Create blockdex
 		try {
-			Utils.blockifyDir();
+			Utils.generateBlockDex();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 1;
+		int sep = 0;
 		
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();

@@ -149,12 +149,17 @@ public class MainWindow extends JFrame {
 					        	BlockedFile bf;
 					        	//Check if this BlockedFile exists
 					        	if(Utils.getBlockedFile(blockList) != null) {
+					        		System.out.println("BlockedFile exists");
 					        		bf = Utils.getBlockedFile(blockList);
+					        		System.out.println(bf.getName());
 					        	} else {
 					        		//If not, create a new BlockedFile instance
 					        		bf = new BlockedFile(fileName, blockList);
 					        	}
+					        	System.out.println("BF download");
 					        	bf.download();
+					        	System.out.println("BF status");
+					        	System.out.println(bf.getDL() == null);
 					        	out("");
 					        	clearTable();
 					        }

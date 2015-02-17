@@ -145,13 +145,22 @@ public class Utils {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	public static void blockifyDir() throws NoSuchAlgorithmException, IOException {
-		File folder = new File(defineDir());
-		File[] listOfFiles = folder.listFiles();
+	public static void generateBlockDex() throws NoSuchAlgorithmException, IOException {
+		File defaultFolder = new File(defineDir());
+		File[] listOfFiles = defaultFolder.listFiles();
 		for(int i=0; i < listOfFiles.length; i++) {
 			if(listOfFiles[i].isFile()) {
 				//Create BlockedFile to represent an existent file
 				new BlockedFile(listOfFiles[i]);
+			}
+		}
+		File appData = new File(defineAppDataDir());
+		File[] listOfFilesAppData = appData.listFiles();
+		for(int i=0; i < listOfFilesAppData.length; i++) {
+			if(listOfFilesAppData[i].isDirectory()) {
+				//Create BlockedFile to represent incomplete file directory
+				//TODO: fix duplicate BlockedFile (wholefile) and BlockedFile (incomplete)
+				//new BlockedFile(Utils.debase64(listOfFilesAppData[i].getName()));
 			}
 		}
 	}

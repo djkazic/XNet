@@ -22,7 +22,6 @@ public class BlockedFileDL implements Runnable {
 	 */
 	public void run() {
 		while(bf.getNeededBlock() != null) {
-			System.out.println(bf.getNeededBlock());
 			broadcast(bf.getName(), bf.getNeededBlock());
 			try {
 				Thread.sleep(6500);
