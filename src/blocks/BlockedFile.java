@@ -144,15 +144,6 @@ public class BlockedFile {
 		}
 	}
 	
-	public void logBlock(String block) {
-		System.out.println(this.hashCode() + " logging block.");
-		for(String str : blockList) {
-			if(block.equals(str)) {
-				presentBlocks.add(block);
-			}
-		}
-	}
-	
 	/**
 	 * Returns the name of a missing block for this BlockedFile
 	 * @return
@@ -229,7 +220,6 @@ public class BlockedFile {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Utils.print(this, "Starting BlockedFileDL thread in preparation of blocks download, STATUS: " + (bfdl != null));
 	}
 	
 	public BlockedFileDL getDL() {
