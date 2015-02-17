@@ -286,4 +286,13 @@ public class Utils {
 		}
 		return null;
 	}
+
+	public static BlockedFile getBlockedFile(String baseName) {
+		for(BlockedFile bf : Core.blockDex) {
+			if(bf.getName().equals(debase64(baseName))) {
+				return bf;
+			}
+		}
+		return null;
+	}
 }
