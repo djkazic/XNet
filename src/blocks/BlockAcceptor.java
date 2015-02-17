@@ -20,15 +20,13 @@ public class BlockAcceptor implements Runnable {
 	private Peer peer;
 	private String forFile;
 	private String blockName;
-	private int fileSize;
 	private CountDownLatch fsLatch;
 	
 
-	public BlockAcceptor(Peer peer, String forFile, String blockName, int fileSize) {
+	public BlockAcceptor(Peer peer, String forFile, String blockName) {
 		this.peer = peer;
 		this.forFile = forFile;
 		this.blockName = blockName;
-		this.fileSize = fileSize;
 	}
 	
 	public void run() {

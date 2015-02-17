@@ -76,11 +76,10 @@ public class ListenerThread implements Runnable {
 						}
 						if(blockPos != -1) {
 							//This means that we have a valid blockPosition
+							
 							peer.dos.write(0x06);
 							peer.dos.flush();
 							Utils.writeString(baseName + "/" + blockName, peer.dos);
-							peer.dos.flush();
-							peer.dos.writeInt(blockPos);
 							peer.dos.flush();
 							BlockSender bs = new BlockSender(peer, blockSrc, blockPos, true);
 							(new Thread(bs)).start();
@@ -100,10 +99,6 @@ public class ListenerThread implements Runnable {
 						peer.dos.flush();
 						Utils.writeString(baseName + "/" + foundBlock.getName(), peer.dos);
 						peer.dos.flush();
-						peer.dos.writeInt(-1);
-						peer.dos.flush();
-						peer.dos.writeLong(foundBlock.length());
-						peer.dos.flush();
 						BlockSender bs = new BlockSender(peer, foundBlock);
 						(new Thread(bs)).start();
 					}
@@ -114,22 +109,19 @@ public class ListenerThread implements Runnable {
 					/**
 					 * base64name
 					 * (/)
-					 * blockName
-					 * 
-					 * fileSize
+					 * blockName 
 					 */
 					System.out.println("Reponse received for query!");
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
 					String forFile = split[0];
 					String blockName = split[1];
-					int filesize = (int) dis.readLong();
 					//Communicate to the right BlockAcceptor that this is a chunk for it
 					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
 						System.out.println("Making BlockAcceptor");
-						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
+						ba = new BlockAcceptor(peer, forFile, blockName);
 						(new Thread(ba)).start();
 					} else {
 						System.out.println("Made request, but null bfdl");
