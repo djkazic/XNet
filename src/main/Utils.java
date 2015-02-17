@@ -264,7 +264,6 @@ public class Utils {
 	
 	public static BlockedFileDL getBlockedFileDLForBlock(String block) {
 		for(BlockedFile bf : Core.blockDex) {
-			System.out.println(bf.getBlockList());
 			if(bf.getBlockList().contains(block)) {
 				if(bf.getDL() == null) {
 					System.out.println("Got block but DL is null");
