@@ -31,13 +31,21 @@ public class BlockAcceptor implements Runnable {
 	
 	public void run() {
 		try {
-			fsLatch = new CountDownLatch(1);
-			FileListener ssm = new FileListener(fsLatch);
-			Thread serverSocketMakerThread = new Thread(ssm);
-			serverSocketMakerThread.setName("Server Socket Maker Thread");
-			serverSocketMakerThread.start();
-			fsLatch.await();
-			System.out.println("File server socket connected with incoming");
+			FileListener ssm;
+			if(Core.firstBlockServerSocket) {
+				fsLatch = new CountDownLatch(1);
+				ssm = new FileListener(fsLatch);
+				Thread serverSocketMakerThread = new Thread(ssm);
+				serverSocketMakerThread.setName("Server Socket Maker Thread");
+				serverSocketMakerThread.start();
+				fsLatch.await();
+				Core.ssm = ssm;
+				System.out.println("File server socket generated");
+				Core.firstBlockServerSocket = false;
+			} else {
+				ssm = Core.ssm;
+			}
+			System.out.println("File server socket connected");
 			Socket newFS = ssm.getRes();
 			peer.setFS(newFS);
 			
@@ -45,7 +53,7 @@ public class BlockAcceptor implements Runnable {
 			FileOutputStream fos = new FileOutputStream(Utils.defineAppDataDir() 
 														+ "/" 
 														+ (forFile) //(already base64'd)
-														+ "/" + blockName + ".dat", false);
+														+ "/" + blockName, false);
 			byte[] buffer = new byte[(int) Core.chunkSize];
 			int read = 0;
 			while((read = dis.read(buffer)) > 0) {
