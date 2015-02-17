@@ -29,11 +29,11 @@ public class BlockedFileDL implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		try {
-			bf.unify();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//try {
+			//bf.unify();
+		//} catch (IOException e) {
+			//e.printStackTrace();
+		//}
 	}
 	
 	private void broadcast(String forFile, String blockName) {
