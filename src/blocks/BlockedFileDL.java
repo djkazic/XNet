@@ -39,7 +39,7 @@ public class BlockedFileDL implements Runnable {
 	private void broadcast(String forFile, String blockName) {
 		for(Peer peer : Core.peerList) {
 			Utils.print(this, "Requesting block " + blockName + " for " + forFile);
-			peer.st.requestBlock(forFile, blockName, bf.getBlockNumber(blockName));
+			peer.st.requestBlock(forFile, blockName);
 		}
 	}
 	
