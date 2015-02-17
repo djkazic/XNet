@@ -54,7 +54,7 @@ public class BlockAcceptor implements Runnable {
 														+ "/" 
 														+ (forFile) //(already base64'd)
 														+ "/" + blockName, false);
-			byte[] buffer = new byte[(int) Core.chunkSize];
+			byte[] buffer = new byte[4096];
 			int read = 0;
 			while((read = dis.read(buffer)) > 0) {
 				fos.write(buffer, 0, read);
