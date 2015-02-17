@@ -28,7 +28,7 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
-	public static long chunkSize = 100000; //100kb blocks
+	public static long chunkSize = 128000; //128kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Calculate HWID
