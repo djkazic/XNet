@@ -21,7 +21,6 @@ public class SenderThread implements Runnable {
 	private String receivedQuery = "";
 	private String requestedBlock = "";
 	private String requestedBlockParent = "";
-	private int requestedBlockPos = -1;
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		Thread.currentThread().setName("Peer Sender");
@@ -60,15 +59,14 @@ public class SenderThread implements Runnable {
 				} else if(requestBlock) {
 					//Send request: block transfer
 					/**
-					 * forFile / blockName /blockPos
+					 * forFile / blockName
 					 */
 					dos.write(0x05);
 					dos.flush();
-					Utils.writeString(Utils.base64(requestedBlockParent) + "/" + requestedBlock + "/" + requestedBlockPos, dos);
+					Utils.writeString(Utils.base64(requestedBlockParent) + "/" + requestedBlock, dos);
 					dos.flush();
 					requestedBlockParent = "";
 					requestedBlock = "";
-					requestedBlockPos = -1;
 					requestBlock = false;
 				
 				} else if(requestHWID) {
@@ -127,10 +125,9 @@ public class SenderThread implements Runnable {
 	 * @param forFile: block's parent BlockedFile
 	 * @param block: block name
 	 */
-	public void requestBlock(String forFile, String block, int blockPos) {
+	public void requestBlock(String forFile, String block) {
 		requestedBlockParent = forFile;
 		requestedBlock = block;
-		requestedBlockPos = blockPos;
 		requestBlock = true;
 	}
 	
