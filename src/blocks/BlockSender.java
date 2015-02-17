@@ -36,10 +36,11 @@ public class BlockSender implements Runnable {
 			socketDone = new CountDownLatch(1);
 			targetPeer.createFS(socketDone);
 			socketDone.await();
-			Utils.print(this, "Sending chunk " + sending.getName());
+			Utils.print(this, "Sending file " + sending.getName());
 			System.out.println("Outgoing file socket connected");
 			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			if(!fullFile) {
+				System.out.println("Block method activated");
 				FileInputStream fis = new FileInputStream(sending);
 				//Need filesize to be sent just in case block is smaller
 				byte[] buffer = new byte[4096];
@@ -49,6 +50,7 @@ public class BlockSender implements Runnable {
 				dos.flush();
 				fis.close();
 			} else {
+				System.out.println("RAF method activated");
 				RandomAccessFile raf = new RandomAccessFile(sending, "r");
 				raf.seek(Core.chunkSize * blockPos); //position of block to send
 				byte[] buffer = new byte[(int) Core.chunkSize];

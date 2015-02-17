@@ -99,9 +99,13 @@ public class Peer implements Runnable, Comparable<Peer> {
 						fs.connect(fsEndpoint);
 						whoa = true;
 						fs.setSoTimeout(3500);
-						Thread.sleep(800);
 					} catch (Exception e) {
 						//e.printStackTrace();
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 				Utils.print(this, "Connected to peer FS");

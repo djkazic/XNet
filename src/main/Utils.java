@@ -131,22 +131,13 @@ public class Utils {
 	 * @param plainName
 	 * @return
 	 */
-	public static File findFile(String plainName, String blockName) {
-		File directory = new File(defineAppDataDir() + "/" + plainName);
+	public static File findFile(String plainName) {
+		File directory = new File(defineDir() + "/" + plainName);
 		if(!directory.exists()) {
 			return null;
+		} else {
+			return directory;
 		}
-		File[] listOfFiles = directory.listFiles();
-		for(int i=0; i < listOfFiles.length; i++) {
-			try {
-				if(listOfFiles[i].getName().equals(blockName)) {
-					return listOfFiles[i];
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 	
 	/**

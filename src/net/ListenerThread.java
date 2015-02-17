@@ -65,11 +65,12 @@ public class ListenerThread implements Runnable {
 					String baseName = split[0];
 					String blockName = split[1];
 					int blockPos = Integer.parseInt(split[2]);
-					File blockSrc = Utils.findFile(Utils.debase64(baseName), blockName);
+					File blockSrc = Utils.findFile(Utils.debase64(baseName));
 					//If so, serve it up! With block position!
 					if(blockSrc != null) {
 						Utils.print(this, "Request approved, full file detected");
 						BlockSender bs = new BlockSender(peer, blockSrc, blockPos, true);
+						(new Thread(bs)).start();
 					}
 					//Check to see if we have this block in AppData
 					/**
