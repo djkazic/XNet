@@ -77,22 +77,11 @@ public class BlockedFile {
 		Utils.initAppDataDir(file);
 	}
 	
-	/**
-	 * Tester main
 	public static void main(String[] args) {
 		Core.blockDex = new ArrayList<BlockedFile> ();
-		BlockedFile bf = new BlockedFile("C:/Users/caik/Documents/XNet/Minecraft.exe");
-		System.out.println(bf);
+		BlockedFile bf = new BlockedFile("C:/Users/Kevin/Documents/XNet/n-600.pdf");
 		System.out.println(bf.getNeededBlock());
-		//Simulate completely done
-		ArrayList<String> allBlocks = bf.getBlockList();
-		for(String bl : allBlocks) {
-			bf.logBlock(bl);
-		}
-		System.out.println(bf.getNeededBlock());
-		//System.out.println(bf.getChunksDir());
 	}
-	**/
 	
 	/**
 	 * Splits BlockedFile into temporary blocks to generate blockList
