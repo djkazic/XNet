@@ -4,6 +4,7 @@ import java.io.File;
 
 import blocks.BlockAcceptor;
 import blocks.BlockSender;
+import blocks.BlockedFile;
 import blocks.BlockedFileDL;
 import main.Core;
 import main.Utils;
@@ -64,24 +65,42 @@ public class ListenerThread implements Runnable {
 					//Check to see if we have this complete file to serve blocks from
 					String baseName = split[0];
 					String blockName = split[1];
-					int blockPos = Integer.parseInt(split[2]);
 					File blockSrc = Utils.findFile(Utils.debase64(baseName));
-					//If so, serve it up! With block position!
+					//If so, serve it up, because we have all blocks!
 					if(blockSrc != null) {
-						Utils.print(this, "Request approved, full file detected");
-						BlockSender bs = new BlockSender(peer, blockSrc, blockPos, true);
-						(new Thread(bs)).start();
+						//Get the BlockedFile based on base name
+						BlockedFile rightBf = Utils.getBlockedFile(baseName);
+						int blockPos = -1;
+						if(rightBf != null) {
+							blockPos = rightBf.getBlockNumber(blockName);
+						}
+						if(blockPos != -1) {
+							//This means that we have a valid blockPosition
+							peer.dos.write(0x06);
+							peer.dos.flush();
+							Utils.writeString(baseName + "/" + blockName, peer.dos);
+							peer.dos.flush();
+							peer.dos.writeInt(blockPos);
+							peer.dos.flush();
+							BlockSender bs = new BlockSender(peer, blockSrc, blockPos, true);
+							(new Thread(bs)).start();
+						} else {
+							Utils.print(this, "Request denied -- error, invalid blockPos");
+						}
+						//TODO: implement sending chunks
 					}
 					//Check to see if we have this block in AppData
 					/**
-					if(Utils.findBlock(split[0], split[1]) != null) {
+					if(Utils.findBlock(baseName, blockName) != null) {
 						//split[0] is baseFileName
 						//split[1] is block hash name
-						Utils.print(this, "Request approved for block " + split[1] + " from " + split[0]);
-						File foundBlock = Utils.findBlock(split[0], split[1]);
+						Utils.print(this, "Request approved for block " + blockName + " from " + baseName);
+						File foundBlock = Utils.findBlock(baseName, blockName);
 						peer.dos.write(0x06);
 						peer.dos.flush();
-						Utils.writeString(split[0] + "/" + foundBlock.getName(), peer.dos);
+						Utils.writeString(baseName + "/" + foundBlock.getName(), peer.dos);
+						peer.dos.flush();
+						peer.dos.writeInt(-1);
 						peer.dos.flush();
 						peer.dos.writeLong(foundBlock.length());
 						peer.dos.flush();
@@ -92,6 +111,14 @@ public class ListenerThread implements Runnable {
 				}
 				if(currentFocus == 0x06) {
 					//Got response data: specific block
+					/**
+					 * base64name
+					 * (/)
+					 * blockName
+					 * 
+					 * fileSize
+					 */
+					System.out.println("Reponse received for query!");
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
 					String forFile = split[0];
@@ -101,8 +128,11 @@ public class ListenerThread implements Runnable {
 					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
+						System.out.println("Making BlockAcceptor");
 						ba = new BlockAcceptor(peer, forFile, blockName, filesize);
 						(new Thread(ba)).start();
+					} else {
+						System.out.println("Made request, but null bfdl");
 					}
 				}
 				/** === BLOCK === **/
