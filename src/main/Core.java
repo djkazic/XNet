@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-import blocks.BlockedFile;
+
+import net.FileListener;
 import net.GlobalListener;
-import peer.DiscoveryServer;
-import peer.DiscoveryThread;
 import peer.Peer;
 import peer.PeerConnector;
+import blocks.BlockedFile;
 
 public class Core {
 	
@@ -28,6 +28,10 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
+	
+	public static boolean firstBlockServerSocket = true;
+	public static FileListener ssm;
+	
 	public static long chunkSize = 128000; //128kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {

@@ -76,7 +76,6 @@ public class ListenerThread implements Runnable {
 						}
 						if(blockPos != -1) {
 							//This means that we have a valid blockPosition
-							
 							peer.dos.write(0x06);
 							peer.dos.flush();
 							Utils.writeString(baseName + "/" + blockName, peer.dos);

@@ -36,14 +36,18 @@ public class BlockSender implements Runnable {
 			socketDone = new CountDownLatch(1);
 			targetPeer.createFS(socketDone);
 			socketDone.await();
-			Utils.print(this, "Sending file " + sending.getName());
+			if(blockPos != -1) {
+				Utils.print(this, "Sending block from full-file: " + blockPos);
+			} else {
+				Utils.print(this, "Sending direct block " + sending.getName());
+			}
 			System.out.println("Outgoing file socket connected");
 			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			if(!fullFile) {
 				System.out.println("Block method activated");
 				FileInputStream fis = new FileInputStream(sending);
 				//Need filesize to be sent just in case block is smaller
-				byte[] buffer = new byte[4096];
+				byte[] buffer = new byte[(int) Core.chunkSize];
 				while(fis.read(buffer) > 0) {
 					dos.write(buffer);
 				}
@@ -55,8 +59,10 @@ public class BlockSender implements Runnable {
 				raf.seek(Core.chunkSize * blockPos); //position of block to send
 				byte[] buffer = new byte[(int) Core.chunkSize];
 				raf.readFully(buffer);
+				Utils.print(this, "Writing buffer to DataOutputStream");
 				dos.write(buffer);
 				dos.flush();
+				raf.close();
 			}
 			dos.close();
 			targetPeer.fs.close();
