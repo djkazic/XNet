@@ -56,11 +56,26 @@ public class ListenerThread implements Runnable {
 					 * base64name
 					 * (/)
 					 * blockName
+					 * (/)
+					 * blockPos
 					 */
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
+					//Check to see if we have this complete file to serve blocks from
+					String baseName = split[0];
+					String blockName = split[1];
+					int blockPos = Integer.parseInt(split[2]);
+					File blockSrc = Utils.findFile(Utils.debase64(baseName), blockName);
+					//If so, serve it up! With block position!
+					if(blockSrc != null) {
+						Utils.print(this, "Request approved, full file detected");
+						BlockSender bs = new BlockSender(peer, blockSrc, blockPos, true);
+					}
 					//Check to see if we have this block in AppData
+					/**
 					if(Utils.findBlock(split[0], split[1]) != null) {
+						//split[0] is baseFileName
+						//split[1] is block hash name
 						Utils.print(this, "Request approved for block " + split[1] + " from " + split[0]);
 						File foundBlock = Utils.findBlock(split[0], split[1]);
 						peer.dos.write(0x06);
@@ -71,9 +86,8 @@ public class ListenerThread implements Runnable {
 						peer.dos.flush();
 						BlockSender bs = new BlockSender(peer, foundBlock);
 						(new Thread(bs)).start();
-					} else {
-						Utils.print(this, "Request denied for block " + split[1] + " from " + split[0]);
 					}
+					**/
 				}
 				if(currentFocus == 0x06) {
 					//Got response data: specific block

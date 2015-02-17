@@ -47,7 +47,7 @@ public class Core {
 
 		//GUI init
 		mainWindow = new MainWindow();
-		mainWindow.out("Loading md5sum data, please wait...");
+		mainWindow.out("Loading checksum data, please wait...");
 		
 		//Create blockdex
 		try {
@@ -72,7 +72,7 @@ public class Core {
 		} else {
 			//debugServer = false;
 			pst = new PeerConnector(debugServer);
-			Core.potentialPeers.add("136.167.230.136");
+			Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			Core.discoveryLatch.countDown();
 		}

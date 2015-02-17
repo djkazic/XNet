@@ -127,6 +127,29 @@ public class Utils {
 	}
 	
 	/**
+	 * Checks for complete file related to block
+	 * @param plainName
+	 * @return
+	 */
+	public static File findFile(String plainName, String blockName) {
+		File directory = new File(defineAppDataDir() + "/" + plainName);
+		if(!directory.exists()) {
+			return null;
+		}
+		File[] listOfFiles = directory.listFiles();
+		for(int i=0; i < listOfFiles.length; i++) {
+			try {
+				if(listOfFiles[i].getName().equals(blockName)) {
+					return listOfFiles[i];
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Goes through directory and creates BlockedFile object for each complete file
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
