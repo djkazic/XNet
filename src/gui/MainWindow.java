@@ -26,6 +26,7 @@ import javax.swing.table.TableColumn;
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
+import javax.swing.JList;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -36,7 +37,7 @@ public class MainWindow extends JFrame {
 	public DefaultTableModel tableModel;
 	private CountDownLatch resLatch;
 	public CountDownLatch debugLatch;
-	private JScrollPane scrollPane;
+	private JScrollPane searchResScrollPane;
 	private JLabel lblPeers;
 	private boolean searchMode;
 	public String debugHost;
@@ -50,7 +51,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 480, 320);
+		setBounds(100, 100, 600, 440);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -61,7 +62,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(10, 13, 454, 20);
+		searchInput.setBounds(12, 13, 554, 20);
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -114,13 +115,20 @@ public class MainWindow extends JFrame {
 		contentPane.add(searchInput);
 		searchInput.setColumns(10);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 44, 454, 233);
-		contentPane.add(scrollPane);
+		searchResScrollPane = new JScrollPane();
+		searchResScrollPane.setBounds(12, 44, 554, 220);
+		contentPane.add(searchResScrollPane);
+		
+		JScrollPane downloadScrollPane = new JScrollPane();
+		downloadScrollPane.setBounds(12, 277, 554, 122);
+		contentPane.add(downloadScrollPane);
+		
+		JList downloadList = new JList();
+		downloadScrollPane.setViewportView(downloadList);
 		
 		lblPeers = new JLabel("Peers: [0|0]");
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblPeers.setBounds(406, 278, 58, 14);
+		lblPeers.setBounds(536, 398, 58, 14);
 		contentPane.add(lblPeers);
 		
 		searchRes = new JTable(tableModel);
@@ -168,7 +176,7 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-		scrollPane.setViewportView(searchRes);
+		searchResScrollPane.setViewportView(searchRes);
 		searchRes.setCellSelectionEnabled(true);
 		searchRes.setColumnSelectionAllowed(true);
 		resLatch.countDown();
