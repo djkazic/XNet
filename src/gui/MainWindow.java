@@ -51,7 +51,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 440);
+		setBounds(100, 100, 590, 440);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -62,7 +62,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(12, 13, 554, 20);
+		searchInput.setBounds(12, 13, 560, 20);
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -116,11 +116,11 @@ public class MainWindow extends JFrame {
 		searchInput.setColumns(10);
 		
 		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(12, 44, 554, 220);
+		searchResScrollPane.setBounds(12, 44, 560, 220);
 		contentPane.add(searchResScrollPane);
 		
 		JScrollPane downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 277, 554, 122);
+		downloadScrollPane.setBounds(12, 277, 560, 111);
 		contentPane.add(downloadScrollPane);
 		
 		JList downloadList = new JList();
@@ -128,7 +128,7 @@ public class MainWindow extends JFrame {
 		
 		lblPeers = new JLabel("Peers: [0|0]");
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblPeers.setBounds(536, 398, 58, 14);
+		lblPeers.setBounds(524, 392, 60, 20);
 		contentPane.add(lblPeers);
 		
 		searchRes = new JTable(tableModel);
