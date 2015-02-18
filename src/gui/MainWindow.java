@@ -26,7 +26,6 @@ import javax.swing.table.TableColumn;
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
-import blocks.BlockedFileDL;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {

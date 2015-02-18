@@ -77,10 +77,12 @@ public class BlockedFile {
 		Utils.initAppDataDir(file);
 	}
 	
+	/**
 	public static void main(String[] args) {
 		Core.blockDex = new ArrayList<BlockedFile> ();
 		BlockedFile bf = new BlockedFile("C:/Users/Kevin/Documents/XNet/n-600.pdf");
 	}
+	**/
 	
 	/**
 	 * Splits BlockedFile into temporary blocks to generate blockList

@@ -1,7 +1,5 @@
 package blocks;
 
-import java.io.IOException;
-
 import main.Core;
 import main.Utils;
 import peer.Peer;
