@@ -25,7 +25,6 @@ public class BlockedFile {
 	private ArrayList<String> blockList;
 	private Gson gson = new Gson();
 	private BlockedFileDL bfdl;
-	public boolean allAccountedFor = false;
 
 	/**
 	 * Existing file set (path)
@@ -96,7 +95,6 @@ public class BlockedFile {
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
-				System.out.println(temp.length());
 				temp.delete();
 			}
 			//Process last block separately
@@ -136,7 +134,6 @@ public class BlockedFile {
 				return test.getName();
 			}
 		}
-		allAccountedFor = true;
 		return null;
 		//Completely done, all blocks accounted for
 	}
