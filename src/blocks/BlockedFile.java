@@ -32,11 +32,7 @@ public class BlockedFile {
 	 * @param filePath
 	 */
 	public BlockedFile(String filePath) {
-		if(!Core.blockDex.contains(this)) {
-			Core.blockDex.add(this);
-		} else {
-			System.out.println("Duplicate BF detected");
-		}
+		Core.blockDex.add(this);
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
@@ -48,11 +44,7 @@ public class BlockedFile {
 	 * @param file
 	 */
 	public BlockedFile(File file) {
-		if(!Core.blockDex.contains(this)) {
-			Core.blockDex.add(this);
-		} else {
-			System.out.println("Duplicate BF detected");
-		}
+		Core.blockDex.add(this);
 		this.file = file;
 		blockList = new ArrayList<String> ();
 		getTempBlocks();
@@ -66,11 +58,7 @@ public class BlockedFile {
 	 * blockList set
 	 */
 	public BlockedFile(String file, ArrayList<String> blockList) {
-		if(!Core.blockDex.contains(this)) {
-			Core.blockDex.add(this);
-		} else {
-			System.out.println("Duplicate BF detected");
-		}
+		Core.blockDex.add(this);
 		this.file = new File(file);
 		this.blockList = blockList;
 		bfdl = new BlockedFileDL(this);
