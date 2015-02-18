@@ -1,6 +1,7 @@
 package blocks;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
@@ -46,10 +47,17 @@ public class BlockAcceptor implements Runnable {
 			peer.setFS(newFS);
 			
 			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
-			FileOutputStream fos = new FileOutputStream(Utils.defineAppDataDir() 
+			File pre = new File(Utils.defineAppDataDir() 
+														+ "/" 
+														+ (forFile));
+			if(!pre.exists()) {
+				pre.mkdir();
+			}
+			File post = new File(Utils.defineAppDataDir() 
 														+ "/" 
 														+ (forFile) //(already base64'd)
-														+ "/" + blockName, false);
+														+ "/" + blockName);
+			FileOutputStream fos = new FileOutputStream(post, false);
 			byte[] buffer = new byte[4096];
 			int read = 0;
 			int remaining = fileSize;

@@ -62,7 +62,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 1;
+		int sep = 0;
 		
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();
