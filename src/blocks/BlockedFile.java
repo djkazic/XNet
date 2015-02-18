@@ -98,7 +98,7 @@ public class BlockedFile {
 			for(i = 0; i < numberOfBlocks - 1; i++) {
 				File temp = File.createTempFile("temp", "block");
 				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
-				for (int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
+				for(int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
 					out.write(in.read());
 				}
 				out.close();
