@@ -23,6 +23,7 @@ public class BlockSender implements Runnable {
 	private CountDownLatch socketDone;
 	private int blockPos;
 	private int fileSize;
+	public byte[] rafBuffer;
 
 	public BlockSender(Peer peer, File sending, int blockPos, int fileSize) {
 		this.targetPeer = peer;
@@ -36,11 +37,12 @@ public class BlockSender implements Runnable {
 			//Calculate fileSize if not sending direct
 			if(blockPos != -1) {
 				Utils.print(this, "Sending block from full-file: " + blockPos);
-				RandomAccessFile raf = new RandomAccessFile(sending, "r");
-				raf.seek(Core.chunkSize * blockPos); //position of block to send
-				byte[] buffer = new byte[(int) Core.chunkSize];
-				fileSize = raf.read(buffer);
-				raf.close();
+				fileSize = Utils.getRAFBlock(sending, blockPos, this);
+				if(fileSize == 0) {
+					throw new Exception("blockPos was higher than valid");
+				}
+				//getRAFBlock will return fileSize but set buffer automatically
+				//TODO: handle when getRAFBlock returns 0 (i.e. blockPos was too high)
 			}
 			
 			System.out.println("BS Created: fileSize: " + fileSize);
@@ -56,8 +58,10 @@ public class BlockSender implements Runnable {
 			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			
 			if(blockPos != -1) {
-				System.out.println("Temp blocking method activated");
-				sending = Utils.getTempBlock(sending, blockPos);
+				System.out.println("RAF method activated");
+				Utils.print(this, "Writing to DOS");
+				dos.write(rafBuffer);
+				dos.flush();
 			} else {
 				System.out.println("Block method activated");
 			}

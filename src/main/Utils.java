@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -18,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
 import peer.Peer;
+import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
 
@@ -299,6 +301,12 @@ public class Utils {
 		return null;
 	}
 
+	/**
+	 * Deprecated way of pulling blocks from a full-file
+	 * @param original
+	 * @param blockPos
+	 * @return
+	 */
 	public static File getTempBlock(File original, int blockPos) {
 		File mFile = original;
 		try {
@@ -338,5 +346,19 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static int getRAFBlock(File sending, int blockPos, BlockSender bs) {
+		int res = 0;
+		try {
+			bs.rafBuffer = new byte[(int) Core.chunkSize];
+			RandomAccessFile raf = new RandomAccessFile(sending, "r");
+			raf.seek(Core.chunkSize * blockPos); //position of block to send
+			res = raf.read(bs.rafBuffer);
+			raf.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
 }
