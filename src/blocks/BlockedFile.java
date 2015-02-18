@@ -162,7 +162,13 @@ public class BlockedFile {
 			in.close();
 		}
 		out.close();
-		new File(getBlocksDir()).delete();
+		//Delete contents then the block directory
+		File blocksDir = new File(getBlocksDir());
+		File[] blocksDirBlocks = blocksDir.listFiles();
+		for(File file : blocksDirBlocks) {
+			file.delete();
+		}
+		blocksDir.delete();
 	}
 	
 	/**
