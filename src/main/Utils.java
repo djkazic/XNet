@@ -1,8 +1,12 @@
 package main;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
@@ -291,6 +295,47 @@ public class Utils {
 			if(bf.getName().equals(debase64(baseName))) {
 				return bf;
 			}
+		}
+		return null;
+	}
+
+	public static File getTempBlock(File original, int blockPos) {
+		File mFile = original;
+		try {
+			double fileLen = (double) mFile.length();
+			double numberOfBlocks = (fileLen / Core.chunkSize);
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(mFile));
+			int i;
+			for(i = 0; i < numberOfBlocks - 1; i++) {
+				File temp = File.createTempFile("temp", "block");
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
+				for(int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
+					out.write(in.read());
+				}
+				out.close();
+				if(blockPos == i) {
+					return temp;
+				}
+				temp.delete();
+			}
+			//Process last block separately
+			if(fileLen != (Core.chunkSize * i)) {
+				File temp = File.createTempFile("temp", "block");
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
+				//Read rest
+				int b;
+				while((b = in.read()) != -1) {
+					out.write(b);
+				}
+				out.close();
+				if(blockPos == i) {
+					return temp;
+				}
+				temp.delete();
+			}
+			in.close();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

@@ -32,7 +32,7 @@ public class Core {
 	public static boolean firstBlockServerSocket = true;
 	public static FileListener ssm;
 	
-	public static long chunkSize = 128000; //128kb blocks
+	public static long chunkSize = 122880; //122.88kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {
 		//Calculate HWID
@@ -62,7 +62,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();

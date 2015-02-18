@@ -80,7 +80,6 @@ public class BlockedFile {
 	public static void main(String[] args) {
 		Core.blockDex = new ArrayList<BlockedFile> ();
 		BlockedFile bf = new BlockedFile("C:/Users/Kevin/Documents/XNet/n-600.pdf");
-		System.out.println(bf.getNeededBlock());
 	}
 	
 	/**
@@ -107,6 +106,7 @@ public class BlockedFile {
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
+				System.out.println(temp.length());
 				temp.delete();
 			}
 			//Process last block separately
@@ -228,6 +228,6 @@ public class BlockedFile {
 		if(prelim == -1) {
 			return -1;
 		}
-		return prelim + 1;
+		return prelim;
 	}
 }
