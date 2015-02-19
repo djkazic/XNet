@@ -123,8 +123,6 @@ public class ListenerThread implements Runnable {
 					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
-						//Check for server socket and generate if need be
-						//Then create BlockAcceptor
 						System.out.println("Making BlockAcceptor");
 						ba = new BlockAcceptor(peer, forFile, blockName, fileSize);
 						(new Thread(ba)).start();

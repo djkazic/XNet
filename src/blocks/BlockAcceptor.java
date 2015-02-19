@@ -35,22 +35,17 @@ public class BlockAcceptor implements Runnable {
 	public void run() {
 		try {
 			FileListener ssm;
-			if(Core.firstBlockServerSocket) {
-				fsLatch = new CountDownLatch(1);
-				ssm = new FileListener(fsLatch);
-				Thread serverSocketMakerThread = new Thread(ssm);
-				serverSocketMakerThread.setName("Server Socket Maker Thread");
-				serverSocketMakerThread.start();
-				fsLatch.await();
-				Core.ssm = ssm;
-				Core.firstBlockServerSocket = false;
-			} else {
-				//Load the existing instance of SSM
-				ssm = Core.ssm;
-			}
+			fsLatch = new CountDownLatch(1);
+			ssm = new FileListener(fsLatch);
+			Thread serverSocketMakerThread = new Thread(ssm);
+			serverSocketMakerThread.setName("Server Socket Maker Thread");
+			serverSocketMakerThread.start();
+			fsLatch.await();
+
 			System.out.println("File server socket generated");
 			Socket newFS = ssm.getRes();
 			peer.setFS(newFS);
+			
 			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
 			File pre = new File(Utils.defineAppDataDir() 
 														+ "/" 
