@@ -132,6 +132,15 @@ public class Utils {
 		return null;
 	}
 	
+	public static BlockedFile getBlock(String blockedFileName) {
+		for(BlockedFile block : Core.blockDex) {
+			if(block.getName().equals(blockedFileName)) {
+				return block;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Checks for complete file related to block
 	 * @param plainName
