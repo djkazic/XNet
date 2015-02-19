@@ -54,27 +54,27 @@ public class BlockSender implements Runnable {
 			targetPeer.createFS(socketDone);
 			socketDone.await();
 			System.out.println("Outgoing file socket connected");
+			
 			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			
 			if(blockPos != -1) {
-				System.out.println("RAF method activated");
+				Thread.sleep(100);
 				Utils.print(this, "Writing to DOS");
 				dos.write(rafBuffer);
+				Utils.print(this, "Done writing to DOS");
 				dos.flush();
 			} else {
 				System.out.println("Block method activated");
+				FileInputStream fis = new FileInputStream(sending);
+				//Need filesize to be sent just in case block is smaller
+				byte[] buffer = new byte[(int) Core.chunkSize];
+				while(fis.read(buffer) > 0) {
+					dos.write(buffer);
+				}
+				dos.flush();
+				fis.close();
 			}
-			
-			FileInputStream fis = new FileInputStream(sending);
-			//Need filesize to be sent just in case block is smaller
-			byte[] buffer = new byte[(int) Core.chunkSize];
-			while(fis.read(buffer) > 0) {
-				dos.write(buffer);
-			}
-			dos.flush();
-			fis.close();
 			System.out.println("Finished!");
-			Thread.sleep(50);
 			dos.close();
 			targetPeer.fs.close();
 		} catch (Exception e) {}
