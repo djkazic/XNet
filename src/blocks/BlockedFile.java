@@ -25,6 +25,8 @@ public class BlockedFile {
 	private ArrayList<String> blockList;
 	private Gson gson = new Gson();
 	private BlockedFileDL bfdl;
+	private ArrayList<String> haveList;
+	private String progress;
 
 	/**
 	 * Existing file set (path)
@@ -34,6 +36,7 @@ public class BlockedFile {
 		Core.blockDex.add(this);
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
+		haveList = new ArrayList<String> ();
 		getTempBlocks();
 		bfdl = new BlockedFileDL(this);
 	}
@@ -46,6 +49,7 @@ public class BlockedFile {
 		Core.blockDex.add(this);
 		this.file = file;
 		blockList = new ArrayList<String> ();
+		haveList = new ArrayList<String> ();
 		getTempBlocks();
 		bfdl = new BlockedFileDL(this);
 	}
@@ -60,6 +64,7 @@ public class BlockedFile {
 		Core.blockDex.add(this);
 		this.file = new File(file);
 		this.blockList = blockList;
+		haveList = new ArrayList<String> ();
 		bfdl = new BlockedFileDL(this);
 		Utils.initAppDataDir(file);
 	}
@@ -223,5 +228,20 @@ public class BlockedFile {
 			return -1;
 		}
 		return prelim;
+	}
+	
+	public void logBlock(String blockName) {
+		haveList.add(blockName);
+		updateProgress();
+	}
+	
+	public void updateProgress() {
+		double dprogress = ((double) haveList.size()) / blockList.size();
+		dprogress *= 100;
+		String convertedProgress = "" + dprogress;
+		convertedProgress = convertedProgress.substring(0, convertedProgress.length() - 2);
+		System.out.println("DPROGRESS: " + convertedProgress);
+		progress = convertedProgress + "%";
+		Core.mainWindow.updateProgress(file.getName(), progress);
 	}
 }

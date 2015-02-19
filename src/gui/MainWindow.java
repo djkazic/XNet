@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,11 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
-import javax.swing.JList;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -34,10 +31,13 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTextField searchInput;
 	private JTable searchRes;
+	private JTable downloadList;
 	public DefaultTableModel tableModel;
+	public DefaultTableModel downloadModel;
 	private CountDownLatch resLatch;
 	public CountDownLatch debugLatch;
 	private JScrollPane searchResScrollPane;
+	private JScrollPane downloadScrollPane;
 	private JLabel lblPeers;
 	private boolean searchMode;
 	public String debugHost;
@@ -58,6 +58,10 @@ public class MainWindow extends JFrame {
 		
 		tableModel = new TableModelSpec();
 		tableModel.addColumn("Status");
+		
+		downloadModel = new TableModelDL();
+		downloadModel.addColumn("Filename");
+		downloadModel.addColumn("Progress");
 		
 		resLatch = new CountDownLatch(1);
 		
@@ -119,17 +123,17 @@ public class MainWindow extends JFrame {
 		searchResScrollPane.setBounds(12, 44, 560, 220);
 		contentPane.add(searchResScrollPane);
 		
-		JScrollPane downloadScrollPane = new JScrollPane();
+		downloadScrollPane = new JScrollPane();
 		downloadScrollPane.setBounds(12, 277, 560, 111);
 		contentPane.add(downloadScrollPane);
 		
-		JList downloadList = new JList();
-		downloadScrollPane.setViewportView(downloadList);
-		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblPeers.setBounds(524, 392, 60, 20);
+		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
+		
+		downloadList = new JTable(downloadModel);
+		downloadScrollPane.setViewportView(downloadList);
 		
 		searchRes = new JTable(tableModel);
 		searchRes.addMouseListener(new MouseAdapter() {
@@ -156,19 +160,16 @@ public class MainWindow extends JFrame {
 					        	BlockedFile bf;
 					        	//Check if this BlockedFile exists
 					        	if(Utils.getBlockedFile(blockList) != null) {
-					        		System.out.println("BlockedFile exists");
 					        		bf = Utils.getBlockedFile(blockList);
 					        		System.out.println(bf.getName());
 					        	} else {
 					        		//If not, create a new BlockedFile instance
 					        		bf = new BlockedFile(fileName, blockList);
 					        	}
-					        	System.out.println("BF download");
+					        	downloadModel.addRow(new String[]{bf.getName(), "0%"});
+					        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 					        	bf.download();
-					        	System.out.println("BF status");
-					        	System.out.println(bf.getDL() == null);
-					        	out("");
-					        	clearTable();
+					        	Core.resetTable();
 					        }
 					        it.remove();
 					    }
@@ -229,6 +230,15 @@ public class MainWindow extends JFrame {
 	
 	public void updatePeerCount() {
 		lblPeers.setText("Peers: " + Core.peersCount());
+	}
+	
+	public void updateProgress(String forFile, String progress) {
+		int rowCount = downloadModel.getRowCount();
+		for(int i=0; i < rowCount; i++) {
+			if(downloadModel.getValueAt(i, 0).equals(forFile)) {
+				downloadModel.setValueAt(progress, i, 1);
+			}
+		}
 	}
 	
 	public void setDebugLatch(CountDownLatch debugLatch) {
