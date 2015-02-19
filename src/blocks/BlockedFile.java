@@ -151,10 +151,11 @@ public class BlockedFile {
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
 		File[] blocks = new File(getBlocksDir()).listFiles();
 		if(blocks.length != numberParts) {
-			throw new Exception("Number of blocks present != number of parts");
+			throw new Exception("Number of blocks present (" + blocks.length + ") != number of parts (" + numberParts + ")");
 		}
-		for(int part = 0; part < numberParts; part++) {
-			BufferedInputStream in = new BufferedInputStream(new FileInputStream(blocks[part]));
+		for(String block : blockList) {
+			File thisBlockFile = new File(getBlocksDir() + "/" + block);
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(thisBlockFile));
 			int pointer;
 			while((pointer = in.read()) != -1) {
 				out.write(pointer);
