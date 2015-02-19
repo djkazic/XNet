@@ -58,7 +58,6 @@ public class BlockSender implements Runnable {
 			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			
 			if(blockPos != -1) {
-				Thread.sleep(100);
 				Utils.print(this, "Writing to DOS");
 				dos.write(rafBuffer);
 				Utils.print(this, "Done writing to DOS");
