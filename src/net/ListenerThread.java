@@ -113,7 +113,7 @@ public class ListenerThread implements Runnable {
 					 * 
 					 * fileSize
 					 */
-					System.out.println("Reponse received for query!");
+					System.out.println("Response received for query!");
 					String allData = Utils.readString(dis);
 					String[] split = allData.split("/");
 					int fileSize = dis.readInt();
@@ -126,8 +126,6 @@ public class ListenerThread implements Runnable {
 						System.out.println("Making BlockAcceptor");
 						ba = new BlockAcceptor(peer, forFile, blockName, fileSize);
 						(new Thread(ba)).start();
-					} else {
-						System.out.println("Made request, but null bfdl");
 					}
 				}
 				/** === BLOCK === **/
