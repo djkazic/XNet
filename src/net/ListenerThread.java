@@ -1,8 +1,6 @@
 package net;
 import java.io.DataInputStream;
 import java.io.File;
-
-import blocks.BlockAcceptor;
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
@@ -13,7 +11,7 @@ import peer.Peer;
 public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
-	public BlockAcceptor ba;
+	public FileListener fl;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		Thread.currentThread().setName("Peer Listener");
@@ -123,9 +121,9 @@ public class ListenerThread implements Runnable {
 					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
-						System.out.println("Making BlockAcceptor");
-						ba = new BlockAcceptor(peer, forFile, blockName, fileSize);
-						(new Thread(ba)).start();
+						System.out.println("Making FileListener");
+						fl = new FileListener(forFile, blockName, fileSize);
+						(new Thread(fl)).start();
 					}
 				}
 				/** === BLOCK === **/
