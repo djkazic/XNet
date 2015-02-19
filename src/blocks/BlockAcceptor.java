@@ -4,12 +4,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
-
 import main.Core;
 import main.Utils;
-import net.FileListener;
-import peer.Peer;
 
 /**
  * Accepts blocks confirmed to be needed
@@ -18,35 +14,23 @@ import peer.Peer;
  */
 public class BlockAcceptor implements Runnable {
 	
-	private Peer peer;
+	private Socket socket;
 	private String forFile;
 	private String blockName;
 	private int fileSize;
-	private CountDownLatch fsLatch;
 
-	public BlockAcceptor(Peer peer, String forFile, String blockName, int fileSize) {
-		this.peer = peer;
+	public BlockAcceptor(Socket socket, String forFile, String blockName, int fileSize) {
+		this.socket = socket;
 		this.forFile = forFile;
 		this.blockName = blockName;
 		this.fileSize = fileSize;
-		System.out.println("BA Created: fileSize: " + fileSize);
 	}
 	
 	public void run() {
 		try {
-			FileListener ssm;
-			fsLatch = new CountDownLatch(1);
-			ssm = new FileListener(fsLatch);
-			Thread serverSocketMakerThread = new Thread(ssm);
-			serverSocketMakerThread.setName("Server Socket Maker Thread");
-			serverSocketMakerThread.start();
-			fsLatch.await();
-
-			System.out.println("File server socket generated");
-			Socket newFS = ssm.getRes();
-			peer.setFS(newFS);
+			System.out.println("File server socket connected");
 			
-			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
+			DataInputStream dis = new DataInputStream(socket.getInputStream());
 			File pre = new File(Utils.defineAppDataDir() 
 														+ "/" 
 														+ (forFile));
@@ -67,7 +51,7 @@ public class BlockAcceptor implements Runnable {
 			}
 			fos.close();
 			dis.close();
-			peer.fs.close();
+			socket.close();
 			Core.mainWindow.out("File transfer of block " + blockName + " for " + forFile + " complete.");
 			Utils.print(this, "Got block successfully");
 		} catch (Exception e) {
