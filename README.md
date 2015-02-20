@@ -10,7 +10,7 @@
 * As an open source project, all source code is available on this repository. If you feel unsafe, build your own copy. It doesn't use Maven at the time, so you'll have to download Eclipse (or an IDE of your choice), import the project, and build a JAR.
 
 ### What is this project licensed under?
-* This project is protected under the GPL v3 license; you can find out more information here: http://www.gnu.org/licenses/gpl-3.0.html
+* This project is protected under the Apache 2.0 license; see LICENSE.txt for more information.
 * The above link didn't make sense? Try this one: https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29
 
 ### Special Thanks
