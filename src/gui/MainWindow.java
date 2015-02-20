@@ -133,10 +133,13 @@ public class MainWindow extends JFrame {
 		contentPane.add(lblPeers);
 		
 		downloadList = new JTable(downloadModel);
-		System.out.println(downloadList.getRowHeight());
+		downloadList.getTableHeader().setReorderingAllowed(false);
+		downloadList.getTableHeader().setResizingAllowed(false);
 		downloadScrollPane.setViewportView(downloadList);
 		
 		searchRes = new JTable(tableModel);
+		searchRes.getTableHeader().setReorderingAllowed(false);
+		searchRes.getTableHeader().setResizingAllowed(false);
 		searchRes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {

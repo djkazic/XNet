@@ -58,7 +58,7 @@ public class Utils {
 		FileSystemView fw = fr.getFileSystemView();
 		directory = fw.getDefaultDirectory().toString();
 		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-			directory += "\\XNet";
+			directory += "/XNet";
 		} else { 
 			directory += "/Documents/XNet";
 		}
