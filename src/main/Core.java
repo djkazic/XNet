@@ -1,6 +1,5 @@
 package main;
 import gui.MainWindow;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
