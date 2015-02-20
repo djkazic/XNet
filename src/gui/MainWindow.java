@@ -166,8 +166,18 @@ public class MainWindow extends JFrame {
 					        		//If not, create a new BlockedFile instance
 					        		bf = new BlockedFile(fileName, blockList);
 					        	}
-					        	downloadModel.addRow(new String[]{bf.getName(), "0%"});
-					        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
+					        	int numRows = downloadModel.getRowCount();
+					        	boolean alreadyInPane = false;
+					        	for(int i = 0; i < numRows; i++) {
+					        		if(downloadModel.getValueAt(i, 0).equals(bf.getName())) {
+					        			alreadyInPane = true;
+					        			break;
+					        		}
+					        	}
+					        	if(!alreadyInPane) {
+					        		downloadModel.addRow(new String[]{bf.getName(), "0%"});
+						        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
+					        	}
 					        	bf.download();
 					        	Core.resetTable();
 					        }

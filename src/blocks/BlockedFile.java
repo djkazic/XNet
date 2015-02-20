@@ -168,6 +168,8 @@ public class BlockedFile {
 			in.close();
 		}
 		out.close();
+		//Clear haveList, so progressBar doesn't show 200%
+		haveList.clear();
 		//Delete contents then the block directory
 		File blocksDir = new File(getBlocksDir());
 		File[] blocksDirBlocks = blocksDir.listFiles();
