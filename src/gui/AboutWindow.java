@@ -1,25 +1,17 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.Label;
 import java.awt.Font;
-
 import javax.swing.JLabel;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JSeparator;
-
 import main.Utils;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 

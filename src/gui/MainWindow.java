@@ -3,7 +3,6 @@ package gui;
 import gui.render.ProgressCellRenderer;
 import gui.render.TableModelDL;
 import gui.render.TableModelSpec;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -36,7 +35,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
