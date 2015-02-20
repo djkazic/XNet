@@ -1,28 +1,39 @@
 package gui;
 
+import gui.render.ProgressCellRenderer;
+import gui.render.TableModelDL;
+import gui.render.TableModelSpec;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
-
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -39,13 +50,17 @@ public class MainWindow extends JFrame {
 	private JTable downloadList;
 	public DefaultTableModel tableModel;
 	public DefaultTableModel downloadModel;
+	private DefaultTableCellRenderer betterRenderer;
 	private CountDownLatch resLatch;
 	public CountDownLatch debugLatch;
 	private JScrollPane searchResScrollPane;
 	private JScrollPane downloadScrollPane;
+	private JSeparator separator;
 	private JLabel lblPeers;
-	private boolean searchMode;
 	public String debugHost;
+	private JMenuItem mntmAbout;
+	
+	private boolean searchMode;
 
 	/**
 	 * Create the frame.
@@ -56,7 +71,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 590, 480);
+		setBounds(100, 100, 600, 520);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -71,7 +86,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(12, 12, 512, 25);
+		searchInput.setBounds(10, 39, 526, 25);
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -121,30 +136,54 @@ public class MainWindow extends JFrame {
 			}
 		});
 		contentPane.setLayout(null);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(0, -4, 546, 30);
+		contentPane.add(menuBar);
+		
+		JMenu mnFile = new JMenu("Help");
+		menuBar.add(mnFile);
+		
+		mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new AboutWindow();
+			}
+		});
+
+		try {
+			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/glasses.png")));
+			mntmAbout.setIcon(imageIcon);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
+		mnFile.add(mntmAbout);
 		contentPane.add(searchInput);
 		searchInput.setColumns(10);
 		
 		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(12, 44, 512, 220);
+		searchResScrollPane.setBounds(10, 75, 526, 220);
 		contentPane.add(searchResScrollPane);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 277, 512, 102);
+		downloadScrollPane.setBounds(10, 306, 526, 102);
 		contentPane.add(downloadScrollPane);
 		
+		separator = new JSeparator();
+		separator.setBounds(0, 419, 546, 2);
+		contentPane.add(separator);
+		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(476, 381, 60, 20);
+		lblPeers.setBounds(486, 421, 60, 20);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		
-		downloadList = new JTable(downloadModel);
-		downloadList.setIntercellSpacing(new Dimension(10, 0));
-		downloadList.getTableHeader().setReorderingAllowed(false);
-		downloadList.getTableHeader().setResizingAllowed(false);
-		downloadScrollPane.setViewportView(downloadList);
-		
 		searchRes = new JTable(tableModel);
-		searchRes.setIntercellSpacing(new Dimension(10, 0));
+		betterRenderer = new DefaultTableCellRenderer();
+		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		searchRes.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
 		searchRes.getTableHeader().setReorderingAllowed(false);
 		searchRes.getTableHeader().setResizingAllowed(false);
 		searchRes.addMouseListener(new MouseAdapter() {
@@ -203,6 +242,14 @@ public class MainWindow extends JFrame {
 		searchResScrollPane.setViewportView(searchRes);
 		searchRes.setCellSelectionEnabled(true);
 		searchRes.setColumnSelectionAllowed(true);
+		
+		downloadList = new JTable(downloadModel);
+		downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
+		downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
+		downloadList.getTableHeader().setReorderingAllowed(false);
+		downloadList.getTableHeader().setResizingAllowed(false);
+		downloadScrollPane.setViewportView(downloadList);
+		
 		resLatch.countDown();
 	}
 	

@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -12,6 +13,7 @@ import java.io.RandomAccessFile;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
@@ -369,5 +371,17 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return res;
+	}
+	
+	/**
+	 * Opens a window to the specified URL
+	 * @param uri
+	 */
+	public static void openLink(URI uri) {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().browse(uri);
+			} catch (IOException e) { /* TODO: error handling */ }
+		} else { /* TODO: error handling */ }
 	}
 }

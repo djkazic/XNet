@@ -1,4 +1,4 @@
-package gui;
+package gui.render;
 
 import java.awt.Component;
 import javax.swing.JProgressBar;
