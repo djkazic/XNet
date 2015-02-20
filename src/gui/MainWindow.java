@@ -51,7 +51,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 590, 440);
+		setBounds(100, 100, 590, 430);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -124,15 +124,16 @@ public class MainWindow extends JFrame {
 		contentPane.add(searchResScrollPane);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 277, 560, 104);
+		downloadScrollPane.setBounds(12, 277, 560, 102);
 		contentPane.add(downloadScrollPane);
 		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(514, 392, 60, 20);
+		lblPeers.setBounds(514, 381, 60, 20);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		
 		downloadList = new JTable(downloadModel);
+		System.out.println(downloadList.getRowHeight());
 		downloadScrollPane.setViewportView(downloadList);
 		
 		searchRes = new JTable(tableModel);
@@ -167,18 +168,20 @@ public class MainWindow extends JFrame {
 					        		bf = new BlockedFile(fileName, blockList);
 					        	}
 					        	int numRows = downloadModel.getRowCount();
-					        	boolean alreadyInPane = false;
+					        	boolean alreadyDoneInPane = false;
 					        	for(int i = 0; i < numRows; i++) {
 					        		if(downloadModel.getValueAt(i, 0).equals(bf.getName())) {
-					        			alreadyInPane = true;
-					        			break;
+					        			if(downloadModel.getValueAt(i, 1).equals("100%")) {
+					        				alreadyDoneInPane = true;
+						        			break;
+					        			}
 					        		}
 					        	}
-					        	if(!alreadyInPane) {
+					        	if(!alreadyDoneInPane) {
 					        		downloadModel.addRow(new String[]{bf.getName(), "0%"});
 						        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
+						        	bf.download();
 					        	}
-					        	bf.download();
 					        	Core.resetTable();
 					        }
 					        it.remove();
