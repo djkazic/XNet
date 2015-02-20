@@ -1,6 +1,8 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -12,15 +14,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
@@ -51,7 +56,7 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 590, 430);
+		setBounds(100, 100, 590, 480);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -66,7 +71,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(12, 12, 560, 25);
+		searchInput.setBounds(12, 12, 512, 25);
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -120,24 +125,26 @@ public class MainWindow extends JFrame {
 		searchInput.setColumns(10);
 		
 		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(12, 44, 560, 220);
+		searchResScrollPane.setBounds(12, 44, 512, 220);
 		contentPane.add(searchResScrollPane);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 277, 560, 102);
+		downloadScrollPane.setBounds(12, 277, 512, 102);
 		contentPane.add(downloadScrollPane);
 		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(514, 381, 60, 20);
+		lblPeers.setBounds(476, 381, 60, 20);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		
 		downloadList = new JTable(downloadModel);
+		downloadList.setIntercellSpacing(new Dimension(10, 0));
 		downloadList.getTableHeader().setReorderingAllowed(false);
 		downloadList.getTableHeader().setResizingAllowed(false);
 		downloadScrollPane.setViewportView(downloadList);
 		
 		searchRes = new JTable(tableModel);
+		searchRes.setIntercellSpacing(new Dimension(10, 0));
 		searchRes.getTableHeader().setReorderingAllowed(false);
 		searchRes.getTableHeader().setResizingAllowed(false);
 		searchRes.addMouseListener(new MouseAdapter() {

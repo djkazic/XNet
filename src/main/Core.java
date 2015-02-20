@@ -1,11 +1,15 @@
 package main;
 import gui.MainWindow;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.UIManager;
-import com.alee.laf.WebLookAndFeel;
+
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
+
 import net.FileListener;
 import net.GlobalListener;
 import peer.Peer;
@@ -36,7 +40,12 @@ public class Core {
 	
 	public static void main(String[] args) throws InterruptedException {
 		//L&F init
-		WebLookAndFeel.install();
+		try {
+			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencyAppleLike;
+			org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		//Calculate HWID
 		hwid = Utils.getHWID();
@@ -51,8 +60,8 @@ public class Core {
 		
 		//Directory work
 		Utils.initDir();
-
-		//GUI init
+		
+		//GUI inits
 		mainWindow = new MainWindow();
 		mainWindow.out("Loading checksum data, please wait...");
 		
@@ -65,7 +74,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();
