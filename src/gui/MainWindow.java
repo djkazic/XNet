@@ -124,11 +124,11 @@ public class MainWindow extends JFrame {
 		contentPane.add(searchResScrollPane);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 277, 560, 111);
+		downloadScrollPane.setBounds(12, 277, 560, 104);
 		contentPane.add(downloadScrollPane);
 		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(524, 392, 60, 20);
+		lblPeers.setBounds(514, 392, 60, 20);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		
