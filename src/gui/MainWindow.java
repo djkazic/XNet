@@ -66,7 +66,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(12, 13, 560, 20);
+		searchInput.setBounds(12, 12, 560, 25);
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override

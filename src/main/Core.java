@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
+import com.alee.laf.WebLookAndFeel;
 import net.FileListener;
 import net.GlobalListener;
 import peer.Peer;
@@ -38,6 +36,9 @@ public class Core {
 	public static long chunkSize = 122880; //122.88kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {
+		//L&F init
+		WebLookAndFeel.install();
+		
 		//Calculate HWID
 		hwid = Utils.getHWID();
 		
@@ -53,11 +54,6 @@ public class Core {
 		Utils.initDir();
 
 		//GUI init
-		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.texture.TextureLookAndFeel");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		mainWindow = new MainWindow();
 		mainWindow.out("Loading checksum data, please wait...");
 		
