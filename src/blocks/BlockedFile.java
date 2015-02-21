@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import main.Core;
+import main.Settings;
 import main.Utils;
 
 import com.google.gson.Gson;
@@ -83,7 +84,7 @@ public class BlockedFile {
 		File mFile = file;
 		try {
 			double fileLen = (double) mFile.length();
-			double numberOfBlocks = (fileLen / Core.chunkSize);
+			double numberOfBlocks = (fileLen / Settings.blockSize);
 			//System.out.println(numberOfBlocks);
 			//Process all complete blocks
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(mFile));
@@ -91,7 +92,7 @@ public class BlockedFile {
 			for(i = 0; i < numberOfBlocks - 1; i++) {
 				File temp = File.createTempFile("temp", "block");
 				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
-				for(int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
+				for(int currentByte = 0; currentByte < Settings.blockSize; currentByte++) {
 					out.write(in.read());
 				}
 				out.close();
@@ -103,7 +104,7 @@ public class BlockedFile {
 				temp.delete();
 			}
 			//Process last block separately
-			if(fileLen != (Core.chunkSize * i)) {
+			if(fileLen != (Settings.blockSize * i)) {
 				File temp = File.createTempFile("temp", "block");
 				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
 				//Read rest
@@ -119,7 +120,7 @@ public class BlockedFile {
 				}
 				temp.delete();
 			} else {
-				Utils.print(this, "Temp block sizes check! " + fileLen + " | " + (Core.chunkSize * i));
+				Utils.print(this, "Temp block sizes check! " + fileLen + " | " + (Settings.blockSize * i));
 			}
 			in.close();
 		} catch (IOException e) {

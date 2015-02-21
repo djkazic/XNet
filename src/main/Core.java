@@ -31,8 +31,6 @@ public class Core {
 	public static boolean firstBlockServerSocket = true;
 	public static FileListener ssm;
 	
-	public static long chunkSize = 122880; //122.88kb blocks
-	
 	public static void main(String[] args) throws InterruptedException {
 		//L&F set
 		try {

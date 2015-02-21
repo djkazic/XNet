@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.concurrent.CountDownLatch;
 
-import main.Core;
+import main.Settings;
 import main.Utils;
 import peer.Peer;
 
@@ -66,7 +66,7 @@ public class BlockSender implements Runnable {
 				System.out.println("Block method activated");
 				FileInputStream fis = new FileInputStream(sending);
 				//Need filesize to be sent just in case block is smaller
-				byte[] buffer = new byte[(int) Core.chunkSize];
+				byte[] buffer = new byte[(int) Settings.blockSize];
 				while(fis.read(buffer) > 0) {
 					dos.write(buffer);
 				}

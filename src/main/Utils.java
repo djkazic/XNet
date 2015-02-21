@@ -337,13 +337,13 @@ public class Utils {
 		File mFile = original;
 		try {
 			double fileLen = (double) mFile.length();
-			double numberOfBlocks = (fileLen / Core.chunkSize);
+			double numberOfBlocks = (fileLen / Settings.blockSize);
 			BufferedInputStream in = new BufferedInputStream(new FileInputStream(mFile));
 			int i;
 			for(i = 0; i < numberOfBlocks - 1; i++) {
 				File temp = File.createTempFile("temp", "block");
 				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
-				for(int currentByte = 0; currentByte < Core.chunkSize; currentByte++) {
+				for(int currentByte = 0; currentByte < Settings.blockSize; currentByte++) {
 					out.write(in.read());
 				}
 				out.close();
@@ -353,7 +353,7 @@ public class Utils {
 				temp.delete();
 			}
 			//Process last block separately
-			if(fileLen != (Core.chunkSize * i)) {
+			if(fileLen != (Settings.blockSize * i)) {
 				File temp = File.createTempFile("temp", "block");
 				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
 				//Read rest
@@ -377,9 +377,9 @@ public class Utils {
 	public static int getRAFBlock(File sending, int blockPos, BlockSender bs) {
 		int res = 0;
 		try {
-			bs.rafBuffer = new byte[(int) Core.chunkSize];
+			bs.rafBuffer = new byte[(int) Settings.blockSize];
 			RandomAccessFile raf = new RandomAccessFile(sending, "r");
-			raf.seek(Core.chunkSize * blockPos); //position of block to send
+			raf.seek(Settings.blockSize * blockPos); //position of block to send
 			res = raf.read(bs.rafBuffer);
 			raf.close();
 		} catch (Exception e) {
