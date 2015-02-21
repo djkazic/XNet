@@ -1,6 +1,8 @@
 package net;
 import java.io.DataInputStream;
 import java.io.File;
+import java.util.ArrayList;
+
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
@@ -137,6 +139,21 @@ public class ListenerThread implements Runnable {
 					peer.hwid = incomingHWID;
 					peer.hwidLatch.countDown();
 				}
+				//if(currentFocus == 0x09) {
+					//Got request: peerList
+					if(Core.peerList.size() > 0) {
+						ArrayList<String> basePeers = new ArrayList<String> ();
+						for(Peer peer : Core.peerList) {
+							if(peer.connected) {
+								basePeers.add(peer.ps.getRemoteSocketAddress().toString());
+							}
+						}
+						if(basePeers.size() > 0) {
+							//peer.st.sendPeers(basePeers);
+						}
+						System.out.println(basePeers);
+					}
+				//}
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 

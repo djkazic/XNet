@@ -59,7 +59,7 @@ public class Utils {
 		JFileChooser fr = new JFileChooser();
 		FileSystemView fw = fr.getFileSystemView();
 		directory = fw.getDefaultDirectory().toString();
-		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+		if(isWindows()) {
 			directory += "/XNet";
 		} else { 
 			directory += "/Documents/XNet";
@@ -69,7 +69,7 @@ public class Utils {
 	
 	public static String defineAppDataDir() {
 		String workingDirectory;
-		if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+		if(isWindows()) {
 		    workingDirectory = System.getenv("AppData") + "/XNet";
 		} else {
 		    workingDirectory = System.getProperty("user.home");
@@ -383,5 +383,9 @@ public class Utils {
 				Desktop.getDesktop().browse(uri);
 			} catch (IOException e) { /* TODO: error handling */ }
 		} else { /* TODO: error handling */ }
+	}
+	
+	public static boolean isWindows() {
+		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
 	}
 }

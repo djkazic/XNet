@@ -19,20 +19,26 @@ public class PeerConnector implements Runnable {
 			Core.mainWindow.out("Please enter the debug server IP");
 			debugLatch = new CountDownLatch(1);
 			Core.mainWindow.setDebugLatch(debugLatch);
+		}
+	}
+	
+	public void run() {
+		//Scan for local peers
+		//(new Thread(new DiscoveryServer())).start();
+		//(new Thread(new DiscoveryThread())).start();
+		int attempts = 0;
+		if(!Core.debugServer) {
+			try {
+				Core.discoveryLatch.await();
+			} catch (InterruptedException e1) {e1.printStackTrace();}
+		} else {
 			try {
 				debugLatch.await();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			host = Core.mainWindow.debugHost;
+			Core.potentialPeers.add(Core.mainWindow.debugHost);
 		}
-	}
-	
-	public void run() {
-		int attempts = 0;
-		try {
-			Core.discoveryLatch.await();
-		} catch (InterruptedException e1) {e1.printStackTrace();}
 		while(!Core.killPeerConnector && Core.potentialPeers.size() > 0) {
 			//Pick a host from the potentialPeers
 			host = Core.potentialPeers.get(0);

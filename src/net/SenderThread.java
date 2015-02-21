@@ -1,5 +1,6 @@
 package net;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 import main.Core;
 import main.Utils;
@@ -16,6 +17,8 @@ public class SenderThread implements Runnable {
 	private boolean requestBlock = false;
 	private boolean requestHWID = false;
 	private boolean sendHWID = false;
+	private boolean requestPeers = false;
+	private boolean sendPeers = false;
 	
 	private String sendQuery = "";
 	private String receivedQuery = "";
@@ -58,9 +61,6 @@ public class SenderThread implements Runnable {
 					sendBlockList = false;
 				} else if(requestBlock) {
 					//Send request: block transfer
-					/**
-					 * forFile / blockName
-					 */
 					dos.write(0x05);
 					dos.flush();
 					Utils.writeString(Utils.base64(requestedBlockParent) + "/" + requestedBlock, dos);
@@ -68,7 +68,6 @@ public class SenderThread implements Runnable {
 					requestedBlockParent = "";
 					requestedBlock = "";
 					requestBlock = false;
-				
 				} else if(requestHWID) {
 					//Send request: HWID
 					dos.write(0x07);
@@ -81,6 +80,11 @@ public class SenderThread implements Runnable {
 					Utils.writeString(Core.hwid, dos);
 					dos.flush();
 					sendHWID = false;
+				} else if(requestPeers) {
+					//Send request: peerList
+					dos.write(0x09);
+					dos.flush();
+					requestPeers = false;
 				} else if(disconnect) {
 					dos.write(0x14);
 					dos.flush();
@@ -143,5 +147,13 @@ public class SenderThread implements Runnable {
 	 */
 	public void sendHWID() {
 		sendHWID = true;
+	}
+	
+	public void requestPeers() {
+		requestPeers = true;
+	}
+	
+	public void sendPeers(ArrayList<String> peerList) {
+		
 	}
 }
