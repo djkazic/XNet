@@ -27,17 +27,17 @@ public class PeerConnector implements Runnable {
 		//(new Thread(new DiscoveryServer())).start();
 		//(new Thread(new DiscoveryThread())).start();
 		int attempts = 0;
-		if(!Core.debugServer) {
-			try {
-				Core.discoveryLatch.await();
-			} catch (InterruptedException e1) {e1.printStackTrace();}
-		} else {
+		if(Core.debugServer) {
 			try {
 				debugLatch.await();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			Core.potentialPeers.add(Core.mainWindow.debugHost);
+		} else {
+			try {
+				Core.discoveryLatch.await();
+			} catch (InterruptedException e1) {e1.printStackTrace();}
 		}
 		while(!Core.killPeerConnector && Core.potentialPeers.size() > 0) {
 			//Pick a host from the potentialPeers
