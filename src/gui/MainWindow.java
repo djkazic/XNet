@@ -133,8 +133,10 @@ public class MainWindow extends JFrame {
 		separator.setBounds(0, 419, 546, 2);
 		contentPane.add(separator);
 		
-		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(484, 422, 60, 20);
+		lblPeers = new JLabel("");
+		lblPeers.setToolTipText("[0|0]");
+		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/0bars.png")));
+		lblPeers.setBounds(520, 419, 24, 25);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		
@@ -315,7 +317,9 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void updatePeerCount() {
-		lblPeers.setText("Peers: " + Core.peersCount());
+		String peers = Core.peersCount();
+		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/" + peers + ".png")));
+		lblPeers.setToolTipText(Core.peerToolTip());
 	}
 	
 	public void updateProgress(String forFile, String progress) {

@@ -93,16 +93,33 @@ public class Core {
 	}
 	
 	public static String peersCount() {
-		int in = 0; 
-		int out = 0;
+		int size = peerList.size();
+		if(size == 0) {
+			//0 peers
+			return "0bars";
+		} else if(size <= 2) {
+			//1 or 2 peers
+			return "1bars";
+		} else if(size <= 4) {
+			//3 or 4 peers
+			return "2bars";
+		} else if(size > 4) {
+			return "3bars";
+		}
+		return null;
+	}
+	
+	public static String peerToolTip() {
+		int inCount = 0;
+		int outCount = 0;
 		for(Peer peer : peerList) {
 			if(peer.inout == 1) {
-				in++;
+				inCount++;
 			} else if(peer.inout == 0) {
-				out++;
+				outCount++;
 			}
 		}
-		return "["+ in +"|"+ out +"]";
+		return "[" + inCount + "|" + outCount + "]";
 	}
 
 	public static boolean checkHWID(String hwid) {
