@@ -46,23 +46,25 @@ import blocks.BlockedFile;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
-	private JPanel contentPane;
-	private JTextField searchInput;
-	private JTable searchRes;
-	private JTable downloadList;
+	protected JPanel contentPane;
+	protected JTextField searchInput;
+	protected JTable searchRes;
+	protected JTable downloadList;
 	public DefaultTableModel tableModel;
 	public DefaultTableModel downloadModel;
-	private DefaultTableCellRenderer betterRenderer;
-	private CountDownLatch resLatch;
+	protected DefaultTableCellRenderer betterRenderer;
+	protected CountDownLatch resLatch;
 	public CountDownLatch debugLatch;
-	private JScrollPane searchResScrollPane;
-	private JScrollPane downloadScrollPane;
-	private JSeparator separator;
-	private JLabel lblPeers;
+	protected JScrollPane searchResScrollPane;
+	protected JScrollPane downloadScrollPane;
+	protected JSeparator separator;
+	protected JLabel lblPeers;
 	public String debugHost;
-	private JMenuItem mntmAbout;
+	protected JMenuItem mntmAbout;
+	protected JMenuBar menuBar;
+	protected JMenu mnFile;
 	
-	private boolean searchMode;
+	protected boolean searchMode;
 
 	/**
 	 * Create the frame.
@@ -96,6 +98,71 @@ public class MainWindow extends JFrame {
 		
 		searchInput = new JTextField();
 		searchInput.setBounds(10, 39, 526, 25);
+		contentPane.add(searchInput);
+		searchInput.setColumns(10);
+		
+		contentPane.setLayout(null);
+		
+		menuBar = new JMenuBar();
+		menuBar.setBounds(0, -4, 546, 30);
+		contentPane.add(menuBar);
+		
+		mnFile = new JMenu("Help");
+		menuBar.add(mnFile);
+
+		mntmAbout = new JMenuItem("About");
+		try {
+			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/glasses.png")));
+			mntmAbout.setIcon(imageIcon);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
+		mnFile.add(mntmAbout);
+		
+		searchResScrollPane = new JScrollPane();
+		searchResScrollPane.setBounds(10, 75, 526, 220);
+		contentPane.add(searchResScrollPane);
+		
+		downloadScrollPane = new JScrollPane();
+		downloadScrollPane.setBounds(10, 306, 526, 102);
+		contentPane.add(downloadScrollPane);
+		
+		separator = new JSeparator();
+		separator.setBounds(0, 419, 546, 2);
+		contentPane.add(separator);
+		
+		lblPeers = new JLabel("Peers: [0|0]");
+		lblPeers.setBounds(486, 421, 60, 20);
+		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		contentPane.add(lblPeers);
+		
+		searchRes = new JTable(tableModel);
+		betterRenderer = new DefaultTableCellRenderer();
+		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		searchRes.setDefaultRenderer(Object.class, betterRenderer);
+		//.getColumn(0).setCellRenderer(betterRenderer);
+		searchRes.getTableHeader().setReorderingAllowed(false);
+		searchRes.getTableHeader().setResizingAllowed(false);
+		searchResScrollPane.setViewportView(searchRes);
+		searchRes.setCellSelectionEnabled(true);
+		searchRes.setColumnSelectionAllowed(true);
+		
+		downloadList = new JTable(downloadModel);
+		downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
+		downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
+		downloadList.getTableHeader().setReorderingAllowed(false);
+		downloadList.getTableHeader().setResizingAllowed(false);
+		downloadScrollPane.setViewportView(downloadList);
+	}
+	
+	public void registerListeners() {
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aboutWindow();
+			}
+		});
 		
 		searchInput.addKeyListener(new KeyAdapter() {
 			@Override
@@ -144,58 +211,7 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-		contentPane.setLayout(null);
 		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, -4, 546, 30);
-		contentPane.add(menuBar);
-		
-		JMenu mnFile = new JMenu("Help");
-		menuBar.add(mnFile);
-		
-		mntmAbout = new JMenuItem("About");
-		mntmAbout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new AboutWindow();
-			}
-		});
-
-		try {
-			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/glasses.png")));
-			mntmAbout.setIcon(imageIcon);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
-		mnFile.add(mntmAbout);
-		contentPane.add(searchInput);
-		searchInput.setColumns(10);
-		
-		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(10, 75, 526, 220);
-		contentPane.add(searchResScrollPane);
-		
-		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(10, 306, 526, 102);
-		contentPane.add(downloadScrollPane);
-		
-		separator = new JSeparator();
-		separator.setBounds(0, 419, 546, 2);
-		contentPane.add(separator);
-		
-		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(486, 421, 60, 20);
-		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(lblPeers);
-		
-		searchRes = new JTable(tableModel);
-		betterRenderer = new DefaultTableCellRenderer();
-		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		searchRes.setDefaultRenderer(Object.class, betterRenderer);
-		//.getColumn(0).setCellRenderer(betterRenderer);
-		searchRes.getTableHeader().setReorderingAllowed(false);
-		searchRes.getTableHeader().setResizingAllowed(false);
 		searchRes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -249,19 +265,8 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
-		searchResScrollPane.setViewportView(searchRes);
-		searchRes.setCellSelectionEnabled(true);
-		searchRes.setColumnSelectionAllowed(true);
-		
-		downloadList = new JTable(downloadModel);
-		downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
-		downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
-		downloadList.getTableHeader().setReorderingAllowed(false);
-		downloadList.getTableHeader().setResizingAllowed(false);
-		downloadScrollPane.setViewportView(downloadList);
-		
-		setVisible(true);
 		resLatch.countDown();
+		setVisible(true);
 	}
 	
 	public void out(String str) {
@@ -324,5 +329,9 @@ public class MainWindow extends JFrame {
 	
 	public void setDebugLatch(CountDownLatch debugLatch) {
 		this.debugLatch = debugLatch;
+	}
+	
+	public void aboutWindow() {
+		new AboutWindow();
 	}
 }

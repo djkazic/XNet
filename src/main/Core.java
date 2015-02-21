@@ -1,4 +1,5 @@
 package main;
+import gui.MacMainWindow;
 import gui.MainWindow;
 
 import java.util.ArrayList;
@@ -41,9 +42,10 @@ public class Core {
 	public static void main(String[] args) throws InterruptedException {
 		//L&F init
 		try {
-			BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencyAppleLike;
-			org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-			UIManager.put("RootPane.setupButtonVisible" , false);
+			if(Utils.isWindows()) {
+				org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+				UIManager.put("RootPane.setupButtonVisible" , false);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -59,11 +61,17 @@ public class Core {
 		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
 		
+		//GUI inits
+		if(Utils.isWindows()) {
+			mainWindow = new MainWindow();
+		} else {
+			mainWindow = new MacMainWindow();
+		}
+		mainWindow.registerListeners();
+		
 		//Directory work
 		Utils.initDir();
 		
-		//GUI inits
-		mainWindow = new MainWindow();
 		mainWindow.out("Loading checksum data, please wait...");
 		
 		//Create blockdex
@@ -74,25 +82,22 @@ public class Core {
 		}
 		
 		//Local development tools
-		debugServer = false;
-		int sep = 1;
-		
-		//Scan for local peers
-		//(new Thread(new DiscoveryServer())).start();
-		//(new Thread(new DiscoveryThread())).start();
+		//debugServer = false;
+		int sep = 0;
 
 		resetTable();
 		
-		if(sep == 0) {
+		//if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		} else {
+		//} else {
 			//debugServer = false;
 			pst = new PeerConnector(debugServer);
-			Core.potentialPeers.add("127.0.0.1");
+			//Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
-			Core.discoveryLatch.countDown();
-		}
+			//TODO: remove debugging
+			//Core.discoveryLatch.countDown();
+		//}
 	}
 	
 	public static void sortPeers() {
