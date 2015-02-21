@@ -195,7 +195,7 @@ public class BlockedFile {
 	 * @return
 	 */
 	public String getBlocksDir() {
-		return Utils.defineAppDataDir() + "/" + Utils.base64(file.getName());
+		return Utils.defineAppDataDir() + "/" + Utils.base64(getName());
 	}
 	
 	public boolean relevant(String str) {
@@ -233,7 +233,12 @@ public class BlockedFile {
 	}
 	
 	public void logBlock(String blockName) {
-		haveList.add(blockName);
+		File test = new File(getBlocksDir() + "/" + blockName);
+		if(test.exists() && test.length() > 0) {
+			if(!haveList.contains(blockName)) {
+				haveList.add(blockName);
+			}
+		}
 		updateProgress();
 	}
 	
@@ -241,6 +246,6 @@ public class BlockedFile {
 		double dprogress = ((double) haveList.size()) / blockList.size();
 		dprogress *= 100;
 		progress = Math.round(dprogress) + "%";
-		Core.mainWindow.updateProgress(file.getName(), progress);
+		Core.mainWindow.updateProgress(getName(), progress);
 	}
 }

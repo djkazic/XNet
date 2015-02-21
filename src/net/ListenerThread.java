@@ -68,8 +68,8 @@ public class ListenerThread implements Runnable {
 					File blockSrc = Utils.findFile(Utils.debase64(baseName));
 					//If so, serve it up, because we have all blocks!
 					if(blockSrc != null) {
-						//Get the BlockedFile based on base name
-						BlockedFile rightBf = Utils.getBlockedFile(baseName);
+						//Get the BlockedFile based on name
+						BlockedFile rightBf = Utils.getBlockedFileByName(Utils.debase64(baseName));
 						int blockPos = -1;
 						if(rightBf != null) {
 							blockPos = rightBf.getBlockNumber(blockName);

@@ -149,7 +149,7 @@ public class Utils {
 		return null;
 	}
 	
-	public static BlockedFile getBlock(String blockedFileName) {
+	public static BlockedFile getBlockedFileByName(String blockedFileName) {
 		for(BlockedFile block : Core.blockDex) {
 			if(block.getName().equals(blockedFileName)) {
 				return block;
@@ -309,18 +309,9 @@ public class Utils {
 		return null;
 	}
 	
-	public static BlockedFile getBlockedFile(ArrayList<String> blockList) {
+	public static BlockedFile getBlockedFileByBlockList(ArrayList<String> blockList) {
 		for(BlockedFile bf: Core.blockDex) {
 			if(bf.getBlockList().containsAll(blockList) && blockList.containsAll(bf.getBlockList())) {
-				return bf;
-			}
-		}
-		return null;
-	}
-
-	public static BlockedFile getBlockedFile(String baseName) {
-		for(BlockedFile bf : Core.blockDex) {
-			if(bf.getName().equals(debase64(baseName))) {
 				return bf;
 			}
 		}

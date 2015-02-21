@@ -52,12 +52,11 @@ public class BlockAcceptor implements Runnable {
 			fos.close();
 			dis.close();
 			socket.close();
-			Core.mainWindow.out("File transfer of block " + blockName + " for " + forFile + " complete.");
 			Utils.print(this, "Got block successfully");
 			
 			//Find BlockedFile forFile and logBlock
 			String plain = Utils.debase64(forFile);
-			Utils.getBlock(plain).logBlock(blockName);
+			Utils.getBlockedFileByName(plain).logBlock(blockName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

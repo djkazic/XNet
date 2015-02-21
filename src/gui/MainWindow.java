@@ -238,8 +238,8 @@ public class MainWindow extends JFrame {
 					        if(blockList.toString().equals(blockListStr)) {
 					        	BlockedFile bf;
 					        	//Check if this BlockedFile exists
-					        	if(Utils.getBlockedFile(blockList) != null) {
-					        		bf = Utils.getBlockedFile(blockList);
+					        	if(Utils.getBlockedFileByBlockList(blockList) != null) {
+					        		bf = Utils.getBlockedFileByBlockList(blockList);
 					        		System.out.println(bf.getName());
 					        	} else {
 					        		//If not, create a new BlockedFile instance
