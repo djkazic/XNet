@@ -3,7 +3,9 @@ package gui;
 import gui.render.ProgressCellRenderer;
 import gui.render.TableModelDL;
 import gui.render.TableModelSpec;
+
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -35,6 +38,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
 import main.Core;
 import main.Utils;
 import blocks.BlockedFile;
@@ -73,6 +77,14 @@ public class MainWindow extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		
+		//Set title icon
+		try {
+			Image iconImage = ImageIO.read(getClass().getResourceAsStream("/res/titleicon.png"));
+			setIconImage(iconImage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		tableModel = new TableModelSpec();
 		tableModel.addColumn("Status");
