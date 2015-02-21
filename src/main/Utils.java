@@ -16,6 +16,7 @@ import java.net.NetworkInterface;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
@@ -402,5 +403,52 @@ public class Utils {
 	public static boolean isWindows() {
 		//return false;
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
+	}
+
+	public static boolean checkHWID(String hwid) {
+		int hCount = 0;
+		for(Peer peer : Core.peerList) {
+			if(peer.hwid.equals(hwid)) {
+				hCount++;
+			}
+		}
+		if(hCount > 1) {
+			return false;
+		}
+		return true;
+	}
+
+	public static void sortPeers() {
+		Collections.sort(Core.peerList);
+	}
+
+	public static String peersCount() {
+		int size = Core.peerList.size();
+		if(size == 0) {
+			//0 peers
+			return "0bars";
+		} else if(size <= 2) {
+			//1 or 2 peers
+			return "1bars";
+		} else if(size <= 4) {
+			//3 or 4 peers
+			return "2bars";
+		} else if(size > 4) {
+			return "3bars";
+		}
+		return null;
+	}
+
+	public static String peerToolTip() {
+		int inCount = 0;
+		int outCount = 0;
+		for(Peer peer : Core.peerList) {
+			if(peer.inout == 1) {
+				inCount++;
+			} else if(peer.inout == 0) {
+				outCount++;
+			}
+		}
+		return "[" + inCount + "|" + outCount + "]";
 	}
 }

@@ -32,7 +32,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 		this.ps = ps;
 		this.ms = ms;
 		this.inout = inout;
-		Core.sortPeers();
+		Utils.sortPeers();
 		Core.mainWindow.updatePeerCount();
 		hwidLatch = new CountDownLatch(1);
 		//If in debug mode, trigger latch w/ incoming
@@ -56,7 +56,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 			Thread.sleep(200);
 			st.requestHWID();
 			hwidLatch.await();
-			if(Core.checkHWID(hwid) == false) {
+			if(Utils.checkHWID(hwid) == false) {
 				disconnect();
 			}
 			st.requestPeers();

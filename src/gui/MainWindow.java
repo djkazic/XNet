@@ -40,6 +40,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import main.Core;
+import main.Settings;
 import main.Utils;
 import blocks.BlockedFile;
 
@@ -72,7 +73,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setResizable(false);
 		searchMode = false;
-		setTitle("XNet v" + Core.version);
+		setTitle("XNet v" + Settings.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 470);
 		contentPane = new JPanel();
@@ -189,7 +190,7 @@ public class MainWindow extends JFrame {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						Core.resetTable();
+						MainWindow.resetTable();
 					} else {
 						if(Core.peerList.size() == 0) {
 							out("No peers connected. Query is not possible.");
@@ -259,7 +260,7 @@ public class MainWindow extends JFrame {
 						        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 						        	bf.download();
 					        	}
-					        	Core.resetTable();
+					        	MainWindow.resetTable();
 					        }
 					        it.remove();
 					    }
@@ -317,9 +318,9 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void updatePeerCount() {
-		String peers = Core.peersCount();
+		String peers = Utils.peersCount();
 		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/" + peers + ".png")));
-		lblPeers.setToolTipText(Core.peerToolTip());
+		lblPeers.setToolTipText(Utils.peerToolTip());
 	}
 	
 	public void updateProgress(String forFile, String progress) {
@@ -337,5 +338,9 @@ public class MainWindow extends JFrame {
 	
 	public void aboutWindow() {
 		new AboutWindow();
+	}
+
+	public static void resetTable() {
+		Core.mainWindow.out("Enter your search query and press Enter.");
 	}
 }

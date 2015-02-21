@@ -2,7 +2,7 @@ package net;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import main.Core;
+import main.Settings;
 import main.Utils;
 import peer.Peer;
 
@@ -78,7 +78,7 @@ public class SenderThread implements Runnable {
 					//Send data: HWID
 					dos.write(0x08);
 					dos.flush();
-					Utils.writeString(Core.hwid, dos);
+					Utils.writeString(Settings.hwid, dos);
 					dos.flush();
 					sendHWID = false;
 				} else if(requestPeers) {

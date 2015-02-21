@@ -1,10 +1,12 @@
 package main;
 import gui.MainWindow;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.UIManager;
+
 import net.FileListener;
 import net.GlobalListener;
 import peer.Peer;
@@ -13,12 +15,10 @@ import blocks.BlockedFile;
 
 public class Core {
 	
-	public static double version;
 	public static ArrayList <Peer> peerList;
 	public static HashMap<Peer, ArrayList<String>> index;
 	public static MainWindow mainWindow;
 	public static ArrayList<BlockedFile> blockDex;
-	public static String hwid = "";
 	public static ArrayList <String> potentialPeers;
 	
 	public static GlobalListener gl;
@@ -44,10 +44,10 @@ public class Core {
 		}
 		
 		//Calculate HWID
-		hwid = Utils.getHWID();
+		Settings.hwid = Utils.getHWID();
 		
 		//Initialize vars
-		version = 1.0;
+		Settings.version = 1.0;
 		peerList = new ArrayList<Peer> ();
 		blockDex = new ArrayList<BlockedFile> ();
 		index = new HashMap<Peer, ArrayList<String>> ();
@@ -74,7 +74,7 @@ public class Core {
 		debugServer = false;
 		int sep = 1;
 
-		resetTable();
+		MainWindow.resetTable();
 		
 		if(sep == 0) {
 			gl = new GlobalListener();
@@ -88,61 +88,10 @@ public class Core {
 		}
 	}
 	
-	public static void sortPeers() {
-		Collections.sort(peerList);
-	}
-	
-	public static String peersCount() {
-		int size = peerList.size();
-		if(size == 0) {
-			//0 peers
-			return "0bars";
-		} else if(size <= 2) {
-			//1 or 2 peers
-			return "1bars";
-		} else if(size <= 4) {
-			//3 or 4 peers
-			return "2bars";
-		} else if(size > 4) {
-			return "3bars";
-		}
-		return null;
-	}
-	
-	public static String peerToolTip() {
-		int inCount = 0;
-		int outCount = 0;
-		for(Peer peer : peerList) {
-			if(peer.inout == 1) {
-				inCount++;
-			} else if(peer.inout == 0) {
-				outCount++;
-			}
-		}
-		return "[" + inCount + "|" + outCount + "]";
-	}
-
-	public static boolean checkHWID(String hwid) {
-		int hCount = 0;
-		for(Peer peer : peerList) {
-			if(peer.hwid.equals(hwid)) {
-				hCount++;
-			}
-		}
-		if(hCount > 1) {
-			return false;
-		}
-		return true;
-	}
-	
 	public static void incomingDebugReset() {
 		killPeerConnector = true;
 		mainWindow.debugLatch.countDown();
 		debugServer = false;
-		resetTable();
-	}
-	
-	public static void resetTable() {
-		mainWindow.out("Enter your search query and press Enter.");
+		MainWindow.resetTable();
 	}
 }
