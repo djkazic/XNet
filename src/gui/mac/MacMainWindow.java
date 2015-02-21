@@ -1,4 +1,6 @@
-package gui;
+package gui.mac;
+
+import gui.MainWindow;
 
 @SuppressWarnings("serial")
 public class MacMainWindow extends MainWindow {

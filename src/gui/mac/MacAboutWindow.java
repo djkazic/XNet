@@ -1,4 +1,6 @@
-package gui;
+package gui.mac;
+
+import gui.AboutWindow;
 
 @SuppressWarnings("serial")
 public class MacAboutWindow extends AboutWindow {
