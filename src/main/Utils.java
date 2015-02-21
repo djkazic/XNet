@@ -400,6 +400,7 @@ public class Utils {
 	}
 	
 	public static boolean isWindows() {
+		//return false;
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
 	}
 }

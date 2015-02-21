@@ -139,21 +139,31 @@ public class ListenerThread implements Runnable {
 					peer.hwid = incomingHWID;
 					peer.hwidLatch.countDown();
 				}
-				//if(currentFocus == 0x09) {
+				if(currentFocus == 0x09) {
 					//Got request: peerList
 					if(Core.peerList.size() > 0) {
 						ArrayList<String> basePeers = new ArrayList<String> ();
 						for(Peer peer : Core.peerList) {
 							if(peer.connected) {
-								basePeers.add(peer.ps.getRemoteSocketAddress().toString());
+								String peerAddr = peer.ps.getRemoteSocketAddress().toString();
+								peerAddr = peerAddr.substring(1, peerAddr.length());
+								basePeers.add(peerAddr);
 							}
 						}
 						if(basePeers.size() > 0) {
-							//peer.st.sendPeers(basePeers);
+							peer.st.sendPeers(basePeers);
 						}
 						System.out.println(basePeers);
 					}
-				//}
+				}
+				if(currentFocus == 0x10) {
+					//Got data: peerList
+					String incomingAll = Utils.readString(dis);
+					String[] split = incomingAll.split("/");
+					for(String peer : split) {
+						Core.potentialPeers.add(peer);
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 

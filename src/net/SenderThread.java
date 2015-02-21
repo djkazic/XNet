@@ -24,6 +24,7 @@ public class SenderThread implements Runnable {
 	private String receivedQuery = "";
 	private String requestedBlock = "";
 	private String requestedBlockParent = "";
+	private String peerList = "";
 	
 	public SenderThread(Peer peer, DataOutputStream dos) {
 		Thread.currentThread().setName("Peer Sender");
@@ -85,6 +86,13 @@ public class SenderThread implements Runnable {
 					dos.write(0x09);
 					dos.flush();
 					requestPeers = false;
+				} else if(sendPeers) {
+					//Send data: peerList
+					dos.write(0x10);
+					dos.flush();
+					Utils.writeString(peerList, dos);
+					dos.flush();
+					sendPeers = false;
 				} else if(disconnect) {
 					dos.write(0x14);
 					dos.flush();
@@ -154,6 +162,12 @@ public class SenderThread implements Runnable {
 	}
 	
 	public void sendPeers(ArrayList<String> peerList) {
-		
+		for(String str : peerList) {
+			this.peerList += str + "/";
+		}
+		if(this.peerList.length() > 0) {
+			this.peerList = this.peerList.substring(0, this.peerList.length() - 1);
+		}
+		sendPeers = true;
 	}
 }
