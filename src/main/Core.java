@@ -71,22 +71,21 @@ public class Core {
 		}
 		
 		//Local development tools
-		//debugServer = false;
-		int sep = 0;
+		debugServer = false;
+		int sep = 1;
 
 		resetTable();
 		
-		//if(sep == 0) {
+		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		//} else {
-			//debugServer = false;
+		} else {
 			pst = new PeerConnector(debugServer);
-			//Core.potentialPeers.add("127.0.0.1");
+			Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			//TODO: remove debugging
-			//Core.discoveryLatch.countDown();
-		//}
+			Core.discoveryLatch.countDown();
+		}
 	}
 	
 	public static void sortPeers() {
