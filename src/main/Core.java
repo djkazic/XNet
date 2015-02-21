@@ -72,7 +72,7 @@ public class Core {
 		debugServer = false;
 		int sep = 1;
 
-		MainWindow.resetTable();
+		mainWindow.resetTable();
 		
 		if(sep == 0) {
 			gl = new GlobalListener();
@@ -90,6 +90,6 @@ public class Core {
 		killPeerConnector = true;
 		mainWindow.debugLatch.countDown();
 		debugServer = false;
-		MainWindow.resetTable();
+		mainWindow.resetTable();
 	}
 }

@@ -340,7 +340,7 @@ public class MainWindow extends JFrame {
 		new AboutWindow();
 	}
 
-	public static void resetTable() {
+	public void resetTable() {
 		Core.mainWindow.out("Enter your search query and press Enter.");
 	}
 }
