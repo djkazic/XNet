@@ -143,12 +143,16 @@ public class ListenerThread implements Runnable {
 					//Got request: peerList
 					if(Core.peerList.size() > 0) {
 						ArrayList<String> basePeers = new ArrayList<String> ();
-						for(Peer peer : Core.peerList) {
-							if(peer.connected) {
-								String peerAddr = peer.ps.getRemoteSocketAddress().toString();
-								peerAddr = peerAddr.substring(1, peerAddr.length() - 6);
-								basePeers.add(peerAddr);
+						if(Core.peerList.size() > 1) {
+							for(Peer peer : Core.peerList) {
+								if(peer != this.peer && peer.connected) {
+									String peerAddr = peer.ps.getRemoteSocketAddress().toString();
+									peerAddr = peerAddr.substring(1, peerAddr.length() - 6);
+									basePeers.add(peerAddr);
+								}
 							}
+						} else {
+							Utils.print(this, "Peerlist requested, but only one is requester");
 						}
 						if(basePeers.size() > 0) {
 							peer.st.sendPeers(basePeers);

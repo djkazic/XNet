@@ -59,6 +59,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 			if(Core.checkHWID(hwid) == false) {
 				disconnect();
 			}
+			st.requestPeers();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
 	
