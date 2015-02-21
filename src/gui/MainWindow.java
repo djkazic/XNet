@@ -70,7 +70,6 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		setResizable(false);
 		searchMode = false;
-		setVisible(true);
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 520);
@@ -193,7 +192,8 @@ public class MainWindow extends JFrame {
 		searchRes = new JTable(tableModel);
 		betterRenderer = new DefaultTableCellRenderer();
 		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		searchRes.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
+		searchRes.setDefaultRenderer(Object.class, betterRenderer);
+		//.getColumn(0).setCellRenderer(betterRenderer);
 		searchRes.getTableHeader().setReorderingAllowed(false);
 		searchRes.getTableHeader().setResizingAllowed(false);
 		searchRes.addMouseListener(new MouseAdapter() {
@@ -260,6 +260,7 @@ public class MainWindow extends JFrame {
 		downloadList.getTableHeader().setResizingAllowed(false);
 		downloadScrollPane.setViewportView(downloadList);
 		
+		setVisible(true);
 		resLatch.countDown();
 	}
 	
