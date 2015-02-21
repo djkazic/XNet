@@ -190,7 +190,7 @@ public class MainWindow extends JFrame {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						MainWindow.resetTable();
+						Core.mainWindow.resetTable();
 					} else {
 						if(Core.peerList.size() == 0) {
 							out("No peers connected. Query is not possible.");
@@ -260,7 +260,7 @@ public class MainWindow extends JFrame {
 						        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 						        	bf.download();
 					        	}
-					        	MainWindow.resetTable();
+					        	Core.mainWindow.resetTable();
 					        }
 					        it.remove();
 					    }
