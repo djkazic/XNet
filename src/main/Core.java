@@ -1,6 +1,6 @@
 package main;
-import gui.MacMainWindow;
 import gui.MainWindow;
+import gui.mac.MacMainWindow;
 
 import java.util.ArrayList;
 import java.util.Collections;

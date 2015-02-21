@@ -72,8 +72,8 @@ public class Utils {
 		if(isWindows()) {
 		    workingDirectory = System.getenv("AppData") + "/XNet";
 		} else {
-		    workingDirectory = System.getProperty("user.home");
-		    workingDirectory += "/Library/Application Support/XNet";
+		    workingDirectory = defineDir();
+		    workingDirectory += "/.cache";
 		}
 		return workingDirectory;
 	}
@@ -106,6 +106,20 @@ public class Utils {
 			}
 			if(attempt) {
 				System.out.println("Successfully created directory");
+			}
+		}
+		File appDataGen = new File(defineAppDataDir());
+		if(!appDataGen.exists()) {
+			System.out.println("Could not find appData directory, creating");
+			boolean attempt = false;
+			try {
+				appDataGen.mkdir();
+				attempt = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(attempt) {
+				System.out.println("Successfully created appData directory: " + appDataGen.getAbsolutePath());
 			}
 		}
 	}
