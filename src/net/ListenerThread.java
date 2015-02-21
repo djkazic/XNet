@@ -146,14 +146,13 @@ public class ListenerThread implements Runnable {
 						for(Peer peer : Core.peerList) {
 							if(peer.connected) {
 								String peerAddr = peer.ps.getRemoteSocketAddress().toString();
-								peerAddr = peerAddr.substring(1, peerAddr.length());
+								peerAddr = peerAddr.substring(1, peerAddr.length() - 6);
 								basePeers.add(peerAddr);
 							}
 						}
 						if(basePeers.size() > 0) {
 							peer.st.sendPeers(basePeers);
 						}
-						System.out.println(basePeers);
 					}
 				}
 				if(currentFocus == 0x10) {
