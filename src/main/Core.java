@@ -1,16 +1,10 @@
 package main;
 import gui.MainWindow;
-import gui.mac.MacMainWindow;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
 import javax.swing.UIManager;
-
-import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
-
 import net.FileListener;
 import net.GlobalListener;
 import peer.Peer;
@@ -40,11 +34,10 @@ public class Core {
 	public static long chunkSize = 122880; //122.88kb blocks
 	
 	public static void main(String[] args) throws InterruptedException {
-		//L&F init
+		//L&F set
 		try {
 			if(Utils.isWindows()) {
-				org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
-				UIManager.put("RootPane.setupButtonVisible" , false);
+				UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,11 +55,7 @@ public class Core {
 		discoveryLatch = new CountDownLatch(1);
 		
 		//GUI inits
-		if(Utils.isWindows()) {
-			mainWindow = new MainWindow();
-		} else {
-			mainWindow = new MacMainWindow();
-		}
+		mainWindow = new MainWindow();
 		mainWindow.registerListeners();
 		
 		//Directory work

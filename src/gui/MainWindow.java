@@ -74,7 +74,7 @@ public class MainWindow extends JFrame {
 		searchMode = false;
 		setTitle("XNet v" + Core.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 520);
+		setBounds(100, 100, 550, 470);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -97,7 +97,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(10, 39, 526, 25);
+		searchInput.setBounds(12, 39, 520, 25);
 		contentPane.add(searchInput);
 		searchInput.setColumns(10);
 		
@@ -122,11 +122,11 @@ public class MainWindow extends JFrame {
 		mnFile.add(mntmAbout);
 		
 		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(10, 75, 526, 220);
+		searchResScrollPane.setBounds(12, 76, 520, 220);
 		contentPane.add(searchResScrollPane);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(10, 306, 526, 102);
+		downloadScrollPane.setBounds(12, 306, 520, 102);
 		contentPane.add(downloadScrollPane);
 		
 		separator = new JSeparator();
@@ -134,7 +134,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(separator);
 		
 		lblPeers = new JLabel("Peers: [0|0]");
-		lblPeers.setBounds(486, 421, 60, 20);
+		lblPeers.setBounds(484, 422, 60, 20);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		

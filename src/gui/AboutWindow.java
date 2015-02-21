@@ -41,7 +41,7 @@ public class AboutWindow extends JDialog {
 	public AboutWindow() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 445, 180);
+		setBounds(100, 100, 400, 180);
 		setVisible(true);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -77,7 +77,7 @@ public class AboutWindow extends JDialog {
 			iconsVisitSource.setFocusable(false);
 			contentPanel.add(iconsVisitSource);
 		
-		lblThemeByFreepik = new JLabel("Theme by JackJiang2011 / Apache 2.0");
+		lblThemeByFreepik = new JLabel("Theme by JGoodies / BSD 2.0");
 		lblThemeByFreepik.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblThemeByFreepik.setBounds(10, 56, 220, 14);
 		contentPanel.add(lblThemeByFreepik);
@@ -119,7 +119,7 @@ public class AboutWindow extends JDialog {
 		
 		footerLabel = new Label("Copyright 2015 - Kevin Cai");
 		footerLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
-		footerLabel.setBounds(111, 137, 142, 15);
+		footerLabel.setBounds(122, 129, 142, 15);
 		contentPanel.add(footerLabel);
 	}
 }
