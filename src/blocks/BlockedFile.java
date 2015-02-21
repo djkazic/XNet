@@ -228,9 +228,6 @@ public class BlockedFile {
 
 	public int getBlockNumber(String blockName) {
 		int prelim = blockList.indexOf(blockName);
-		if(prelim == -1) {
-			return -1;
-		}
 		return prelim;
 	}
 	

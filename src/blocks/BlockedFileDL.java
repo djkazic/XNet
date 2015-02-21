@@ -1,5 +1,7 @@
 package blocks;
 
+import java.io.File;
+
 import main.Core;
 import main.Utils;
 import peer.Peer;
@@ -22,7 +24,7 @@ public class BlockedFileDL implements Runnable {
 		while(bf.getNeededBlock() != null) {
 			broadcast(bf.getName(), bf.getNeededBlock());
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
