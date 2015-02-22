@@ -1,13 +1,20 @@
 package main;
 import gui.MainWindow;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.UIManager;
 
-import net.FileListener;
+import net.SocketWaiter;
 import net.GlobalListener;
 import net.HolePunchUPNP;
 import peer.Peer;
@@ -21,19 +28,16 @@ public class Core {
 	public static MainWindow mainWindow;
 	public static ArrayList<BlockedFile> blockDex;
 	public static ArrayList <String> potentialPeers;
-	
 	public static GlobalListener gl;
 	public static PeerConnector pst;
-	
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
 	public static CountDownLatch punchLatch;
-	
 	public static boolean firstBlockServerSocket = true;
-	public static FileListener ssm;
-	
-	public static void main(String[] args) throws InterruptedException {
+	public static SocketWaiter ssm;
+
+	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
 		//L&F set
 		try {
 			if(Utils.isWindows()) {
@@ -62,14 +66,13 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
+		//Register fileWatcher
+		
+		
 		mainWindow.out("Loading checksum data, please wait...");
 		
 		//Create blockdex
-		try {
-			Utils.generateBlockDex();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Utils.generateBlockDex();
 		
 		mainWindow.resetTable();
 		

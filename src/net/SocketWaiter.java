@@ -5,14 +5,14 @@ import java.net.Socket;
 
 import blocks.BlockAcceptor;
 
-public class FileListener implements Runnable {
+public class SocketWaiter implements Runnable {
 	
 	private Socket fsSocket;
 	private String forFile;
 	private String blockName;
 	private int fileSize;
 	
-	public FileListener(String forFile, String blockName, int fileSize) {
+	public SocketWaiter(String forFile, String blockName, int fileSize) {
 		this.forFile = forFile;
 		this.blockName = blockName;
 		this.fileSize = fileSize;

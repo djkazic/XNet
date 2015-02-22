@@ -13,7 +13,7 @@ import peer.Peer;
 public class ListenerThread implements Runnable {
 	public Peer peer;
 	public DataInputStream dis;
-	public FileListener fl;
+	public SocketWaiter fl;
 	
 	public ListenerThread(Peer peer, DataInputStream dis) {
 		Thread.currentThread().setName("Peer Listener");
@@ -124,7 +124,7 @@ public class ListenerThread implements Runnable {
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
 						System.out.println("Making FileListener");
-						fl = new FileListener(forFile, blockName, fileSize);
+						fl = new SocketWaiter(forFile, blockName, fileSize);
 						(new Thread(fl)).start();
 					}
 				}
