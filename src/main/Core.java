@@ -6,9 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
+import javax.net.ssl.SSLContext;
 import javax.swing.UIManager;
-
 import net.SocketWaiter;
 import net.GlobalListener;
 import net.HolePunchUPNP;
@@ -61,35 +60,39 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
-		//Register fileWatcher
-		(new Thread(new FileWatcher())).start();
+		//Register fileWatcher if Windows
+		if(Utils.isWindows()) {
+			(new Thread(new FileWatcher())).start();
+		}
 		
-		mainWindow.out("Loading checksum data, please wait...");
+		mainWindow.out("Loading checksum data...");
 		
 		//Create blockdex
 		Utils.print(Core.class, "Generating blockDex");
 		Utils.generateBlockDex();
 		
-		mainWindow.resetTable();
+		mainWindow.out("Configuring network...");
 		
 		//Hole punch
 		(new Thread(new HolePunchUPNP(punchLatch))).start();
 		punchLatch.await();
 		
-		//Local development tools
-		debugServer = false;
-		int sep = 1;
+		mainWindow.resetTable();
 		
-		if(sep == 0) {
+		//Local development tools
+		//debugServer = false;
+		//int sep = 1;
+		
+		//if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		} else {
+		//} else {
 			pst = new PeerConnector(debugServer);
-			Core.potentialPeers.add("127.0.0.1");
+			//Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			//TODO: remove debugging
-			Core.discoveryLatch.countDown();
-		}
+			//Core.discoveryLatch.countDown();
+		//}
 	}
 	
 	public static void incomingDebugReset() {
