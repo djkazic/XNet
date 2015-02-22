@@ -26,7 +26,6 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
-	public static CountDownLatch punchLatch;
 	public static boolean firstBlockServerSocket = true;
 	public static SocketWaiter ssm;
 
@@ -50,7 +49,6 @@ public class Core {
 		index = new HashMap<Peer, ArrayList<String>> ();
 		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
-		punchLatch = new CountDownLatch(1);
 		
 		//GUI inits
 		mainWindow = new MainWindow();
@@ -73,8 +71,9 @@ public class Core {
 		mainWindow.out("Configuring network...");
 		
 		//Hole punch
-		(new Thread(new HolePunchUPNP(punchLatch))).start();
-		punchLatch.await();
+		Thread holePunchThread = new Thread(new HolePunchUPNP());
+		holePunchThread.start();
+		holePunchThread.join();
 		
 		mainWindow.resetTable();
 		mainWindow.searchInput.setFocusable(true);

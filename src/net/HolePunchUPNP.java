@@ -1,7 +1,10 @@
 package net;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.concurrent.CountDownLatch;
 
 import main.Utils;
 
@@ -11,13 +14,29 @@ import org.wetorrent.upnp.PortMappingEntry;
 
 public class HolePunchUPNP implements Runnable {
 	
-	private CountDownLatch punchLatch;
-	
-	public HolePunchUPNP(CountDownLatch punchLatch) {
-		this.punchLatch = punchLatch;
-	}
+	private File holePunchConfig;
 
 	public void run() {
+		try {
+			holePunchConfig = new File(Utils.defineConfigDir() + "/" + "holePunching.dat");
+			if(!holePunchConfig.exists()) {
+				holePunchConfig.createNewFile();
+			} else {
+				BufferedReader br = new BufferedReader(new FileReader(holePunchConfig));
+				StringBuilder sb = new StringBuilder();
+				String line = br.readLine();
+				br.close();
+				if(line != null) {
+					sb.append(line);
+				}
+				String configStatus = sb.toString();
+				if(configStatus.equals("UPNP_DISABLE")) {
+					return;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		GatewayDiscover gd = new GatewayDiscover();
 		Utils.print(this, "Searching for UPNP router");
 		try {
@@ -28,13 +47,12 @@ public class HolePunchUPNP implements Runnable {
 		GatewayDevice gdev = gd.getValidGateway();
 		if(gdev == null) {
 			Utils.print(this, "No UPNP routers found");
-			punchLatch.countDown();
+			writeResult(false);
 			return;
 		} else {
 			mapPort(gdev, 26606, "mainPort");
 			mapPort(gdev, 26607, "fsPort");
 		}
-		punchLatch.countDown();
 	}
 	
 	private void mapPort(GatewayDevice gdev, int port, String description) {
@@ -53,9 +71,25 @@ public class HolePunchUPNP implements Runnable {
 					Utils.print(this, "Successfully mapped port!");
 				} else {
 					Utils.print(this, "Could not map port");
+					writeResult(false);
 					return;
 				}
+				writeResult(true);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void writeResult(boolean compatible) {
+		try {
+			PrintWriter writer = new PrintWriter(holePunchConfig, "UTF-8");
+			if(compatible) {
+				writer.println("UPNP_ENABLE");
+			} else {
+				writer.println("UPNP_DISABLE");
+			}
+			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

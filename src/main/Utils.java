@@ -79,6 +79,10 @@ public class Utils {
 		return workingDirectory;
 	}
 	
+	public static String defineConfigDir() {
+		return defineDir() + "/" + ".config";
+	}
+	
 	public static boolean initAppDataDir(String plainName) {
 		String basename = base64(plainName);
 		File workingDirectoryFile = new File(defineAppDataDir() + "/" + basename);
@@ -109,6 +113,20 @@ public class Utils {
 				System.out.println("Successfully created directory");
 			}
 		}
+		File configDir = new File(defineDir() + "/" + ".config");
+		if(!configDir.exists()) {
+			System.out.println("Could not find config directory, creating");
+			boolean attempt = false;
+			try {
+				configDir.mkdir();
+				attempt = true;
+			} catch (SecurityException se) {
+				se.printStackTrace();
+			}
+			if(attempt) {
+				System.out.println("Successfully created config directory");
+			}
+		}
 		File appDataGen = new File(defineAppDataDir());
 		if(!appDataGen.exists()) {
 			System.out.println("Could not find appData directory, creating");
@@ -120,7 +138,7 @@ public class Utils {
 				e.printStackTrace();
 			}
 			if(attempt) {
-				System.out.println("Successfully created appData directory: " + appDataGen.getAbsolutePath());
+				System.out.println("Successfully created appData directory");
 			}
 		}
 	}
