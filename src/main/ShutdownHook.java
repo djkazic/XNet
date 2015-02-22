@@ -13,6 +13,7 @@ public class ShutdownHook implements Runnable {
 	private File peerConfig;
 	
 	public void run() {
+		Thread.currentThread().setName("ShutdownHook");
 		//Save peers.dat
 		try {
 			peerConfig = new File(Utils.defineConfigDir() + "/" + "peers.dat");
