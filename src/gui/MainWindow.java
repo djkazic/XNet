@@ -85,7 +85,7 @@ public class MainWindow extends JFrame {
 		
 		//Set title icon
 		try {
-			Image iconImage = ImageIO.read(getClass().getResourceAsStream("/imgres/titleicon.png"));
+			Image iconImage = ImageIO.read(getClass().getResourceAsStream("/res/imgres/titleicon.png"));
 			setIconImage(iconImage);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -116,7 +116,7 @@ public class MainWindow extends JFrame {
 
 		mntmAbout = new JMenuItem("About");
 		try {
-			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/imgres/glasses.png")));
+			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/imgres/glasses.png")));
 			mntmAbout.setIcon(imageIcon);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -139,7 +139,7 @@ public class MainWindow extends JFrame {
 		
 		lblPeers = new JLabel("");
 		lblPeers.setToolTipText("[0|0]");
-		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/imgres/0bars.png")));
+		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/0bars.png")));
 		lblPeers.setBounds(520, 419, 24, 25);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
@@ -348,7 +348,7 @@ public class MainWindow extends JFrame {
 	
 	public void updatePeerCount() {
 		String peers = Utils.peersCount();
-		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/imgres/" + peers + ".png")));
+		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/" + peers + ".png")));
 		lblPeers.setToolTipText(Utils.peerToolTip());
 	}
 	
