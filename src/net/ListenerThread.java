@@ -167,6 +167,11 @@ public class ListenerThread implements Runnable {
 						Core.potentialPeers.add(peer);
 					}
 				}
+				try {
+					Thread.sleep(25);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				peer.disconnect(); 
