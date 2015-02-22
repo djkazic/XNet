@@ -8,6 +8,8 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.List;
 
+import blocks.BlockedFile;
+import main.Core;
 import main.Utils;
 
 public class FileWatcher implements Runnable {
@@ -33,9 +35,15 @@ public class FileWatcher implements Runnable {
 			for(WatchEvent<?> we : events) {
 				if(we.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
 					System.out.println("Created: " + we.context().toString());
+					new BlockedFile(Utils.defineDir() + "/" + we.context().toString());
 				}
 				if(we.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
 					System.out.println("Deleted: " + we.context().toString());
+					for(BlockedFile bf : Core.blockDex) {
+						if(bf.getName().equals(we.context().toString())) {
+							Core.blockDex.remove(bf);
+						}
+					}
 				}
 			}
 			try {
