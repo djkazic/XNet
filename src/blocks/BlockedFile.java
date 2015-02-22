@@ -246,6 +246,7 @@ public class BlockedFile {
 		double dprogress = ((double) haveList.size()) / blockList.size();
 		dprogress *= 100;
 		progress = Math.round(dprogress) + "%";
+		System.out.println("Progress: [" + haveList.size() + " | " + blockList.size() + "]");
 		Core.mainWindow.updateProgress(getName(), progress);
 	}
 }
