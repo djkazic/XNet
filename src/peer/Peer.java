@@ -59,15 +59,11 @@ public class Peer implements Runnable, Comparable<Peer> {
 			sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
 			sslSocket.startHandshake();
 			if(sslSocket.isConnected()) {
-				String params = "";
-				for(String str : sslSocket.getSSLParameters().getCipherSuites()) {
-					params += str + " | ";
-				}
-				Utils.print(this, "sslSocket enabled. Connections secure via " +  params.substring(0, params.length() - 3));
+				Utils.print(this, "TLS enabled. Connections secured");
 			}
 			ps = sslSocket;
 			ps.setTcpNoDelay(true);
-			ps.setSoTimeout(3500);
+			ps.setSoTimeout(5000);
 			dos = new DataOutputStream(ps.getOutputStream());
 			dis = new DataInputStream(ps.getInputStream());
 			dos.write(0x00);
@@ -77,7 +73,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 			(new Thread(lt)).start();
 			st = new SenderThread(this, dos);
 			(new Thread(st)).start();
-			Thread.sleep(200);
+			Thread.sleep(100);
 			st.requestHWID();
 			hwidLatch.await();
 			if(Utils.checkHWID(hwid) == false) {
