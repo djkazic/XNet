@@ -1,12 +1,15 @@
 package main;
 import gui.MainWindow;
 import io.FileWatcher;
+
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.UIManager;
+
 import net.SocketWaiter;
 import net.GlobalListener;
 import net.HolePunchUPNP;
@@ -57,6 +60,10 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
+		//Register shutdownhook
+		Thread shutDownHookThread = new Thread(new ShutdownHook());
+		Runtime.getRuntime().addShutdownHook(shutDownHookThread);
+		
 		//Register fileWatcher if Windows
 		if(Utils.isWindows()) {
 			(new Thread(new FileWatcher())).start();
@@ -80,19 +87,19 @@ public class Core {
 		mainWindow.searchInput.setEditable(true);
 		
 		//Local development tools
-		//debugServer = false;
-		//int sep = 1;
+		debugServer = false;
+		int sep = 1;
 		
-		//if(sep == 0) {
+		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		//} else {
+		} else {
 			pst = new PeerConnector(debugServer);
-			//Core.potentialPeers.add("127.0.0.1");
+			Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			//TODO: remove debugging
-			//Core.discoveryLatch.countDown();
-		//}
+			Core.discoveryLatch.countDown();
+		}
 	}
 	
 	public static void incomingDebugReset() {
