@@ -73,7 +73,7 @@ public class Core {
 		mainWindow.out("Loading checksum data, please wait...");
 		
 		//Create blockdex
-		Utils.print("Generating blockDex");
+		Utils.print(Core.class, "Generating blockDex");
 		Utils.generateBlockDex();
 		
 		mainWindow.resetTable();
