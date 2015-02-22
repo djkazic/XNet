@@ -1,5 +1,6 @@
 package main;
 import gui.MainWindow;
+import io.FileWatcher;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -67,11 +68,12 @@ public class Core {
 		Utils.initDir();
 		
 		//Register fileWatcher
-		
+		(new Thread(new FileWatcher())).start();
 		
 		mainWindow.out("Loading checksum data, please wait...");
 		
 		//Create blockdex
+		Utils.print("Generating blockDex");
 		Utils.generateBlockDex();
 		
 		mainWindow.resetTable();
