@@ -1,16 +1,24 @@
 package peer;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import main.Core;
+import main.ShutdownHook;
 import main.Utils;
 
 public class PeerConnector implements Runnable {
 	
 	public CountDownLatch debugLatch;
 	private String host = null;
+	private File peerConfig;
 	
 	public PeerConnector(boolean debugServer) {
 		Utils.print(this, "INITIALIZING >> PCONN");
@@ -23,6 +31,19 @@ public class PeerConnector implements Runnable {
 	}
 	
 	public void run() {
+		try {
+			if(!Core.debugServer) {
+				//Check config
+				peerConfig = new File(Utils.defineConfigDir() + "/" + "peers.dat");
+				if(!peerConfig.exists()) {
+					peerConfig.createNewFile();
+				} else {
+					ArrayList<String> potentialPeersFromFile = new ArrayList<String> ();
+					potentialPeersFromFile = (ArrayList<String>) Files.readAllLines(peerConfig.toPath(), Charset.defaultCharset());
+					System.out.println("Peers from file: " + potentialPeersFromFile);
+				}
+			}
+		} catch (Exception e) { e.printStackTrace(); }
 		//Scan for local peers
 		//(new Thread(new DiscoveryServer())).start();
 		//(new Thread(new DiscoveryThread())).start();
@@ -30,9 +51,7 @@ public class PeerConnector implements Runnable {
 		if(Core.debugServer) {
 			try {
 				debugLatch.await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) { e.printStackTrace(); }
 			Core.potentialPeers.add(Core.mainWindow.debugHost);
 		} else {
 			try {
