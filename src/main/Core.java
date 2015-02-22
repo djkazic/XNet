@@ -77,6 +77,8 @@ public class Core {
 		punchLatch.await();
 		
 		mainWindow.resetTable();
+		mainWindow.searchInput.setFocusable(true);
+		mainWindow.searchInput.setEditable(true);
 		
 		//Local development tools
 		//debugServer = false;

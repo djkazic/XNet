@@ -49,7 +49,7 @@ import blocks.BlockedFile;
 public class MainWindow extends JFrame {
 
 	protected JPanel contentPane;
-	protected JTextField searchInput;
+	public JTextField searchInput;
 	protected JTable searchRes;
 	protected JTable downloadList;
 	public DefaultTableModel tableModel;
@@ -102,8 +102,10 @@ public class MainWindow extends JFrame {
 		
 		searchInput = new JTextField();
 		searchInput.setBounds(12, 39, 520, 25);
-		contentPane.add(searchInput);
 		searchInput.setColumns(10);
+		searchInput.setFocusable(false);
+		searchInput.setEditable(false);
+		contentPane.add(searchInput);
 		
 		contentPane.setLayout(null);
 		
