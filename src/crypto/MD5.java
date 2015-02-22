@@ -1,4 +1,5 @@
 package crypto;
+
 import java.io.*;
 
 public class MD5 {

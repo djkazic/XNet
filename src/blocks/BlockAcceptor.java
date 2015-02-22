@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.Socket;
-import main.Core;
 import main.Utils;
 
 /**

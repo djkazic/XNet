@@ -1,7 +1,5 @@
 package blocks;
 
-import java.io.File;
-
 import main.Core;
 import main.Utils;
 import peer.Peer;
