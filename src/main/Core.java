@@ -9,6 +9,7 @@ import javax.swing.UIManager;
 
 import net.FileListener;
 import net.GlobalListener;
+import net.HolePunchUPNP;
 import peer.Peer;
 import peer.PeerConnector;
 import blocks.BlockedFile;
@@ -27,6 +28,7 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
+	public static CountDownLatch punchLatch;
 	
 	public static boolean firstBlockServerSocket = true;
 	public static FileListener ssm;
@@ -51,6 +53,7 @@ public class Core {
 		index = new HashMap<Peer, ArrayList<String>> ();
 		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
+		punchLatch = new CountDownLatch(1);
 		
 		//GUI inits
 		mainWindow = new MainWindow();
@@ -68,11 +71,15 @@ public class Core {
 			e.printStackTrace();
 		}
 		
+		mainWindow.resetTable();
+		
+		//Hole punch
+		(new Thread(new HolePunchUPNP(punchLatch))).start();
+		punchLatch.await();
+		
 		//Local development tools
 		debugServer = false;
 		int sep = 1;
-
-		mainWindow.resetTable();
 		
 		if(sep == 0) {
 			gl = new GlobalListener();
