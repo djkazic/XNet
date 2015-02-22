@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-import javax.net.ssl.SSLContext;
 import javax.swing.UIManager;
 import net.SocketWaiter;
 import net.GlobalListener;
