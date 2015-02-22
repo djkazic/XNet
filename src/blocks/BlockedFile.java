@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
@@ -38,7 +39,7 @@ public class BlockedFile {
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
-		getTempBlocks();
+		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
 	}
 	
@@ -51,7 +52,7 @@ public class BlockedFile {
 		this.file = file;
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
-		getTempBlocks();
+		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
 	}
 	
@@ -74,12 +75,47 @@ public class BlockedFile {
 	public static void main(String[] args) {
 		Core.blockDex = new ArrayList<BlockedFile> ();
 		BlockedFile bf = new BlockedFile("C:/Users/Kevin/Documents/XNet/n-600.pdf");
+		bf.getRafBlocks();
 	}
 	**/
+
+	
+	private void getRafBlocks() {
+		try {
+			double fileLen = (double) file.length();
+			double numberOfBlocks = (fileLen / Settings.blockSize);
+			for(int i=0; i < numberOfBlocks; i++) {
+				int thisRead = 0;
+				File temp = File.createTempFile("temp", "block");
+				BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(temp));
+				byte[] rafBuffer = new byte[(int) Settings.blockSize];
+				RandomAccessFile raf = new RandomAccessFile(file, "r");
+				raf.seek(i * Settings.blockSize);
+				thisRead = raf.read(rafBuffer);
+				byte[] writeBuffer = new byte[thisRead];
+				for(int a=0; a < writeBuffer.length; a++) {
+					writeBuffer[a] = rafBuffer[a];
+				}
+				raf.close();
+				out.write(writeBuffer);
+				out.close();
+				try {
+					blockList.add(Utils.checksum(temp));
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
+				temp.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Splits BlockedFile into temporary blocks to generate blockList
+	 * (deprecated)
 	 */
+	@SuppressWarnings("unused")
 	private void getTempBlocks() {
 		File mFile = file;
 		try {
@@ -101,6 +137,13 @@ public class BlockedFile {
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
+				try {
+					System.out.println("Size: " + temp.length());
+					System.out.println("TB checksum: " + Utils.checksum(temp));
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				temp.delete();
 			}
 			//Process last block separately
@@ -118,6 +161,13 @@ public class BlockedFile {
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
+				try {
+					System.out.println("TB checksum: " + Utils.checksum(temp));
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Size: " + temp.length());
 				temp.delete();
 			} else {
 				Utils.print(this, "Temp block sizes check! " + fileLen + " | " + (Settings.blockSize * i));
