@@ -30,6 +30,9 @@ public class ListenerThread implements Runnable {
 			try {
 				/** === BLOCK === **/
 				currentFocus = dis.readByte();
+				if(currentFocus == 0x00) {
+					Utils.print(this, "Pinged!");
+				}
 				if(currentFocus == 0x14) {
 					//Got request: disconnect
 					peer.disconnect();
