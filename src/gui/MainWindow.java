@@ -29,6 +29,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -64,8 +65,10 @@ public class MainWindow extends JFrame {
 	protected JMenuItem mntmAbout;
 	protected JMenuBar menuBar;
 	protected JMenu mnFile;
+	private JPopupMenu downloadPopupMenu;
 	
 	protected boolean searchMode;
+	private JMenuItem downloadPopupMenuRemoveFromList;
 
 	/**
 	 * Create the frame.
@@ -152,6 +155,10 @@ public class MainWindow extends JFrame {
 		searchRes.setCellSelectionEnabled(true);
 		searchRes.setColumnSelectionAllowed(true);
 		
+		downloadPopupMenu = new JPopupMenu();
+		downloadPopupMenuRemoveFromList = new JMenuItem("Remove from list");
+		downloadPopupMenu.add(downloadPopupMenuRemoveFromList);
+
 		downloadList = new JTable(downloadModel);
 		downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
 		downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
@@ -161,6 +168,28 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void registerListeners() {
+		downloadPopupMenuRemoveFromList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int[] selectedRows = downloadList.getSelectedRows();
+				for(Integer i : selectedRows) {
+					downloadModel.removeRow(i);
+				}
+			}
+		});
+		
+		downloadList.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent arg0) {
+				if(arg0.isPopupTrigger()) {
+					Point clickPoint = arg0.getPoint();
+					int tableRow = downloadList.rowAtPoint(clickPoint);
+					if(!downloadList.isRowSelected(tableRow)) {
+						downloadList.changeSelection(tableRow, 0, false, false);
+					}
+					downloadPopupMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+				}
+			}
+		});
+		
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				aboutWindow();
