@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import main.Core;
 import main.Utils;
 import net.ListenerThread;
@@ -43,9 +46,30 @@ public class Peer implements Runnable, Comparable<Peer> {
 	
 	public void run() {
 		try {
+			//Wrap socket
+			SSLSocketFactory sf = ((SSLSocketFactory) SSLSocketFactory.getDefault());
+			InetSocketAddress remoteAddress = (InetSocketAddress) ps.getRemoteSocketAddress();
+			SSLSocket sslSocket = (SSLSocket) (sf.createSocket(ps, remoteAddress.getHostName(), ps.getPort(), true));
+			if(inout == 1) {
+				sslSocket.setUseClientMode(false);
+			} else {
+				sslSocket.setUseClientMode(true);
+			}
+			sslSocket.setEnabledProtocols(sslSocket.getSupportedProtocols());
+			sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
+			sslSocket.startHandshake();
+			if(sslSocket.isConnected()) {
+				String params = "";
+				for(String str : sslSocket.getSSLParameters().getCipherSuites()) {
+					params += str + " | ";
+				}
+				Utils.print(this, "sslSocket enabled. Connections secure via " +  params.substring(0, params.length() - 3));
+			}
+			ps = sslSocket;
+			ps.setTcpNoDelay(true);
+			ps.setSoTimeout(3500);
 			dos = new DataOutputStream(ps.getOutputStream());
 			dis = new DataInputStream(ps.getInputStream());
-			ps.setSoTimeout(3500);
 			dos.write(0x00);
 			dos.flush();
 			connected = true;
