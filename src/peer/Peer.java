@@ -124,7 +124,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 						//e.printStackTrace();
 					}
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

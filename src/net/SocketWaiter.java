@@ -40,7 +40,7 @@ public class SocketWaiter implements Runnable {
 				resetVars();
 				//Wait until you get variables again
 				while(forFile == null || blockName == null || fileSize == 0) {
-					Thread.sleep(1000);
+					Thread.sleep(250);
 				}
 			} catch(Exception e) {}
 		}
