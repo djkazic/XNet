@@ -130,7 +130,7 @@ public class ListenerThread implements Runnable {
 					if(bfdlTest != null) {
 						if(!Core.fsThreadStarted) {
 							System.out.println("Making FileListener");
-							Core.ssm = new SocketWaiter(forFile, blockName, fileSize);
+							Core.ssm = new SocketWaiter(peer, forFile, blockName, fileSize);
 							(new Thread(Core.ssm)).start();
 							Core.fsThreadStarted = true;
 						} else {

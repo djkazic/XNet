@@ -3,8 +3,9 @@ package blocks;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.Socket;
+
 import main.Utils;
+import peer.Peer;
 
 /**
  * Accepts blocks confirmed to be needed
@@ -13,13 +14,13 @@ import main.Utils;
  */
 public class BlockAcceptor implements Runnable {
 	
-	private Socket socket;
+	private Peer peer;
 	private String forFile;
 	private String blockName;
 	private int fileSize;
 
-	public BlockAcceptor(Socket socket, String forFile, String blockName, int fileSize) {
-		this.socket = socket;
+	public BlockAcceptor(Peer peer, String forFile, String blockName, int fileSize) {
+		this.peer = peer;
 		this.forFile = forFile;
 		this.blockName = blockName;
 		this.fileSize = fileSize;
@@ -29,7 +30,7 @@ public class BlockAcceptor implements Runnable {
 		try {
 			System.out.println("File server socket connected");
 			
-			DataInputStream dis = new DataInputStream(socket.getInputStream());
+			DataInputStream dis = new DataInputStream(peer.fs.getInputStream());
 			File pre = new File(Utils.defineAppDataDir() 
 														+ "/" 
 														+ (forFile));
@@ -50,12 +51,11 @@ public class BlockAcceptor implements Runnable {
 			}
 			fos.close();
 			dis.close();
-			socket.close();
 			Utils.print(this, "Got block successfully");
-			
 			//Find BlockedFile forFile and logBlock
 			String plain = Utils.debase64(forFile);
 			Utils.getBlockedFileByName(plain).logBlock(blockName);
+			peer.fs.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

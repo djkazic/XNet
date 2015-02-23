@@ -21,7 +21,6 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public ListenerThread lt;
 	public SenderThread st;
 	public DataOutputStream dos;
-	public DataOutputStream fdos;
 	public DataInputStream dis;
 	public Socket ps;
 	public Socket fs;
@@ -121,7 +120,6 @@ public class Peer implements Runnable, Comparable<Peer> {
 						fs.connect(fsEndpoint);
 						whoa = true;
 						fs.setSoTimeout(3500);
-						fdos = new DataOutputStream(fs.getOutputStream());
 					} catch (Exception e) {
 						//e.printStackTrace();
 					}

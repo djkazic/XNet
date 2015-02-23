@@ -50,34 +50,31 @@ public class BlockSender implements Runnable {
 			targetPeer.dos.writeInt(fileSize);
 			targetPeer.dos.flush();
 			
-			if(targetPeer.fs != null && !targetPeer.fs.isClosed()) {
-				System.out.println("Reusing targetPeer fs");
-			} else {
-				socketDone = new CountDownLatch(1);
-				targetPeer.createFS(socketDone);
-				socketDone.await();
-			}
+			socketDone = new CountDownLatch(1);
+			targetPeer.createFS(socketDone);
+			socketDone.await();
+
 			System.out.println("Outgoing file socket connected");
-			
+			DataOutputStream dos = new DataOutputStream(targetPeer.fs.getOutputStream());
 			if(blockPos != -1) {
 				Utils.print(this, "Writing to DOS");
-				targetPeer.dos.write(rafBuffer);
+				dos.write(rafBuffer);
 				Utils.print(this, "Done writing to DOS");
-				targetPeer.dos.flush();
+				dos.flush();
 			} else {
 				System.out.println("Block method activated");
 				FileInputStream fis = new FileInputStream(sending);
 				//Need filesize to be sent just in case block is smaller
 				byte[] buffer = new byte[(int) Settings.blockSize];
 				while(fis.read(buffer) > 0) {
-					targetPeer.dos.write(buffer);
+					dos.write(buffer);
 				}
-				targetPeer.dos.flush();
+				dos.flush();
 				fis.close();
 			}
 			System.out.println("Finished!");
-			//dos.close();
-			//targetPeer.fs.close();
+			dos.close();
+			targetPeer.fs.close();
 		} catch (Exception e) {}
 	}
 }

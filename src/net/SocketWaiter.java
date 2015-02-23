@@ -4,17 +4,21 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import main.Utils;
+import peer.Peer;
 import blocks.BlockAcceptor;
 
 public class SocketWaiter implements Runnable {
 	
 	private Socket fsSocket;
+	private Peer peer;
 	private String forFile;
 	private String blockName;
 	private int fileSize;
 	private ServerSocket fs;
 	
-	public SocketWaiter(String forFile, String blockName, int fileSize) {
+	public SocketWaiter(Peer peer, String forFile, String blockName, int fileSize) {
+		this.peer = peer;
 		this.forFile = forFile;
 		this.blockName = blockName;
 		this.fileSize = fileSize;
@@ -28,9 +32,10 @@ public class SocketWaiter implements Runnable {
 	
 	public void run() {
 		while(true) {
-			try {
+			try {	
 				fsSocket = fs.accept();
-				(new Thread(new BlockAcceptor(fsSocket, forFile, blockName, fileSize))).start();
+				peer.fs = fsSocket;
+				(new Thread(new BlockAcceptor(peer, forFile, blockName, fileSize))).start();
 				System.out.println("FileListener spawned BlockAcceptor");
 				resetVars();
 				//Wait until you get variables again
