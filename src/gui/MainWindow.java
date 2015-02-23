@@ -229,8 +229,8 @@ public class MainWindow extends JFrame {
 							String input = searchInput.getText();
 							if(input.equals("")) {
 								out("You cannot search for a blank query.");
-							} else if(input.length() < 4) {
-								out("You cannot search for a query shorter than 4 characters.");
+							} else if(input.length() < 3) {
+								out("You cannot search for a query shorter than 3 characters.");
 							} else {
 								if(!searchMode) {
 									removeColumnAndData(searchRes, 0);
