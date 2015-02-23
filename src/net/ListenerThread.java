@@ -41,7 +41,9 @@ public class ListenerThread implements Runnable {
 				if(currentFocus == 0x03) {
 					//Got request: block list
 					String receivedQuery = Utils.readString(dis);
-					peer.st.sendBlockList(receivedQuery);
+					if(receivedQuery.length() >= 4) {
+						peer.st.sendBlockList(receivedQuery);
+					}
 				}
 				if(currentFocus == 0x04) {
 					//Got data: base64 name / block list
