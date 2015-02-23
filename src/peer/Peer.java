@@ -21,6 +21,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 	public ListenerThread lt;
 	public SenderThread st;
 	public DataOutputStream dos;
+	public DataOutputStream fdos;
 	public DataInputStream dis;
 	public Socket ps;
 	public Socket fs;
@@ -115,11 +116,12 @@ public class Peer implements Runnable, Comparable<Peer> {
 				boolean whoa = false;
 				while(!whoa) {
 					try {
-						Utils.print(this, "Attempting to connect to peer FS at ");
+						Utils.print(this, "Attempting to connect to peer FS");
 						InetSocketAddress fsEndpoint = new InetSocketAddress(ps.getInetAddress(), 26607);
 						fs.connect(fsEndpoint);
 						whoa = true;
 						fs.setSoTimeout(3500);
+						fdos = new DataOutputStream(fs.getOutputStream());
 					} catch (Exception e) {
 						//e.printStackTrace();
 					}
@@ -136,12 +138,5 @@ public class Peer implements Runnable, Comparable<Peer> {
 		Thread fsSeekerThread = new Thread(fsSeeker);
 		fsSeekerThread.setName("FS Seeker");
 		fsSeekerThread.start();
-	}
-	
-	public void setFS(Socket soc) {
-		fs = soc;
-		try {
-			fs.setSoTimeout(3500);
-		} catch (SocketException e) {}
 	}
 }
