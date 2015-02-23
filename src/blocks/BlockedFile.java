@@ -225,11 +225,7 @@ public class BlockedFile {
 		progress = "0%";
 		//Delete contents then the block directory
 		File blocksDir = new File(getBlocksDir());
-		File[] blocksDirBlocks = blocksDir.listFiles();
-		for(File file : blocksDirBlocks) {
-			file.delete();
-		}
-		blocksDir.delete();
+		Utils.deleteDirectory(blocksDir);
 	}
 	
 	/**
