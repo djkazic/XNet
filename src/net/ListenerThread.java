@@ -128,9 +128,15 @@ public class ListenerThread implements Runnable {
 					//TODO: fix null issue
 					BlockedFileDL bfdlTest = Utils.getBlockedFileDLForBlock(blockName);
 					if(bfdlTest != null) {
-						System.out.println("Making FileListener");
-						fl = new SocketWaiter(forFile, blockName, fileSize);
-						(new Thread(fl)).start();
+						if(!Core.fsThreadStarted) {
+							System.out.println("Making FileListener");
+							Core.ssm = new SocketWaiter(forFile, blockName, fileSize);
+							(new Thread(Core.ssm)).start();
+							Core.fsThreadStarted = true;
+						} else {
+							System.out.println("Reusing FileListener");
+							Core.ssm.setVars(forFile, blockName, fileSize);
+						}
 					}
 				}
 				/** === BLOCK === **/

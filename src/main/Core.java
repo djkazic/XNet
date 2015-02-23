@@ -29,8 +29,8 @@ public class Core {
 	public static boolean debugServer = true;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
-	public static boolean firstBlockServerSocket = true;
 	public static SocketWaiter ssm;
+	public static boolean fsThreadStarted = false;
 
 	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
 		//L&F set
