@@ -225,7 +225,14 @@ public class BlockedFile {
 		progress = "0%";
 		//Delete contents then the block directory
 		File blocksDir = new File(getBlocksDir());
-		Utils.deleteDirectory(blocksDir);
+		File[] blocksDirBlocks = blocksDir.listFiles();
+		for(File file : blocksDirBlocks) {
+			file.delete();
+		}
+		blocksDir.delete();
+		if(blocksDir.exists()) {
+			Utils.print(this, "Unable to clear APPDATA for " + file.getName());
+		}
 	}
 	
 	/**
