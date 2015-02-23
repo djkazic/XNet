@@ -41,7 +41,7 @@ public class ListenerThread implements Runnable {
 				if(currentFocus == 0x03) {
 					//Got request: block list
 					String receivedQuery = Utils.readString(dis);
-					if(receivedQuery.length() >= 4) {
+					if(receivedQuery.length() >= 3) {
 						peer.st.sendBlockList(receivedQuery);
 					}
 				}
