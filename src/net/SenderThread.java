@@ -99,7 +99,7 @@ public class SenderThread implements Runnable {
 					disconnect = false;
 				}
 				try {
-					Thread.sleep(20);
+					Thread.sleep(25);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
