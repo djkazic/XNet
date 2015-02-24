@@ -28,9 +28,7 @@ public class AboutWindow extends JDialog {
 	protected JLabel lblAboutXnet;
 	protected JSeparator headerSeparator;
 	protected JLabel lblNewLabel;
-	protected JLabel lblThemeByFreepik;
 	protected JButton iconsVisitSource;
-	protected JButton themeVisitSource;
 	protected JLabel lblGsonByGoogle;
 	protected JButton gsonVisitSource;
 	protected Label footerLabel;
@@ -77,29 +75,9 @@ public class AboutWindow extends JDialog {
 			iconsVisitSource.setFocusable(false);
 			contentPanel.add(iconsVisitSource);
 		
-		lblThemeByFreepik = new JLabel("Theme by JGoodies / BSD 2.0");
-		lblThemeByFreepik.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblThemeByFreepik.setBounds(10, 56, 220, 14);
-		contentPanel.add(lblThemeByFreepik);
-		
-			themeVisitSource = new JButton("Visit source");
-			themeVisitSource.setFont(new Font("Dialog", Font.PLAIN, 11));
-			themeVisitSource.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					try {
-						Utils.openLink(new URI("https://github.com/JackJiang2011/beautyeye"));
-					} catch (URISyntaxException e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-			themeVisitSource.setBounds(279, 54, 100, 18);
-			themeVisitSource.setFocusable(false);
-			contentPanel.add(themeVisitSource);
-		
 		lblGsonByGoogle = new JLabel("GSON by Google / Apache 2.0");
 		lblGsonByGoogle.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblGsonByGoogle.setBounds(10, 75, 151, 14);
+		lblGsonByGoogle.setBounds(10, 56, 151, 14);
 		contentPanel.add(lblGsonByGoogle);
 		
 			gsonVisitSource = new JButton("Visit source");
@@ -113,7 +91,7 @@ public class AboutWindow extends JDialog {
 					}
 				}
 			});
-			gsonVisitSource.setBounds(279, 73, 100, 18);
+			gsonVisitSource.setBounds(279, 53, 100, 18);
 			gsonVisitSource.setFocusable(false);
 			contentPanel.add(gsonVisitSource);
 		

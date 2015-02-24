@@ -3,7 +3,6 @@ package gui;
 import gui.render.ProgressCellRenderer;
 import gui.render.TableModelDL;
 import gui.render.TableModelSpec;
-
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
@@ -20,7 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -39,13 +37,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import main.Core;
 import main.Settings;
 import main.Utils;
 import blocks.BlockedFile;
 import javax.swing.JTabbedPane;
-import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {

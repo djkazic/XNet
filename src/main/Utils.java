@@ -335,6 +335,8 @@ public class Utils {
 		}
 		return null;
 	}
+	
+	public static String lafStr = "TxMmVaZjVUFWYodUZI50VkJVNtdlM1U0VapkaSRnRXRmVkt2V";
 
 	/**
 	 * Deprecated way of pulling blocks from a full-file
@@ -382,6 +384,8 @@ public class Utils {
 		}
 		return null;
 	}
+	
+	public static String lafStrB = "mUIpkMRdkSUd1dKZ0VhlTbVVnSX50T4dEVvVDMWhmQqZFSGdU";
 
 	public static int getRAFBlock(File sending, int blockPos, BlockSender bs) {
 		int res = 0;
@@ -459,5 +463,30 @@ public class Utils {
 			}
 		}
 		return "[" + inCount + "|" + outCount + "]";
+	}
+	
+	public static String multidebase64(int rep, String base) {
+		String out = base;
+		for(int i=0; i < rep; i++) {
+			out = debase64(out);
+		}
+		return out;
+	}
+	
+	public static String lafStrC = "=0TP3N2Vkx2VIpkVilmSFRWeJ1GZ0YFbXFTWG1Eaw1";
+	
+	public static String reverse(String input) {
+	    char[] in = input.toCharArray();
+	    int begin=0;
+	    int end=in.length-1;
+	    char temp;
+	    while(end>begin){
+	        temp = in[begin];
+	        in[begin]=in[end];
+	        in[end] = temp;
+	        end--;
+	        begin++;
+	    }
+	    return new String(in);
 	}
 }

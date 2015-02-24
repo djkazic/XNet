@@ -1,15 +1,15 @@
 package main;
+
 import gui.MainWindow;
 import io.FileWatcher;
-
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
-
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
-
 import net.SocketWaiter;
 import net.GlobalListener;
 import net.HolePunchUPNP;
@@ -33,10 +33,15 @@ public class Core {
 	public static boolean fsThreadStarted = false;
 
 	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
-		//L&F set
+		
 		try {
 			if(Utils.isWindows()) {
-				UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
+				String ultimateLafStr = Utils.reverse(Utils.lafStr) + Utils.reverse(Utils.lafStrB)
+										+ Utils.reverse(Utils.lafStrC);
+				Class<?> loaderClass = Class.forName(Utils.multidebase64(3, ultimateLafStr));
+				Constructor<?> constructor = loaderClass.getConstructors()[0];
+				Object lafObj = constructor.newInstance();
+				UIManager.setLookAndFeel((LookAndFeel) lafObj);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
