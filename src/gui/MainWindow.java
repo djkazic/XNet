@@ -44,6 +44,8 @@ import main.Core;
 import main.Settings;
 import main.Utils;
 import blocks.BlockedFile;
+import javax.swing.JTabbedPane;
+import java.awt.FlowLayout;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
@@ -69,6 +71,9 @@ public class MainWindow extends JFrame {
 	
 	protected boolean searchMode;
 	private JMenuItem downloadPopupMenuRemoveFromList;
+	private JTabbedPane tabbedPane;
+	private JScrollPane libraryScrollPane;
+	private JTable libraryTable;
 
 	/**
 	 * Create the frame.
@@ -78,7 +83,7 @@ public class MainWindow extends JFrame {
 		searchMode = false;
 		setTitle("XNet v" + Settings.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 550, 470);
+		setBounds(100, 100, 550, 570);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -127,35 +132,22 @@ public class MainWindow extends JFrame {
 		mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
 		mnFile.add(mntmAbout);
 		
-		searchResScrollPane = new JScrollPane();
-		searchResScrollPane.setBounds(12, 76, 520, 220);
-		contentPane.add(searchResScrollPane);
-		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 306, 520, 102);
+		downloadScrollPane.setBounds(12, 346, 520, 149);
 		contentPane.add(downloadScrollPane);
 		
 		separator = new JSeparator();
-		separator.setBounds(0, 419, 546, 2);
+		separator.setBounds(0, 506, 643, 2);
 		contentPane.add(separator);
 		
 		lblPeers = new JLabel("");
 		lblPeers.setToolTipText("[0|0]");
 		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/0bars.png")));
-		lblPeers.setBounds(520, 419, 24, 25);
+		lblPeers.setBounds(590, 518, 24, 24);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
-		
-		searchRes = new JTable(tableModel);
 		betterRenderer = new DefaultTableCellRenderer();
 		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		searchRes.setDefaultRenderer(Object.class, betterRenderer);
-		//.getColumn(0).setCellRenderer(betterRenderer);
-		searchRes.getTableHeader().setReorderingAllowed(false);
-		searchRes.getTableHeader().setResizingAllowed(false);
-		searchResScrollPane.setViewportView(searchRes);
-		searchRes.setCellSelectionEnabled(true);
-		searchRes.setColumnSelectionAllowed(true);
 		
 		downloadPopupMenu = new JPopupMenu();
 		downloadPopupMenuRemoveFromList = new JMenuItem("Remove from list");
@@ -167,6 +159,28 @@ public class MainWindow extends JFrame {
 		downloadList.getTableHeader().setReorderingAllowed(false);
 		downloadList.getTableHeader().setResizingAllowed(false);
 		downloadScrollPane.setViewportView(downloadList);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 75, 520, 260);
+		contentPane.add(tabbedPane);
+		
+		searchResScrollPane = new JScrollPane();
+		tabbedPane.addTab("Search", null, searchResScrollPane, null);
+		
+		searchRes = new JTable(tableModel);
+		searchRes.setDefaultRenderer(Object.class, betterRenderer);
+		//.getColumn(0).setCellRenderer(betterRenderer);
+		searchRes.getTableHeader().setReorderingAllowed(false);
+		searchRes.getTableHeader().setResizingAllowed(false);
+		searchResScrollPane.setViewportView(searchRes);
+		searchRes.setCellSelectionEnabled(true);
+		searchRes.setColumnSelectionAllowed(true);
+		
+		libraryScrollPane = new JScrollPane();
+		tabbedPane.addTab("Library", null, libraryScrollPane, null);
+		
+		libraryTable = new JTable();
+		libraryScrollPane.setViewportView(libraryTable);
 	}
 	
 	public void registerListeners() {
