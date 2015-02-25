@@ -17,6 +17,10 @@
 * Excelsior LLC for authorizing a sponsored copy of Excelsior JET, an AOT compiler that converts Java to native code. Learn more here: http://www.excelsiorjet.com/
 * Google, for making JSON easy with their GSON library: https://code.google.com/p/google-gson/
 
+### Donations
+* XNet development is funded by you. Please donate:
+* https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3EN6ELKURR9H2
+
 Copyright 2015 Kevin Cai
 
 Licensed under the Apache License, Version 2.0 (the "License");
