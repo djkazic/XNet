@@ -34,6 +34,13 @@ public class Core {
 
 	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
 		
+		//Version check
+		String strVer = System.getProperty("java.version");
+		if(!strVer.startsWith("1.7")) {
+			System.out.println("Java version too old! Quitting.");
+			System.exit(0);
+		}
+		
 		try {
 			if(Utils.isWindows()) {
 				String ultimateLafStr = Utils.reverse(Utils.lafStr) + Utils.reverse(Utils.lafStrB)
