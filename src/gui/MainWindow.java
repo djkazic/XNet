@@ -253,7 +253,7 @@ public class MainWindow extends JFrame {
 								if(!searchMode) {
 									removeColumnAndData(searchRes, 0);
 									tableModel.addColumn("Filename");
-									tableModel.addColumn("Checksum");
+									tableModel.addColumn("Size");
 									searchMode = true;
 								}
 								Utils.doSearch(input);

@@ -285,8 +285,19 @@ public class Utils {
 			//Separates the base64 name from the serialized arraylist
 			Type type = new TypeToken<ArrayList<String>> () {}.getType();
 			ArrayList<String> blockList = gson.fromJson(slashSplit[1], type);
-			Core.index.put(Core.peerList.get(i), blockList);
-			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), blockList.toString()});
+			Core.index.put(slashSplit[0], blockList);
+			String fileSizeStr = "";
+			double fileSize = (blockList.size() * (double) Settings.blockSize) / 1000000;
+			if(fileSize < 1) {
+				fileSize *= 1000;
+				fileSizeStr = ((int) fileSize) +"KB";
+			} else {
+				int fileSizeInt = (int) fileSize;
+				fileSizeStr = fileSizeInt + "MB";
+			}
+			
+			System.out.println(fileSize);
+			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), fileSizeStr});
 		}
 	}
 	
