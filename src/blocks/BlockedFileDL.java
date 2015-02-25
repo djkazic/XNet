@@ -22,7 +22,7 @@ public class BlockedFileDL implements Runnable {
 		while(bf.getNeededBlock() != null) {
 			broadcast(bf.getName(), bf.getNeededBlock());
 			try {
-				Thread.sleep(1900);
+				Thread.sleep(1800);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
