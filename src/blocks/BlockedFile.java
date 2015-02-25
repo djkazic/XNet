@@ -35,12 +35,12 @@ public class BlockedFile {
 	 * @param filePath
 	 */
 	public BlockedFile(String filePath) {
-		Core.blockDex.add(this);
 		this.file = new File(filePath);
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
+		Core.blockDex.add(this);
 	}
 	
 	/**
@@ -48,12 +48,12 @@ public class BlockedFile {
 	 * @param file
 	 */
 	public BlockedFile(File file) {
-		Core.blockDex.add(this);
 		this.file = file;
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
+		Core.blockDex.add(this);
 	}
 	
 	/**
@@ -63,12 +63,12 @@ public class BlockedFile {
 	 * blockList set
 	 */
 	public BlockedFile(String file, ArrayList<String> blockList) {
-		Core.blockDex.add(this);
 		this.file = new File(file);
 		this.blockList = blockList;
 		haveList = new ArrayList<String> ();
 		bfdl = new BlockedFileDL(this);
 		Utils.initAppDataDir(file);
+		Core.blockDex.add(this);
 	}
 	
 	/**
