@@ -295,8 +295,6 @@ public class Utils {
 				int fileSizeInt = (int) fileSize;
 				fileSizeStr = fileSizeInt + "MB";
 			}
-			
-			System.out.println(fileSize);
 			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), fileSizeStr});
 		}
 	}
