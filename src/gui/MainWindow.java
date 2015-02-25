@@ -102,7 +102,7 @@ public class MainWindow extends JFrame {
 		resLatch = new CountDownLatch(1);
 		
 		searchInput = new JTextField();
-		searchInput.setBounds(12, 39, 520, 25);
+		searchInput.setBounds(8, 39, 516, 25);
 		searchInput.setColumns(10);
 		searchInput.setFocusable(false);
 		searchInput.setEditable(false);
@@ -129,17 +129,17 @@ public class MainWindow extends JFrame {
 		mnFile.add(mntmAbout);
 		
 		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(12, 346, 520, 149);
+		downloadScrollPane.setBounds(6, 346, 520, 149);
 		contentPane.add(downloadScrollPane);
 		
 		separator = new JSeparator();
-		separator.setBounds(0, 506, 643, 2);
+		separator.setBounds(0, 507, 532, 2);
 		contentPane.add(separator);
 		
 		lblPeers = new JLabel("");
 		lblPeers.setToolTipText("[0|0]");
 		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/0bars.png")));
-		lblPeers.setBounds(590, 518, 24, 24);
+		lblPeers.setBounds(508, 515, 24, 24);
 		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		contentPane.add(lblPeers);
 		betterRenderer = new DefaultTableCellRenderer();
@@ -157,7 +157,7 @@ public class MainWindow extends JFrame {
 		downloadScrollPane.setViewportView(downloadList);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(12, 75, 520, 260);
+		tabbedPane.setBounds(6, 75, 520, 260);
 		contentPane.add(tabbedPane);
 		
 		searchResScrollPane = new JScrollPane();
