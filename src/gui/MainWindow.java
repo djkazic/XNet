@@ -51,6 +51,7 @@ public class MainWindow extends JFrame {
 	protected JTable searchRes;
 	protected JTable downloadList;
 	public DefaultTableModel tableModel;
+	public DefaultTableModel libraryModel;
 	public DefaultTableModel downloadModel;
 	protected DefaultTableCellRenderer betterRenderer;
 	protected CountDownLatch resLatch;
@@ -98,6 +99,12 @@ public class MainWindow extends JFrame {
 		downloadModel = new TableModelDL();
 		downloadModel.addColumn("Filename");
 		downloadModel.addColumn("Progress");
+		
+		libraryModel = new DefaultTableModel();
+		libraryModel.addColumn("Filename");
+		libraryModel.addColumn("Size");
+		libraryModel.addColumn("Date");
+		libraryModel.addRow(new String[]{"Not yet implemented, feature coming soon!"});
 		
 		resLatch = new CountDownLatch(1);
 		
@@ -175,7 +182,8 @@ public class MainWindow extends JFrame {
 		libraryScrollPane = new JScrollPane();
 		tabbedPane.addTab("Library", null, libraryScrollPane, null);
 		
-		libraryTable = new JTable();
+		libraryTable = new JTable(libraryModel);
+		libraryTable.getColumnModel().getColumn(0).setPreferredWidth(300);
 		libraryScrollPane.setViewportView(libraryTable);
 	}
 	
