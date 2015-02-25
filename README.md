@@ -14,7 +14,7 @@
 
 ### Special Thanks
 * Mikle Garin of WebLaF, a cross-platform LookAndFeel library; you can find a download on their site: http://weblookandfeel.com/
-* Dmitry Leskov of Excelsior LLC for authorizing a sponsored copy of Excelsior JET, an AOT compiler that converts Java to native code. Learn more here: http://www.excelsiorjet.com/
+* Excelsior LLC for authorizing a sponsored copy of Excelsior JET, an AOT compiler that converts Java to native code. Learn more here: http://www.excelsiorjet.com/
 * Google, for making JSON easy with their GSON library: https://code.google.com/p/google-gson/
 
 Copyright 2015 Kevin Cai
