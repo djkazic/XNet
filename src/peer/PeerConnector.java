@@ -1,7 +1,5 @@
 package peer;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -9,9 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-
 import main.Core;
-import main.ShutdownHook;
 import main.Utils;
 
 public class PeerConnector implements Runnable {
