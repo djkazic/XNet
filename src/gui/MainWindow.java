@@ -3,6 +3,7 @@ package gui;
 import gui.render.ProgressCellRenderer;
 import gui.render.TableModelDL;
 import gui.render.TableModelSpec;
+
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
@@ -19,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -37,10 +39,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
 import main.Core;
 import main.Settings;
 import main.Utils;
 import blocks.BlockedFile;
+
 import javax.swing.JTabbedPane;
 
 @SuppressWarnings("serial")
@@ -51,6 +55,7 @@ public class MainWindow extends JFrame {
 	protected JTable searchRes;
 	protected JTable downloadList;
 	public DefaultTableModel tableModel;
+	public DefaultTableModel libraryModel;
 	public DefaultTableModel downloadModel;
 	protected DefaultTableCellRenderer betterRenderer;
 	protected CountDownLatch resLatch;
@@ -98,6 +103,12 @@ public class MainWindow extends JFrame {
 		downloadModel = new TableModelDL();
 		downloadModel.addColumn("Filename");
 		downloadModel.addColumn("Progress");
+		
+		libraryModel = new DefaultTableModel();
+		libraryModel.addColumn("Filename");
+		libraryModel.addColumn("Size");
+		libraryModel.addColumn("Date");
+		libraryModel.addRow(new String[]{"Not yet implemented, feature coming soon!"});
 		
 		resLatch = new CountDownLatch(1);
 		
@@ -175,7 +186,8 @@ public class MainWindow extends JFrame {
 		libraryScrollPane = new JScrollPane();
 		tabbedPane.addTab("Library", null, libraryScrollPane, null);
 		
-		libraryTable = new JTable();
+		libraryTable = new JTable(libraryModel);
+		libraryTable.getColumnModel().getColumn(0).setPreferredWidth(300);
 		libraryScrollPane.setViewportView(libraryTable);
 	}
 	
@@ -245,7 +257,7 @@ public class MainWindow extends JFrame {
 								if(!searchMode) {
 									removeColumnAndData(searchRes, 0);
 									tableModel.addColumn("Filename");
-									tableModel.addColumn("Checksum");
+									tableModel.addColumn("Size");
 									searchMode = true;
 								}
 								Utils.doSearch(input);
@@ -259,6 +271,7 @@ public class MainWindow extends JFrame {
 		});
 		
 		searchRes.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(searchMode) {
@@ -266,7 +279,6 @@ public class MainWindow extends JFrame {
 					int tableRow = searchRes.rowAtPoint(clickPoint);
 					if(arg0.getClickCount() == 2) {
 						String fileName = (String) tableModel.getValueAt(tableRow, 0);
-						String blockListStr = (String) tableModel.getValueAt(tableRow, 1);
 						@SuppressWarnings("rawtypes")
 						Iterator it = Core.index.entrySet().iterator();
 						//Iterate through HashMap until a match by blockListStr is found
@@ -274,11 +286,10 @@ public class MainWindow extends JFrame {
 					        @SuppressWarnings("rawtypes")
 							Map.Entry pairs = (Map.Entry) it.next();
 					        //TODO: use HashMap to contact known peers first
-					        //Peer mapPeer = (Peer) pairs.getKey();
-					        @SuppressWarnings("unchecked")
+					        String tableFileName = (String) pairs.getKey();
 							ArrayList<String> blockList = (ArrayList<String>) pairs.getValue();
 					        //Check to see if the HashMap's matching is accurate
-					        if(blockList.toString().equals(blockListStr)) {
+					        if(tableFileName.equals(fileName)) {
 					        	BlockedFile bf;
 					        	//Check if this BlockedFile exists
 					        	if(Utils.getBlockedFileByBlockList(blockList) != null) {

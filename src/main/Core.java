@@ -20,7 +20,7 @@ import blocks.BlockedFile;
 public class Core {
 	
 	public static ArrayList <Peer> peerList;
-	public static HashMap<Peer, ArrayList<String>> index;
+	public static HashMap<String, ArrayList<String>> index;
 	public static MainWindow mainWindow;
 	public static ArrayList<BlockedFile> blockDex;
 	public static ArrayList <String> potentialPeers;
@@ -33,6 +33,13 @@ public class Core {
 	public static boolean fsThreadStarted = false;
 
 	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
+		
+		//Version check
+		String strVer = System.getProperty("java.version");
+		if(!strVer.startsWith("1.7")) {
+			System.out.println("Java version too old! Quitting.");
+			System.exit(0);
+		}
 		
 		try {
 			if(Utils.isWindows()) {
@@ -54,7 +61,7 @@ public class Core {
 		Settings.version = 1.0;
 		peerList = new ArrayList<Peer> ();
 		blockDex = new ArrayList<BlockedFile> ();
-		index = new HashMap<Peer, ArrayList<String>> ();
+		index = new HashMap<String, ArrayList<String>> ();
 		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
 		
@@ -93,7 +100,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		
 		if(sep == 0) {
 			gl = new GlobalListener();
