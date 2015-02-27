@@ -1,0 +1,33 @@
+How to implement request bouncing (search)
+1) Got a request? Good, format it right
+2) Now: also send a blackList -- a serialized ArrayList<String> of peers that this will have gone to AND the originator's IP encoded in base64
+3) Send to A and B with a blackList of A and B
+4) A and B interpret the request, search themselves for query
+5) If A or B have it, directly reply with blockList data
+6) Otherwise, A and B sends the request to its peers (except those that match the blackList)
+7) C gets the bounced request, checks propagation
+8) Propagation calculated by blackList.size(), no levels here, just number of clients queried
+9) If clients > X, then do not bounce and C does not reply (say, 80)
+10) If clients <= X, then C debases the IP and makes a new Peer connection
+11) C sends blockList data
+
+How to implement remote file storage
+1) Have a user profile (not registration, just generate a RSA pub/priv or equivalent crypt scheme)
+2) Save pub/priv into a file (let them know to back it up)
+3) New computer? Import your pub/priv. This will let you allocate more storage
+4) How much storage will you set aside?
+5) Draw filled bar (how much used of total storage)
+6) Upload file? Save fileName to database of UploadedFile
+7) Use RAF to chunk file and checksum, add to blockList
+8) While have chunk, FileOutputStream chunk and encrypt it with RSA
+9) Send storage request out to peers
+10) Wait for propagation of request
+10A) If received a request, respond if stored with name of block
+11) Distribute until at least two copies are on a peer somewhere
+12) Show full upload
+
+How to implement retrieval
+1) Tab for loops through db of uploaded files
+2) Retrieve blockList from UploadedFile
+3) Start requesting those blocks like a torrent
+4) If received block, decrypt with user profile
