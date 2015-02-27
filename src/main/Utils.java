@@ -282,8 +282,16 @@ public class Utils {
 			//Separates the base64 name from the serialized arraylist
 			@SuppressWarnings("unchecked")
 			ArrayList<String> blockList = mapper.readValue(slashSplit[1], ArrayList.class, String.class);
-			Core.index.put(Core.peerList.get(i), blockList);
-			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), blockList.toString()});
+			Core.index.put(slashSplit[0], blockList);
+			String fileEstimateStr = "";
+			int fileEstimateKb = (int) ((Settings.blockSize * blockList.size()) / 1000);
+			if(fileEstimateKb > 1000) {
+				int fileEstimateMb = (int) (fileEstimateKb / 1000D);
+				fileEstimateStr += fileEstimateMb + "MB";
+			} else {
+				fileEstimateStr += fileEstimateKb+ "KB";
+			}
+			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), fileEstimateStr});
 		}
 	}
 	
