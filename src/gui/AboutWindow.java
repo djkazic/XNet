@@ -29,8 +29,8 @@ public class AboutWindow extends JDialog {
 	protected JSeparator headerSeparator;
 	protected JLabel lblNewLabel;
 	protected JButton iconsVisitSource;
-	protected JLabel lblGsonByGoogle;
-	protected JButton gsonVisitSource;
+	protected JLabel lblBoon;
+	protected JButton boonVisitSource;
 	protected Label footerLabel;
 
 	/**
@@ -75,25 +75,25 @@ public class AboutWindow extends JDialog {
 			iconsVisitSource.setFocusable(false);
 			contentPanel.add(iconsVisitSource);
 		
-		lblGsonByGoogle = new JLabel("GSON by Google / Apache 2.0");
-		lblGsonByGoogle.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblGsonByGoogle.setBounds(10, 56, 151, 14);
-		contentPanel.add(lblGsonByGoogle);
+		lblBoon = new JLabel("Boon by Richard Hightower / Apache 2.0");
+		lblBoon.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblBoon.setBounds(10, 56, 195, 14);
+		contentPanel.add(lblBoon);
 		
-			gsonVisitSource = new JButton("Visit source");
-			gsonVisitSource.setFont(new Font("Dialog", Font.PLAIN, 11));
-			gsonVisitSource.addActionListener(new ActionListener() {
+			boonVisitSource = new JButton("Visit source");
+			boonVisitSource.setFont(new Font("Dialog", Font.PLAIN, 11));
+			boonVisitSource.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						Utils.openLink(new URI("https://code.google.com/p/google-gson"));
+						Utils.openLink(new URI("https://github.com/boonproject/boon"));
 					} catch (URISyntaxException e1) {
 						e1.printStackTrace();
 					}
 				}
 			});
-			gsonVisitSource.setBounds(279, 53, 100, 18);
-			gsonVisitSource.setFocusable(false);
-			contentPanel.add(gsonVisitSource);
+			boonVisitSource.setBounds(279, 53, 100, 18);
+			boonVisitSource.setFocusable(false);
+			contentPanel.add(boonVisitSource);
 		
 		footerLabel = new Label("Copyright 2015 - Kevin Cai");
 		footerLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
