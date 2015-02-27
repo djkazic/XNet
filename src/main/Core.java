@@ -93,7 +93,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 0;
+		int sep = 1;
 		
 		if(sep == 0) {
 			gl = new GlobalListener();

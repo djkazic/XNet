@@ -10,24 +10,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-
+import org.boon.json.JsonFactory;
+import org.boon.json.ObjectMapper;
 import peer.Peer;
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import crypto.MD5;
@@ -277,14 +274,14 @@ public class Utils {
 		 * Delimeters are / and ;
 		 * ex. dDkg=fgfDggN/blocklist
 		 */
-		Gson gson = new Gson();
+		ObjectMapper mapper = JsonFactory.create();
 		String[] pairSplit = str.split(";");
 		//Also copying into a HashMap for Core
 		for(int i=0; i < Core.peerList.size(); i++) {
 			String[] slashSplit = pairSplit[i].split("/");
 			//Separates the base64 name from the serialized arraylist
-			Type type = new TypeToken<ArrayList<String>> () {}.getType();
-			ArrayList<String> blockList = gson.fromJson(slashSplit[1], type);
+			@SuppressWarnings("unchecked")
+			ArrayList<String> blockList = mapper.readValue(slashSplit[1], ArrayList.class, String.class);
 			Core.index.put(Core.peerList.get(i), blockList);
 			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), blockList.toString()});
 		}

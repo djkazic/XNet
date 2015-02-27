@@ -10,11 +10,12 @@ import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import org.boon.json.JsonFactory;
+import org.boon.json.ObjectMapper;
+
 import main.Core;
 import main.Settings;
 import main.Utils;
-
-import com.google.gson.Gson;
 
 //Represents files as a file and group of Blocks
 //Add self to blockDex so can be searched for
@@ -25,7 +26,7 @@ public class BlockedFile {
 
 	private File file;
 	private ArrayList<String> blockList;
-	private Gson gson = new Gson();
+	private ObjectMapper mapper = JsonFactory.create();
 	private BlockedFileDL bfdl;
 	private ArrayList<String> haveList;
 	private String progress;
@@ -259,7 +260,7 @@ public class BlockedFile {
 	}
 	
 	public String toString() {
-		return Utils.base64(file.getName()) + "/" + gson.toJson(blockList);
+		return Utils.base64(file.getName()) + "/" + mapper.toJson(blockList);
 	}
 	
 	public void download() {
