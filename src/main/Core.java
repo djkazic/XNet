@@ -42,14 +42,12 @@ public class Core {
 		}
 		
 		try {
-			if(Utils.isWindows()) {
-				String ultimateLafStr = Utils.reverse(Utils.lafStr) + Utils.reverse(Utils.lafStrB)
-										+ Utils.reverse(Utils.lafStrC);
-				Class<?> loaderClass = Class.forName(Utils.multidebase64(3, ultimateLafStr));
-				Constructor<?> constructor = loaderClass.getConstructors()[0];
-				Object lafObj = constructor.newInstance();
-				UIManager.setLookAndFeel((LookAndFeel) lafObj);
-			}
+			String ultimateLafStr = Utils.reverse(Utils.lafStr) + Utils.reverse(Utils.lafStrB)
+									+ Utils.reverse(Utils.lafStrC);
+			Class<?> loaderClass = Class.forName(Utils.multidebase64(3, ultimateLafStr));
+			Constructor<?> constructor = loaderClass.getConstructors()[0];
+			Object lafObj = constructor.newInstance();
+			UIManager.setLookAndFeel((LookAndFeel) lafObj);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
