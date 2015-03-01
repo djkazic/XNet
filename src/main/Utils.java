@@ -19,20 +19,15 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
-
 import peer.Peer;
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
-
 import com.sun.org.apache.xml.internal.security.utils.Base64;
-
 import crypto.MD5;
 
 public class Utils {
