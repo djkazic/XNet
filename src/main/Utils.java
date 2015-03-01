@@ -10,16 +10,22 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
+
 import peer.Peer;
 import blocks.BlockSender;
 import blocks.BlockedFile;
@@ -296,21 +302,30 @@ public class Utils {
 	}
 	
 	//HWID utils
-	public static String getHWID() {
-		InetAddress ip;
-		try {
-			ip = InetAddress.getLocalHost();
-			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-			byte[] mac = network.getHardwareAddress();
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) {
-				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));		
+	public static String getHWID() throws SocketException {
+		String firstInterfaceFound = null;        
+		Map<String,String> addrByNet = new HashMap<> ();
+		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+		while(networkInterfaces.hasMoreElements()){
+			NetworkInterface network = networkInterfaces.nextElement();
+			byte[] bmac = network.getHardwareAddress();
+			if(bmac != null){
+				StringBuilder sb = new StringBuilder();
+				for(int i=0; i < bmac.length; i++) {
+					sb.append(String.format("%02X%s", bmac[i], (i < bmac.length - 1) ? "-" : ""));        
+				}
+				if(!sb.toString().isEmpty()){
+					addrByNet.put(network.getName(), sb.toString());
+				}
+				if(!sb.toString().isEmpty() && firstInterfaceFound == null){
+					firstInterfaceFound = network.getName();
+				}
 			}
-			return base64(sb.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+		if(firstInterfaceFound != null){
+			return addrByNet.get(firstInterfaceFound);
+		}
+	    return null;
 	}
 	
 	public static void print(Object sourceClass, String msg) {
