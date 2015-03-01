@@ -111,6 +111,9 @@ public class Core {
 			//TODO: remove debugging
 			Core.discoveryLatch.countDown();
 		}
+		
+		//DEBUG
+		Core.mainWindow.updateLibrary();
 	}
 	
 	public static void incomingDebugReset() {

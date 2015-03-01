@@ -104,11 +104,10 @@ public class MainWindow extends JFrame {
 		downloadModel.addColumn("Filename");
 		downloadModel.addColumn("Progress");
 		
-		libraryModel = new DefaultTableModel();
+		libraryModel = new TableModelSpec();
 		libraryModel.addColumn("Filename");
 		libraryModel.addColumn("Size");
 		libraryModel.addColumn("Date");
-		libraryModel.addRow(new String[]{"Not yet implemented, feature coming soon!"});
 		
 		resLatch = new CountDownLatch(1);
 		
@@ -188,6 +187,8 @@ public class MainWindow extends JFrame {
 		
 		libraryTable = new JTable(libraryModel);
 		libraryTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+		libraryTable.getTableHeader().setReorderingAllowed(false);
+		libraryTable.getTableHeader().setResizingAllowed(false);
 		libraryScrollPane.setViewportView(libraryTable);
 	}
 	
@@ -216,7 +217,7 @@ public class MainWindow extends JFrame {
 		
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				aboutWindow();
+				new AboutWindow();
 			}
 		});
 		
@@ -226,7 +227,7 @@ public class MainWindow extends JFrame {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ENTER) {
 					//clear any previous res
-					clearTable();
+					clearTable(tableModel);
 					//clear core index
 					Core.index.clear();
 					if(Core.debugServer) {
@@ -266,6 +267,19 @@ public class MainWindow extends JFrame {
 						}
 					}
 					searchInput.setText("");
+				}
+			}
+		});
+		
+		libraryTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				Point clickPoint = arg0.getPoint();
+				int tableRow = libraryTable.rowAtPoint(clickPoint);
+				if(arg0.getClickCount() == 2) {
+					System.out.println("DUB CLICKED");
+					String fileName = (String) libraryModel.getValueAt(tableRow, 0);
+					BlockedFile bf = Utils.getBlockedFileByName(fileName);
+					bf.open();
 				}
 			}
 		});
@@ -338,11 +352,11 @@ public class MainWindow extends JFrame {
 			tableModel.addColumn("Status");
 			searchMode = false;
 		}
-		clearTable();
+		clearTable(tableModel);
 		tableModel.addRow(new String[]{str});
 	}
 	
-	public void clearTable() {
+	public void clearTable(DefaultTableModel tableModel) {
 		for(int i=0; i < tableModel.getRowCount(); i++) {
 			tableModel.removeRow(i);
 		}
@@ -386,12 +400,25 @@ public class MainWindow extends JFrame {
 		}
 	}
 	
-	public void setDebugLatch(CountDownLatch debugLatch) {
-		this.debugLatch = debugLatch;
+	public void updateLibrary() {
+		clearTable(libraryModel);
+		for(BlockedFile bf : Core.blockDex) {
+			if(bf.completed) {
+				String fileEstimateStr = "";
+				long fileEstimateKb = bf.getFileSize() / 1000;
+				if(fileEstimateKb > 1000) {
+					double fileEstimateMb = (fileEstimateKb / 1000D);
+					fileEstimateStr += fileEstimateMb + "MB";
+				} else {
+					fileEstimateStr += fileEstimateKb+ "KB";
+				}
+				libraryModel.addRow(new String[]{bf.getName(), fileEstimateStr, bf.getDateModified()});
+			}
+		}
 	}
 	
-	public void aboutWindow() {
-		new AboutWindow();
+	public void setDebugLatch(CountDownLatch debugLatch) {
+		this.debugLatch = debugLatch;
 	}
 
 	public void resetTable() {
