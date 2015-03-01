@@ -1,5 +1,6 @@
 package blocks;
 
+import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -8,14 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import org.boon.json.JsonFactory;
-import org.boon.json.ObjectMapper;
+import java.util.Date;
 
 import main.Core;
 import main.Settings;
 import main.Utils;
+
+import org.boon.json.JsonFactory;
+import org.boon.json.ObjectMapper;
 
 //Represents files as a file and group of Blocks
 //Add self to blockDex so can be searched for
@@ -29,6 +32,7 @@ public class BlockedFile {
 	private ObjectMapper mapper = JsonFactory.create();
 	private BlockedFileDL bfdl;
 	private ArrayList<String> haveList;
+	public boolean completed;
 	private String progress;
 
 	/**
@@ -41,6 +45,7 @@ public class BlockedFile {
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
+		completed = true;
 		Core.blockDex.add(this);
 	}
 	
@@ -54,6 +59,7 @@ public class BlockedFile {
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
 		bfdl = new BlockedFileDL(this);
+		completed = true;
 		Core.blockDex.add(this);
 	}
 	
@@ -69,6 +75,7 @@ public class BlockedFile {
 		haveList = new ArrayList<String> ();
 		bfdl = new BlockedFileDL(this);
 		Utils.initAppDataDir(file);
+		completed = false;
 		Core.blockDex.add(this);
 	}
 	
@@ -234,6 +241,8 @@ public class BlockedFile {
 		if(blocksDir.exists()) {
 			Utils.print(this, "Unable to clear APPDATA for " + file.getName());
 		}
+		//Set complete flag
+		completed = true;
 	}
 	
 	/**
@@ -284,6 +293,34 @@ public class BlockedFile {
 	public int getBlockNumber(String blockName) {
 		int prelim = blockList.indexOf(blockName);
 		return prelim;
+	}
+	
+	public long getFileSize() {
+		if(completed) {
+			return file.length();
+		}
+		//TODO: fix this to return an estimate
+		return 0;
+	}
+	
+	public String getDateModified() {
+		if(completed) {
+			Date date = new Date(file.lastModified());
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+			return formatter.format(date);
+		} 
+		return null;
+	}
+	
+	public void open() {
+		if(completed) {
+			Desktop thisDesktop = Desktop.getDesktop();
+			try {
+				thisDesktop.open(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void logBlock(String blockName) {
