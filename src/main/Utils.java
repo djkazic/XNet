@@ -323,7 +323,7 @@ public class Utils {
 			}
 		}
 		if(firstInterfaceFound != null){
-			return addrByNet.get(firstInterfaceFound);
+			return base64(addrByNet.get(firstInterfaceFound));
 		}
 	    return null;
 	}
