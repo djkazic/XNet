@@ -50,31 +50,31 @@ import javax.swing.JTabbedPane;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 
-	protected JPanel contentPane;
-	public JTextField searchInput;
-	protected JTable searchRes;
-	protected JTable downloadList;
-	public DefaultTableModel searchModel;
-	public DefaultTableModel libraryModel;
-	public DefaultTableModel downloadModel;
-	protected DefaultTableCellRenderer betterRenderer;
-	protected CountDownLatch resLatch;
-	public CountDownLatch debugLatch;
-	protected JScrollPane searchResScrollPane;
-	protected JScrollPane downloadScrollPane;
-	protected JSeparator separator;
-	protected JLabel lblPeers;
-	public String debugHost;
-	protected JMenuItem mntmAbout;
-	protected JMenuBar menuBar;
-	protected JMenu mnFile;
+	private JPanel contentPane;
+	private JTextField searchInput;
+	private JTable searchRes;
+	private JTable downloadList;
+	private DefaultTableModel searchModel;
+	private DefaultTableModel libraryModel;
+	private DefaultTableModel downloadModel;
+	private DefaultTableCellRenderer betterRenderer;
+	private CountDownLatch resLatch;
+	private JScrollPane searchResScrollPane;
+	private JScrollPane downloadScrollPane;
+	private JSeparator separator;
+	private JLabel lblPeers;
+	private JMenuItem mntmAbout;
+	private JMenuBar menuBar;
+	private JMenu mnFile;
 	private JPopupMenu downloadPopupMenu;
-	
-	protected boolean searchMode;
+	private boolean searchMode;
 	private JMenuItem downloadPopupMenuRemoveFromList;
 	private JTabbedPane tabbedPane;
 	private JScrollPane libraryScrollPane;
 	private JTable libraryTable;
+	
+	public CountDownLatch debugLatch;
+	public String debugHost;
 
 	/**
 	 * Create the frame.
