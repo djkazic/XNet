@@ -90,6 +90,9 @@ public class IRCBootstrap implements Runnable {
 					}
 					if(!str.equals(nick) && !(attemptDecode(str)).equals("")) {
 						Core.potentialPeers.add(attemptDecode(str));
+						//TODO: take into account the port for potentialPeers from now on
+						//Use a String[]!
+						//Stop stun4j logging
 					}
 				}
 			}
@@ -98,7 +101,8 @@ public class IRCBootstrap implements Runnable {
 
 	private String attemptDecode(String str) {
 		if(str.startsWith("bs")) {
-			String ip = Utils.longToIp(Long.parseLong(str.substring(2)));
+			String ipOnly = str.substring(0, str.indexOf("|"));
+			String ip = Utils.longToIp(Long.parseLong(ipOnly.substring(2)));
 			if(Utils.isValidIPV4(ip)) {
 				return ip;
 			}

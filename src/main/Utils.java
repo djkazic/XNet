@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
+import net.HolePunchSTUN;
+
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
 
@@ -514,21 +516,33 @@ public class Utils {
 		return new String(in);
 	}
 
-	public static String getExtIp() throws IOException{
-		URL whatismyip = new URL("http://icanhazip.com");
-		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-		return in.readLine();
+	public static String getExtIp() {
+		HolePunchSTUN stun = new HolePunchSTUN("stun.ideasip.com", 3478, 26606);
+		try {
+			stun.performSTUNLookup();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String pubIp = stun.getPublicIP();
+		int pubPort = stun.getPublicPort();
+		if(pubIp != null && pubPort != -1) {
+			return pubIp + ":" + pubPort;
+		}
+		return null;
 	}
 
-	public static String ipToLong(String ipAddress) {
+	public static String ipToLong(String ipAddressPort) {
+		String[] ipPortSplit = ipAddressPort.split(":");
+		String ipAddress = ipPortSplit[0];
+		String port = ipPortSplit[1];
 		String[] ipAddressInArray = ipAddress.split("\\.");
-		long result = 0;
-		for (int i = 0; i < ipAddressInArray.length; i++) {
+		long ipResult = 0;
+		for(int i = 0; i < ipAddressInArray.length; i++) {
 			int power = 3 - i;
 			int ip = Integer.parseInt(ipAddressInArray[i]);
-			result += ip * Math.pow(256, power);
+			ipResult += ip * Math.pow(256, power);
 		}
-		return "" + result;
+		return ipResult + "|" + port;
 	}
 
 	public static String longToIp(long ip) {

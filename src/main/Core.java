@@ -27,7 +27,7 @@ public class Core {
 	public static HashMap<String, ArrayList<String>> index;
 	public static MainWindow mainWindow;
 	public static ArrayList<BlockedFile> blockDex;
-	public static ArrayList <String> potentialPeers;
+	public static ArrayList <String[]> potentialPeers;
 	public static GlobalListener gl;
 	public static PeerConnector pst;
 	public static boolean debugServer = true;
@@ -64,7 +64,7 @@ public class Core {
 		peerList = new ArrayList<Peer> ();
 		blockDex = new ArrayList<BlockedFile> ();
 		index = new HashMap<String, ArrayList<String>> ();
-		potentialPeers = new ArrayList<String> ();
+		potentialPeers = new ArrayList<String[]> ();
 		discoveryLatch = new CountDownLatch(1);
 		
 		//GUI inits
@@ -110,7 +110,7 @@ public class Core {
 		
 		//Local development tools
 		debugServer = false;
-		int sep = 1;
+		int sep = 0;
 		
 		if(sep == 0) {
 			gl = new GlobalListener();
