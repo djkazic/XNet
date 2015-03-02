@@ -17,7 +17,7 @@ public class IRCBootstrap implements Runnable {
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	private String line;
-
+	
 	public IRCBootstrap(String server, String channel, int port) throws Exception {
 		this.channel = channel;
 		socket = new Socket(server, port);
@@ -27,6 +27,7 @@ public class IRCBootstrap implements Runnable {
 	}
 
 	public void run() {
+		Utils.print(this, "Initializing IRC bootstrap");
 		try {
 			connect();
 		} catch (IOException e) {e.printStackTrace();}
@@ -37,7 +38,7 @@ public class IRCBootstrap implements Runnable {
 		String extIp = Utils.getExtIp();
 
 		//Set nick to long encoded IP
-		String nick = "bs" + Utils.ipToLong(extIp);
+		String nick = "X" + Utils.ipToLong(extIp);
 		Utils.print(this, "Set " + nick + " for bootstrap");
 		String login = "xagent";
 
@@ -88,22 +89,22 @@ public class IRCBootstrap implements Runnable {
 					if(str.startsWith("@")) {
 						str = str.substring(1);
 					}
-					if(!str.equals(nick) && !(attemptDecode(str)).equals("")) {
+					if(//!str.equals(nick) && 
+							!(attemptDecode(str)).equals("")) {
 						Core.potentialPeers.add(attemptDecode(str));
-						//TODO: take into account the port for potentialPeers from now on
-						//Use a String[]!
-						//Stop stun4j logging
 					}
 				}
 			}
+			//System.out.println(line);
 		}
 	}
 
 	private String attemptDecode(String str) {
-		if(str.startsWith("bs")) {
-			String ipOnly = str.substring(0, str.indexOf("|"));
-			String ip = Utils.longToIp(Long.parseLong(ipOnly.substring(2)));
-			if(Utils.isValidIPV4(ip)) {
+		if(str.startsWith("X")) {
+			String ip = Utils.longToIp(str.substring(1));
+			int colonIndex = ip.indexOf(":");
+			String testIp = ip.substring(0, colonIndex);
+			if(Utils.isValidIPV4(testIp)) {
 				return ip;
 			}
 		}
