@@ -27,7 +27,7 @@ public class Core {
 	public static HashMap<String, ArrayList<String>> index;
 	public static MainWindow mainWindow;
 	public static ArrayList<BlockedFile> blockDex;
-	public static ArrayList <String[]> potentialPeers;
+	public static ArrayList <String> potentialPeers;
 	public static GlobalListener gl;
 	public static PeerConnector pst;
 	public static boolean debugServer = true;
@@ -64,7 +64,7 @@ public class Core {
 		peerList = new ArrayList<Peer> ();
 		blockDex = new ArrayList<BlockedFile> ();
 		index = new HashMap<String, ArrayList<String>> ();
-		potentialPeers = new ArrayList<String[]> ();
+		potentialPeers = new ArrayList<String> ();
 		discoveryLatch = new CountDownLatch(1);
 		
 		//GUI inits
@@ -73,20 +73,10 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
-		//Register shutdownhook
-		Thread shutDownHookThread = new Thread(new ShutdownHook());
-		Runtime.getRuntime().addShutdownHook(shutDownHookThread);
-		
 		//Register fileWatcher if Windows
 		if(Utils.isWindows()) {
 			(new Thread(new FileWatcher())).start();
 		}
-		
-		mainWindow.out("Loading checksum data...");
-		
-		//Create blockdex
-		Utils.print(Core.class, "Generating blockDex");
-		Utils.generateBlockDex();
 		
 		//Hole punch
 		mainWindow.out("Configuring network...");
@@ -100,6 +90,16 @@ public class Core {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//Register shutdownhook
+		Thread shutDownHookThread = new Thread(new ShutdownHook());
+		Runtime.getRuntime().addShutdownHook(shutDownHookThread);
+		
+		mainWindow.out("Loading checksum data...");
+		
+		//Create blockdex
+		Utils.print(Core.class, "Generating blockDex");
+		Utils.generateBlockDex();
 		
 		//Initialize library listing
 		mainWindow.updateLibrary();
