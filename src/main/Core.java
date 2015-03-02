@@ -54,7 +54,6 @@ public class Core {
 		
 		//Calculate HWID
 		Settings.hwid = Utils.getHWID();
-		System.out.println(Settings.hwid);
 		
 		//Initialize vars
 		Settings.version = 1.0;
