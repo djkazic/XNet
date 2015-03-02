@@ -3,17 +3,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+
 import main.Core;
 import main.Utils;
 
 public class PeerConnector implements Runnable {
 	
 	public CountDownLatch debugLatch;
-	private String host = null;
+	private String originalHost = null;
 	private File peerConfig;
 	
 	public PeerConnector(boolean debugServer) {
@@ -54,29 +56,53 @@ public class PeerConnector implements Runnable {
 				Core.discoveryLatch.await();
 			} catch (InterruptedException e1) {e1.printStackTrace();}
 		}
-		while(!Core.killPeerConnector && Core.potentialPeers.size() > 0) {
+		while(!Core.killPeerConnector || Core.potentialPeers.size() > 0) {
+			//If we have no more hosts, wait a cycle
+			if(Core.potentialPeers.size() == 0) {
+				Utils.print(this, "No current hosts, thread sleeping");
+				try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				continue;
+			}
 			//Pick a host from the potentialPeers
-			host = Core.potentialPeers.get(0);
-			String phost = "";
-			if(host.startsWith("/")) {
-				phost = host.substring(1, host.length());
+			originalHost = Core.potentialPeers.get(0);
+			String connectHost = originalHost;
+			//Process port, if there is one
+			int port = 26606;
+			if(connectHost.contains(":")) {
+				String[] split = connectHost.split(":");
+				connectHost = split[0];
+				port = Integer.parseInt(split[1]);
+			}
+			//Readability fix
+			String printHost = "";
+			if(connectHost.startsWith("/")) {
+				printHost = connectHost.substring(1, connectHost.length());
 			} else {
-				phost = host;
+				printHost = connectHost;
 			}
 			//If attempted, show marker
 			if(attempts > 0) {
-				Utils.print(this, "Attempting outgoing connection to potential peer " + phost + " (x" + attempts + ")");
+				Utils.print(this, "Attempting outgoing connection to potential peer " + printHost + ":" + port + " (x" + attempts + ")");
 			} else {
-				Utils.print(this, "Attempting outgoing connection to potential peer " + phost);
+				Utils.print(this, "Attempting outgoing connection to potential peer " + printHost + ":" + port);
 			}
 			//If already attempted 10 times, remove from potential peers
 			if(attempts == 9) {
-				Core.potentialPeers.remove(host);
+				Core.potentialPeers.remove(originalHost);
 				attempts = -1;
 			}
 			attempts++;
 			Socket peerSocket = new Socket();
-			InetSocketAddress peerAddr = new InetSocketAddress(host, 26606);
+			try {
+				peerSocket.setSoTimeout(1000);
+			} catch (SocketException e1) {
+				e1.printStackTrace();
+			}
+			InetSocketAddress peerAddr = new InetSocketAddress(connectHost, port);
 			try {
 				long start = System.currentTimeMillis();
 				peerSocket.connect(peerAddr);
@@ -84,8 +110,7 @@ public class PeerConnector implements Runnable {
 				Utils.print(this, "Creating peer [out]");
 				(new Thread(new Peer(peerSocket, end - start, 0))).start();
 				Utils.print(this, "Established connection");
-				Core.killPeerConnector = true;
-				Core.potentialPeers.remove(host);
+				Core.potentialPeers.remove(originalHost);
 			} catch (IOException e) {}
 			try {
 				Thread.sleep(2000);
