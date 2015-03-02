@@ -36,12 +36,15 @@ public class FileWatcher implements Runnable {
 				if(we.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
 					System.out.println("Created: " + we.context().toString());
 					new BlockedFile(Utils.defineDir() + "/" + we.context().toString());
+					Core.mainWindow.updateLibrary();
 				}
 				if(we.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
 					System.out.println("Deleted: " + we.context().toString());
 					for(int i=0; i < Core.blockDex.size(); i++) {
 						if(Core.blockDex.get(i).getName().equals(we.context().toString())) {
 							Core.blockDex.remove(i);
+							Core.mainWindow.updateLibrary();
+							break;
 						}
 					}
 				}
