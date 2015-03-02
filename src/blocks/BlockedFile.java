@@ -41,6 +41,7 @@ public class BlockedFile {
 	 */
 	public BlockedFile(String filePath) {
 		this.file = new File(filePath);
+		fileCheck();
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
@@ -55,6 +56,7 @@ public class BlockedFile {
 	 */
 	public BlockedFile(File file) {
 		this.file = file;
+		fileCheck();
 		blockList = new ArrayList<String> ();
 		haveList = new ArrayList<String> ();
 		getRafBlocks();
@@ -87,6 +89,15 @@ public class BlockedFile {
 	}
 	**/
 
+	private void fileCheck() {
+		while(!file.exists()) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private void getRafBlocks() {
 		try {
