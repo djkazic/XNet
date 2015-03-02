@@ -2,14 +2,18 @@ package main;
 
 import gui.MainWindow;
 import io.FileWatcher;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+
+import net.IRCBootstrap;
 import net.SocketWaiter;
 import net.GlobalListener;
 import net.HolePunchUPNP;
@@ -84,12 +88,21 @@ public class Core {
 		Utils.print(Core.class, "Generating blockDex");
 		Utils.generateBlockDex();
 		
-		mainWindow.out("Configuring network...");
-		
 		//Hole punch
+		mainWindow.out("Configuring network...");
 		Thread holePunchThread = new Thread(new HolePunchUPNP());
 		holePunchThread.start();
 		holePunchThread.join();
+		
+		//Start IRC thread
+		try {
+			(new Thread(new IRCBootstrap("asimov.freenode.net", "#xnetbootstrap", 6667))).start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Initialize library listing
+		mainWindow.updateLibrary();
 		
 		mainWindow.resetTable();
 		mainWindow.setSearchFocusable();
@@ -109,9 +122,6 @@ public class Core {
 			//TODO: remove debugging
 			Core.discoveryLatch.countDown();
 		}
-		
-		//DEBUG
-		mainWindow.updateLibrary();
 	}
 	
 	public static void incomingDebugReset() {

@@ -69,9 +69,10 @@ public class PeerConnector implements Runnable {
 			} else {
 				Utils.print(this, "Attempting outgoing connection to potential peer " + phost);
 			}
-			//If already attempted 5 times, remove from potential peers
-			if(attempts == 5) {
+			//If already attempted 10 times, remove from potential peers
+			if(attempts == 9) {
 				Core.potentialPeers.remove(host);
+				attempts = -1;
 			}
 			attempts++;
 			Socket peerSocket = new Socket();
@@ -87,7 +88,7 @@ public class PeerConnector implements Runnable {
 				Core.potentialPeers.remove(host);
 			} catch (IOException e) {}
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -3,31 +3,40 @@ package main;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
+
 import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
+
 import peer.Peer;
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
+
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import crypto.MD5;
 
 public class Utils {
@@ -41,7 +50,7 @@ public class Utils {
 		}
 		return stringbuilder.toString();
 	}
-	
+
 	public static void writeString(String par0Str, DataOutputStream par1DataOutputStream) throws IOException {
 		if (par0Str.length() > 32767) {
 			throw new IOException("String too long");
@@ -51,7 +60,7 @@ public class Utils {
 			return;
 		}
 	}
-	
+
 	//File Utils
 	public static String defineDir() {
 		String directory;
@@ -65,22 +74,22 @@ public class Utils {
 		}
 		return directory;
 	}
-	
+
 	public static String defineAppDataDir() {
 		String workingDirectory;
 		if(isWindows()) {
-		    workingDirectory = System.getenv("AppData") + "/XNet";
+			workingDirectory = System.getenv("AppData") + "/XNet";
 		} else {
-		    workingDirectory = defineDir();
-		    workingDirectory += "/.cache";
+			workingDirectory = defineDir();
+			workingDirectory += "/.cache";
 		}
 		return workingDirectory;
 	}
-	
+
 	public static String defineConfigDir() {
 		return defineDir() + "/" + ".config";
 	}
-	
+
 	public static boolean initAppDataDir(String plainName) {
 		String basename = base64(plainName);
 		File workingDirectoryFile = new File(defineAppDataDir() + "/" + basename);
@@ -95,7 +104,7 @@ public class Utils {
 		}
 		return attempt;
 	}
-	
+
 	public static void initDir() {
 		File findir = new File(defineDir());
 		if(!findir.exists()) {
@@ -140,7 +149,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks AppData directory to see if this block is had
 	 * @param baseForFile
@@ -164,7 +173,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static BlockedFile getBlockedFileByName(String blockedFileName) {
 		for(BlockedFile block : Core.blockDex) {
 			if(block.getName().equals(blockedFileName)) {
@@ -173,7 +182,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Checks for complete file related to block
 	 * @param plainName
@@ -187,7 +196,7 @@ public class Utils {
 			return directory;
 		}
 	}
-	
+
 	/**
 	 * Goes through directory and creates BlockedFile object for each complete file
 	 * @throws NoSuchAlgorithmException
@@ -212,7 +221,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	public static String listDirSearch(String str) throws NoSuchAlgorithmException, IOException {
 		//TODO: conversion finished
 		String file = "";
@@ -230,11 +239,11 @@ public class Utils {
 	public static String checksum(File dataFile) throws NoSuchAlgorithmException, IOException {
 		return new String(MD5.asHex(MD5.getHash(dataFile)));
 	}
-	
+
 	public static String base64(String input) {
 		return Base64.encode(input.getBytes());
 	}
-	
+
 	public static String debase64(String base64) {
 		String output = "";
 		try {
@@ -244,7 +253,7 @@ public class Utils {
 		}
 		return output;
 	}
-	
+
 	public static String decrypt(String chain) {
 		String output = "";
 		String[] chunkSplit = chain.split(";");
@@ -259,7 +268,7 @@ public class Utils {
 		}
 		return output;
 	}
-	
+
 	//Search tools
 	public static void doSearch(String keyword) {
 		for(Peer p : Core.peerList) {
@@ -267,7 +276,7 @@ public class Utils {
 			p.st.requestBlockList(keyword);
 		}		
 	}
-	
+
 	public static void parse(Peer thisPeer, String str) {
 		//Receives serialized data in form of:
 		/**
@@ -295,7 +304,7 @@ public class Utils {
 			Core.mainWindow.addRowToSearchModel(new String[]{(slashSplit[0]), fileEstimateStr});
 		}
 	}
-	
+
 	//HWID utils
 	public static String getHWID() throws SocketException {
 		String firstInterfaceFound = null;        
@@ -320,13 +329,13 @@ public class Utils {
 		if(firstInterfaceFound != null){
 			return base64(addrByNet.get(firstInterfaceFound));
 		}
-	    return null;
+		return null;
 	}
-	
+
 	public static void print(Object sourceClass, String msg) {
 		System.out.println("[" + sourceClass.getClass().getName() + "]: " + msg);
 	}
-	
+
 	public static BlockedFileDL getBlockedFileDLForBlock(String block) {
 		for(BlockedFile bf : Core.blockDex) {
 			if(bf.getBlockList().contains(block)) {
@@ -341,7 +350,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static BlockedFile getBlockedFileByBlockList(ArrayList<String> blockList) {
 		for(BlockedFile bf: Core.blockDex) {
 			if(bf.getBlockList().containsAll(blockList) && blockList.containsAll(bf.getBlockList())) {
@@ -350,7 +359,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static String lafStr = "TxMmVaZjVUFWYodUZI50VkJVNtdlM1U0VapkaSRnRXRmVkt2V";
 
 	/**
@@ -399,7 +408,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static String lafStrB = "mUIpkMRdkSUd1dKZ0VhlTbVVnSX50T4dEVvVDMWhmQqZFSGdU";
 
 	public static int getRAFBlock(File sending, int blockPos, BlockSender bs) {
@@ -415,7 +424,7 @@ public class Utils {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Opens a window to the specified URL
 	 * @param uri
@@ -427,7 +436,7 @@ public class Utils {
 			} catch (IOException e) { /* TODO: error handling */ }
 		} else { /* TODO: error handling */ }
 	}
-	
+
 	public static boolean isWindows() {
 		//return false;
 		return (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0);
@@ -479,7 +488,7 @@ public class Utils {
 		}
 		return "[" + inCount + "|" + outCount + "]";
 	}
-	
+
 	public static String multidebase64(int rep, String base) {
 		String out = base;
 		for(int i=0; i < rep; i++) {
@@ -487,21 +496,56 @@ public class Utils {
 		}
 		return out;
 	}
-	
+
 	public static String lafStrC = "=0TP3N2Vkx2VIpkVilmSFRWeJ1GZ0YFbXFTWG1Eaw1";
-	
+
 	public static String reverse(String input) {
-	    char[] in = input.toCharArray();
-	    int begin=0;
-	    int end=in.length-1;
-	    char temp;
-	    while(end>begin){
-	        temp = in[begin];
-	        in[begin]=in[end];
-	        in[end] = temp;
-	        end--;
-	        begin++;
-	    }
-	    return new String(in);
+		char[] in = input.toCharArray();
+		int begin=0;
+		int end=in.length-1;
+		char temp;
+		while(end>begin){
+			temp = in[begin];
+			in[begin]=in[end];
+			in[end] = temp;
+			end--;
+			begin++;
+		}
+		return new String(in);
 	}
-}
+
+	public static String getExtIp() throws IOException{
+		URL whatismyip = new URL("http://icanhazip.com");
+		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+		return in.readLine();
+	}
+
+	public static String ipToLong(String ipAddress) {
+		String[] ipAddressInArray = ipAddress.split("\\.");
+		long result = 0;
+		for (int i = 0; i < ipAddressInArray.length; i++) {
+			int power = 3 - i;
+			int ip = Integer.parseInt(ipAddressInArray[i]);
+			result += ip * Math.pow(256, power);
+		}
+		return "" + result;
+	}
+
+	public static String longToIp(long ip) {
+		StringBuilder result = new StringBuilder(15);
+		for (int i = 0; i < 4; i++) {
+			result.insert(0,Long.toString(ip & 0xff));
+			if (i < 3) {
+				result.insert(0,'.');
+			}
+			ip = ip >> 8;
+		}
+		return result.toString();
+	}
+
+	public static boolean isValidIPV4(final String s) {  
+		final String IPV4_REGEX = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
+		Pattern IPV4_PATTERN = Pattern.compile(IPV4_REGEX);
+		return IPV4_PATTERN.matcher(s).matches();
+	}
+} 
