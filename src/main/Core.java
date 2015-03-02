@@ -65,7 +65,6 @@ public class Core {
 		
 		//GUI inits
 		mainWindow = new MainWindow();
-		mainWindow.registerListeners();
 		
 		//Directory work
 		Utils.initDir();
@@ -93,8 +92,8 @@ public class Core {
 		holePunchThread.join();
 		
 		mainWindow.resetTable();
-		mainWindow.searchInput.setFocusable(true);
-		mainWindow.searchInput.setEditable(true);
+		mainWindow.setSearchFocusable();
+		mainWindow.setSearchEditable();
 		
 		//Local development tools
 		debugServer = false;

@@ -292,7 +292,7 @@ public class Utils {
 			} else {
 				fileEstimateStr += fileEstimateKb+ "KB";
 			}
-			Core.mainWindow.tableModel.addRow(new String[]{(slashSplit[0]), fileEstimateStr});
+			Core.mainWindow.addRowToSearchModel(new String[]{(slashSplit[0]), fileEstimateStr});
 		}
 	}
 	

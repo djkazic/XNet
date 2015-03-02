@@ -54,7 +54,7 @@ public class MainWindow extends JFrame {
 	public JTextField searchInput;
 	protected JTable searchRes;
 	protected JTable downloadList;
-	public DefaultTableModel tableModel;
+	public DefaultTableModel searchModel;
 	public DefaultTableModel libraryModel;
 	public DefaultTableModel downloadModel;
 	protected DefaultTableCellRenderer betterRenderer;
@@ -80,116 +80,120 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
-		setResizable(false);
-		searchMode = false;
-		setTitle("XNet v" + Settings.version);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 550, 570);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		
-		//Set title icon
-		try {
-			Image iconImage = ImageIO.read(getClass().getResourceAsStream("/res/imgres/titleicon.png"));
-			setIconImage(iconImage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		tableModel = new TableModelSpec();
-		tableModel.addColumn("Status");
-		
-		downloadModel = new TableModelDL();
-		downloadModel.addColumn("Filename");
-		downloadModel.addColumn("Progress");
-		
-		libraryModel = new TableModelSpec();
-		libraryModel.addColumn("Filename");
-		libraryModel.addColumn("Size");
-		libraryModel.addColumn("Date");
-		
-		resLatch = new CountDownLatch(1);
-		
-		searchInput = new JTextField();
-		searchInput.setBounds(8, 39, 516, 25);
-		searchInput.setColumns(10);
-		searchInput.setFocusable(false);
-		searchInput.setEditable(false);
-		contentPane.add(searchInput);
-		
-		contentPane.setLayout(null);
-		
-		menuBar = new JMenuBar();
-		menuBar.setBounds(0, -4, 546, 30);
-		contentPane.add(menuBar);
-		
-		mnFile = new JMenu("Help");
-		menuBar.add(mnFile);
+		if(!Settings.daemon) {
+			setResizable(false);
+			searchMode = false;
+			setTitle("XNet v" + Settings.version);
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			setBounds(100, 100, 550, 570);
+			contentPane = new JPanel();
+			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+			setContentPane(contentPane);
+			
+			//Set title icon
+			try {
+				Image iconImage = ImageIO.read(getClass().getResourceAsStream("/res/imgres/titleicon.png"));
+				setIconImage(iconImage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			searchModel = new TableModelSpec();
+			searchModel.addColumn("Status");
+			
+			downloadModel = new TableModelDL();
+			downloadModel.addColumn("Filename");
+			downloadModel.addColumn("Progress");
+			
+			libraryModel = new TableModelSpec();
+			libraryModel.addColumn("Filename");
+			libraryModel.addColumn("Size");
+			libraryModel.addColumn("Date");
+			
+			resLatch = new CountDownLatch(1);
+			
+			searchInput = new JTextField();
+			searchInput.setBounds(8, 39, 516, 25);
+			searchInput.setColumns(10);
+			searchInput.setFocusable(false);
+			searchInput.setEditable(false);
+			contentPane.add(searchInput);
+			
+			contentPane.setLayout(null);
+			
+			menuBar = new JMenuBar();
+			menuBar.setBounds(0, -4, 546, 30);
+			contentPane.add(menuBar);
+			
+			mnFile = new JMenu("Help");
+			menuBar.add(mnFile);
 
-		mntmAbout = new JMenuItem("About");
-		try {
-			ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/imgres/glasses.png")));
-			mntmAbout.setIcon(imageIcon);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
-		mnFile.add(mntmAbout);
-		
-		downloadScrollPane = new JScrollPane();
-		downloadScrollPane.setBounds(6, 346, 520, 149);
-		contentPane.add(downloadScrollPane);
-		
-		separator = new JSeparator();
-		separator.setBounds(0, 507, 532, 2);
-		contentPane.add(separator);
-		
-		lblPeers = new JLabel("");
-		lblPeers.setToolTipText("[0|0]");
-		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/0bars.png")));
-		lblPeers.setBounds(508, 515, 24, 24);
-		lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		contentPane.add(lblPeers);
-		betterRenderer = new DefaultTableCellRenderer();
-		betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		downloadPopupMenu = new JPopupMenu();
-		downloadPopupMenuRemoveFromList = new JMenuItem("Remove from list");
-		downloadPopupMenu.add(downloadPopupMenuRemoveFromList);
+			mntmAbout = new JMenuItem("About");
+			try {
+				ImageIcon imageIcon = new ImageIcon(ImageIO.read(getClass().getResourceAsStream("/res/imgres/glasses.png")));
+				mntmAbout.setIcon(imageIcon);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			mntmAbout.setHorizontalAlignment(SwingConstants.LEFT);
+			mnFile.add(mntmAbout);
+			
+			downloadScrollPane = new JScrollPane();
+			downloadScrollPane.setBounds(6, 346, 520, 149);
+			contentPane.add(downloadScrollPane);
+			
+			separator = new JSeparator();
+			separator.setBounds(0, 507, 532, 2);
+			contentPane.add(separator);
+			
+			lblPeers = new JLabel("");
+			lblPeers.setToolTipText("[0|0]");
+			lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/0bars.png")));
+			lblPeers.setBounds(508, 515, 24, 24);
+			lblPeers.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			contentPane.add(lblPeers);
+			betterRenderer = new DefaultTableCellRenderer();
+			betterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			downloadPopupMenu = new JPopupMenu();
+			downloadPopupMenuRemoveFromList = new JMenuItem("Remove from list");
+			downloadPopupMenu.add(downloadPopupMenuRemoveFromList);
 
-		downloadList = new JTable(downloadModel);
-		downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
-		downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
-		downloadList.getTableHeader().setReorderingAllowed(false);
-		downloadList.getTableHeader().setResizingAllowed(false);
-		downloadScrollPane.setViewportView(downloadList);
-		
-		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(6, 75, 520, 260);
-		contentPane.add(tabbedPane);
-		
-		searchResScrollPane = new JScrollPane();
-		tabbedPane.addTab("Search", null, searchResScrollPane, null);
-		
-		searchRes = new JTable(tableModel);
-		searchRes.setDefaultRenderer(Object.class, betterRenderer);
-		//.getColumn(0).setCellRenderer(betterRenderer);
-		searchRes.getTableHeader().setReorderingAllowed(false);
-		searchRes.getTableHeader().setResizingAllowed(false);
-		searchResScrollPane.setViewportView(searchRes);
-		searchRes.setCellSelectionEnabled(true);
-		searchRes.setColumnSelectionAllowed(true);
-		
-		libraryScrollPane = new JScrollPane();
-		tabbedPane.addTab("Library", null, libraryScrollPane, null);
-		
-		libraryTable = new JTable(libraryModel);
-		libraryTable.getColumnModel().getColumn(0).setPreferredWidth(300);
-		libraryTable.getTableHeader().setReorderingAllowed(false);
-		libraryTable.getTableHeader().setResizingAllowed(false);
-		libraryScrollPane.setViewportView(libraryTable);
+			downloadList = new JTable(downloadModel);
+			downloadList.getColumnModel().getColumn(0).setCellRenderer(betterRenderer);
+			downloadList.getColumnModel().getColumn(1).setCellRenderer(betterRenderer);
+			downloadList.getTableHeader().setReorderingAllowed(false);
+			downloadList.getTableHeader().setResizingAllowed(false);
+			downloadScrollPane.setViewportView(downloadList);
+			
+			tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			tabbedPane.setBounds(6, 75, 520, 260);
+			contentPane.add(tabbedPane);
+			
+			searchResScrollPane = new JScrollPane();
+			tabbedPane.addTab("Search", null, searchResScrollPane, null);
+			
+			searchRes = new JTable(searchModel);
+			searchRes.setDefaultRenderer(Object.class, betterRenderer);
+			//.getColumn(0).setCellRenderer(betterRenderer);
+			searchRes.getTableHeader().setReorderingAllowed(false);
+			searchRes.getTableHeader().setResizingAllowed(false);
+			searchResScrollPane.setViewportView(searchRes);
+			searchRes.setCellSelectionEnabled(true);
+			searchRes.setColumnSelectionAllowed(true);
+			
+			libraryScrollPane = new JScrollPane();
+			tabbedPane.addTab("Library", null, libraryScrollPane, null);
+			
+			libraryTable = new JTable(libraryModel);
+			libraryTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+			libraryTable.getTableHeader().setReorderingAllowed(false);
+			libraryTable.getTableHeader().setResizingAllowed(false);
+			libraryScrollPane.setViewportView(libraryTable);
+			
+			registerListeners();
+		}
 	}
 	
 	public void registerListeners() {
@@ -227,7 +231,7 @@ public class MainWindow extends JFrame {
 				int key = arg0.getKeyCode();
 				if(key == KeyEvent.VK_ENTER) {
 					//clear any previous res
-					clearTable(tableModel);
+					clearTable(searchModel);
 					//clear core index
 					Core.index.clear();
 					if(Core.debugServer) {
@@ -244,7 +248,7 @@ public class MainWindow extends JFrame {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						Core.mainWindow.resetTable();
+						resetTable();
 					} else {
 						if(Core.peerList.size() == 0) {
 							out("No peers connected. Query is not possible.");
@@ -257,8 +261,8 @@ public class MainWindow extends JFrame {
 							} else {
 								if(!searchMode) {
 									removeColumnAndData(searchRes, 0);
-									tableModel.addColumn("Filename");
-									tableModel.addColumn("Size");
+									searchModel.addColumn("Filename");
+									searchModel.addColumn("Size");
 									searchMode = true;
 								}
 								Utils.doSearch(input);
@@ -292,7 +296,7 @@ public class MainWindow extends JFrame {
 					Point clickPoint = arg0.getPoint();
 					int tableRow = searchRes.rowAtPoint(clickPoint);
 					if(arg0.getClickCount() == 2) {
-						String fileName = (String) tableModel.getValueAt(tableRow, 0);
+						String fileName = (String) searchModel.getValueAt(tableRow, 0);
 						@SuppressWarnings("rawtypes")
 						Iterator it = Core.index.entrySet().iterator();
 						//Iterate through HashMap until a match by blockListStr is found
@@ -328,7 +332,7 @@ public class MainWindow extends JFrame {
 						        	downloadList.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 						        	bf.download();
 					        	}
-					        	Core.mainWindow.resetTable();
+					        	resetTable();
 					        }
 					        it.remove();
 					    }
@@ -340,29 +344,13 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 	}
 	
-	public void out(String str) {
-		try {
-			resLatch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		if(searchMode) {
-			removeColumnAndData(searchRes, 1);
-			removeColumnAndData(searchRes, 0);
-			tableModel.addColumn("Status");
-			searchMode = false;
-		}
-		clearTable(tableModel);
-		tableModel.addRow(new String[]{str});
-	}
-	
-	public void clearTable(DefaultTableModel tableModel) {
+	private void clearTable(DefaultTableModel tableModel) {
 		for(int i=0; i < tableModel.getRowCount(); i++) {
 			tableModel.removeRow(i);
 		}
 	}
 	
-	public void removeColumnAndData(JTable table, int vColIndex) {
+	private void removeColumnAndData(JTable table, int vColIndex) {
 	    TableModelSpec model = (TableModelSpec)table.getModel();
 	    TableColumn col = table.getColumnModel().getColumn(vColIndex);
 	    int columnModelIndex = col.getModelIndex();
@@ -385,43 +373,87 @@ public class MainWindow extends JFrame {
 	    model.fireTableStructureChanged();
 	}
 	
+	public void out(String str) {
+		if(!Settings.daemon) {
+			try {
+				resLatch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if(searchMode) {
+				removeColumnAndData(searchRes, 1);
+				removeColumnAndData(searchRes, 0);
+				searchModel.addColumn("Status");
+				searchMode = false;
+			}
+			clearTable(searchModel);
+			searchModel.addRow(new String[]{str});
+		}
+	}
+
+	public void setDebugLatch(CountDownLatch debugLatch) {
+		this.debugLatch = debugLatch;
+	}
+	
 	public void updatePeerCount() {
-		String peers = Utils.peersCount();
-		lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/" + peers + ".png")));
-		lblPeers.setToolTipText(Utils.peerToolTip());
+		if(!Settings.daemon) {
+			String peers = Utils.peersCount();
+			lblPeers.setIcon(new ImageIcon(MainWindow.class.getResource("/res/imgres/" + peers + ".png")));
+			lblPeers.setToolTipText(Utils.peerToolTip());
+		}
 	}
 	
 	public void updateProgress(String forFile, String progress) {
-		int rowCount = downloadModel.getRowCount();
-		for(int i=0; i < rowCount; i++) {
-			if(downloadModel.getValueAt(i, 0).equals(forFile)) {
-				downloadModel.setValueAt(progress, i, 1);
+		if(!Settings.daemon) {
+			int rowCount = downloadModel.getRowCount();
+			for(int i=0; i < rowCount; i++) {
+				if(downloadModel.getValueAt(i, 0).equals(forFile)) {
+					downloadModel.setValueAt(progress, i, 1);
+				}
 			}
 		}
 	}
 	
 	public void updateLibrary() {
-		clearTable(libraryModel);
-		for(BlockedFile bf : Core.blockDex) {
-			if(bf.completed) {
-				String fileEstimateStr = "";
-				long fileEstimateKb = bf.getFileSize() / 1000;
-				if(fileEstimateKb > 1000) {
-					double fileEstimateMb = (fileEstimateKb / 1000D);
-					fileEstimateStr += fileEstimateMb + "MB";
-				} else {
-					fileEstimateStr += fileEstimateKb+ "KB";
+		if(!Settings.daemon) {
+			clearTable(libraryModel);
+			for(BlockedFile bf : Core.blockDex) {
+				if(bf.completed) {
+					String fileEstimateStr = "";
+					long fileEstimateKb = bf.getFileSize() / 1000;
+					if(fileEstimateKb > 1000) {
+						double fileEstimateMb = (fileEstimateKb / 1000D);
+						fileEstimateStr += fileEstimateMb + "MB";
+					} else {
+						fileEstimateStr += fileEstimateKb+ "KB";
+					}
+					libraryModel.addRow(new String[]{bf.getName(), fileEstimateStr, bf.getDateModified()});
 				}
-				libraryModel.addRow(new String[]{bf.getName(), fileEstimateStr, bf.getDateModified()});
 			}
 		}
 	}
 	
-	public void setDebugLatch(CountDownLatch debugLatch) {
-		this.debugLatch = debugLatch;
+	public void setSearchFocusable() {
+		if(!Settings.daemon) {
+			searchInput.setFocusable(true);
+		}
+	}
+	
+	public void setSearchEditable() {
+		if(!Settings.daemon) {
+			searchInput.setEditable(true);
+		}
 	}
 
 	public void resetTable() {
-		Core.mainWindow.out("Enter your search query and press Enter.");
+		if(!Settings.daemon) {
+			out("Enter your search query and press Enter.");
+		}
+	}
+	
+	public void addRowToSearchModel(String[] info) {
+		if(!Settings.daemon) {
+			searchModel.addRow(info);
+		}
 	}
 }
