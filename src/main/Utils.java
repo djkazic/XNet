@@ -536,25 +536,26 @@ public class Utils {
 		String ipAddress = ipPortSplit[0];
 		String port = ipPortSplit[1];
 		String[] ipAddressInArray = ipAddress.split("\\.");
-		long ipResult = 0;
+		String ipResult = "";
 		for(int i = 0; i < ipAddressInArray.length; i++) {
-			int power = 3 - i;
-			int ip = Integer.parseInt(ipAddressInArray[i]);
-			ipResult += ip * Math.pow(256, power);
+			String octetToHex = (Integer.toHexString(0x100 | Integer.parseInt(ipAddressInArray[i]))).substring(1).toUpperCase();
+			ipResult += octetToHex; 
 		}
-		return ipResult + "|" + port;
+		int parsedPort = Integer.parseInt(port);
+		String hexPort = Integer.toHexString(parsedPort);
+		return ipResult + "|" + hexPort;
 	}
 
-	public static String longToIp(long ip) {
-		StringBuilder result = new StringBuilder(15);
-		for (int i = 0; i < 4; i++) {
-			result.insert(0,Long.toString(ip & 0xff));
-			if (i < 3) {
-				result.insert(0,'.');
-			}
-			ip = ip >> 8;
+	public static String longToIp(String ip) {
+		String output = "";
+		String ipAddr = ip.substring(0, ip.indexOf("|"));
+		String port = ip.substring(ip.indexOf("|") + 1);
+		for(int i=0; i < ipAddr.length(); i+=2) {
+			output += (Integer.valueOf(ipAddr.substring(i, i + 2), 16) + ".");
 		}
-		return result.toString();
+		output = output.substring(0, output.length() - 1);
+		port = Integer.valueOf(port, 16) + "";
+		return output + ":" + port;
 	}
 
 	public static boolean isValidIPV4(final String s) {  
