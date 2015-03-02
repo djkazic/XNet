@@ -111,7 +111,7 @@ public class Core {
 		}
 		
 		//DEBUG
-		Core.mainWindow.updateLibrary();
+		mainWindow.updateLibrary();
 	}
 	
 	public static void incomingDebugReset() {
