@@ -53,11 +53,12 @@ public class DiscoveryThread implements Runnable {
 			Utils.print(this, "Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
 
 			String message = new String(receivePacket.getData()).trim();
-			if(!receivePacket.getAddress().equals(InetAddress.getLocalHost()) && message.equals("DISCOVER_XNET_RESPONSE")) {
-				String potentialPeer = receivePacket.getAddress().toString();
+			String ipv4 = Utils.getIpV4();
+			if(!receivePacket.getAddress().getHostAddress().contains(ipv4) && message.equals("DISCOVER_XNET_RESPONSE")) {
+				String potentialPeer = receivePacket.getAddress().getHostAddress();
 				Core.potentialPeers.add(potentialPeer);
 				Utils.print(this, "Local peer identified: " + potentialPeer);
-			} else if(receivePacket.getAddress().equals(InetAddress.getLocalHost())) {
+			} else if(receivePacket.getAddress().getHostAddress().contains(ipv4)) {
 				Utils.print(this, "Local peer discarded, was self");
 			}
 			searchSocket.close();
