@@ -57,7 +57,6 @@ public class DiscoveryThread implements Runnable {
 				String potentialPeer = receivePacket.getAddress().toString();
 				Core.potentialPeers.add(potentialPeer);
 				Utils.print(this, "Local peer identified: " + potentialPeer);
-				Core.discoveryLatch.countDown();
 			} else if(receivePacket.getAddress().equals(InetAddress.getLocalHost())) {
 				Utils.print(this, "Local peer discarded, was self");
 			}
