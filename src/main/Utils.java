@@ -3,19 +3,18 @@ package main;
 import java.awt.Desktop;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +32,7 @@ import org.boon.json.JsonFactory;
 import org.boon.json.ObjectMapper;
 
 import peer.Peer;
+import sun.rmi.runtime.Log;
 import blocks.BlockSender;
 import blocks.BlockedFile;
 import blocks.BlockedFileDL;
@@ -556,6 +556,24 @@ public class Utils {
 		output = output.substring(0, output.length() - 1);
 		port = Integer.valueOf(port, 16) + "";
 		return output + ":" + port;
+	}
+	
+	public static String getIpV4() {
+		try {
+			for(Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for(Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()&&inetAddress instanceof Inet4Address) {
+						String ipAddress = inetAddress.getHostAddress().toString();
+						return ipAddress;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static boolean isValidIPV4(final String s) {  
