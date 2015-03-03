@@ -30,7 +30,7 @@ public class Core {
 	public static ArrayList <String> potentialPeers;
 	public static GlobalListener gl;
 	public static PeerConnector pst;
-	public static boolean debugServer = true;
+	public static boolean debugServer = false;
 	public static boolean killPeerConnector = false;
 	public static CountDownLatch discoveryLatch;
 	public static SocketWaiter ssm;
@@ -109,19 +109,19 @@ public class Core {
 		mainWindow.setSearchEditable();
 		
 		//Local development tools
-		debugServer = false;
-		int sep = 0;
+		//debugServer = false;
+		//int sep = 1;
 		
-		if(sep == 0) {
+		//if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		} else {
+		//} else {
 			pst = new PeerConnector(debugServer);
-			Core.potentialPeers.add("127.0.0.1");
+			//Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			//TODO: remove debugging
-			Core.discoveryLatch.countDown();
-		}
+			//Core.discoveryLatch.countDown();
+		//}
 	}
 	
 	public static void incomingDebugReset() {
