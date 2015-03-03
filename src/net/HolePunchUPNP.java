@@ -28,7 +28,7 @@ public class HolePunchUPNP implements Runnable {
 					sb.append(line);
 				}
 				String configStatus = sb.toString();
-				if(configStatus.equals("UPNP_DISABLE")) {
+				if(configStatus.equals("UPNP_DISABLE") || configStatus.equals("UPNP_ENABLE")) {
 					return;
 				}
 			}
