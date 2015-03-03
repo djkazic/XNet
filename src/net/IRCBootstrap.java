@@ -5,6 +5,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import main.Core;
@@ -93,8 +96,30 @@ public class IRCBootstrap implements Runnable {
 					if(!str.equals(nick) &&  !(attemptDecode(str)).equals("")) {
 						String decoded = attemptDecode(str);
 						Utils.print(this, "Got peer from IRC: " + decoded);
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						Core.potentialPeers.add(decoded);
 					}
+				}
+			} else if(line.contains("@") && line.contains("JOIN " + channel)) {
+				String[] splitOne = line.split("!");
+				String[] splitTwo = splitOne[0].split(":");
+				String encoded = splitTwo[0];
+				if(!encoded.equals(nick) && !(attemptDecode(encoded)).equals("")) {
+					String decoded = attemptDecode(encoded);
+					String ip = decoded.split(":")[0];
+					String port = decoded.split(":")[1];
+					//Send UDP to punch hole through own NAT
+					DatagramSocket punchSocket = new DatagramSocket();
+					byte[] sendData = new byte[1024];
+					InetAddress iaIp = InetAddress.getByName(ip);
+					DatagramPacket punchPacket = new DatagramPacket(sendData, sendData.length, iaIp, Integer.parseInt(port));
+					punchSocket.send(punchPacket);
+					Utils.print(this, "Sent punchPacket to " + ip);
+					punchSocket.close();
 				}
 			}
 			//System.out.println(line);
