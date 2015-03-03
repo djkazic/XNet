@@ -25,7 +25,7 @@ public class DiscoveryThread implements Runnable {
 			try {
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 26605);
 				searchSocket.send(sendPacket);
-				Utils.print(this, "Broadcase packet sent to: 255.255.255.255");
+				Utils.print(this, "Broadcast packet sent to: 255.255.255.255");
 			} catch (Exception e) {}
 
 			// Broadcast the message over all the network interfaces
@@ -53,11 +53,13 @@ public class DiscoveryThread implements Runnable {
 			Utils.print(this, "Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
 
 			String message = new String(receivePacket.getData()).trim();
-			if (message.equals("DISCOVER_XNET_RESPONSE")) {
+			if(!receivePacket.getAddress().equals(InetAddress.getLocalHost()) && message.equals("DISCOVER_XNET_RESPONSE")) {
 				String potentialPeer = receivePacket.getAddress().toString();
 				Core.potentialPeers.add(potentialPeer);
 				Utils.print(this, "Local peer identified: " + potentialPeer);
 				Core.discoveryLatch.countDown();
+			} else if(receivePacket.getAddress().equals(InetAddress.getLocalHost())) {
+				Utils.print(this, "Local peer discarded, was self");
 			}
 			searchSocket.close();
 		} catch (Exception ex) {

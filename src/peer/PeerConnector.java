@@ -43,8 +43,8 @@ public class PeerConnector implements Runnable {
 			}
 		} catch (Exception e) { e.printStackTrace(); }
 		//Scan for local peers
-		//(new Thread(new DiscoveryServer())).start();
-		//(new Thread(new DiscoveryThread())).start();
+		(new Thread(new DiscoveryServer())).start();
+		(new Thread(new DiscoveryThread())).start();
 		int attempts = 0;
 		if(Core.debugServer) {
 			try {
@@ -105,7 +105,7 @@ public class PeerConnector implements Runnable {
 			InetSocketAddress peerAddr = new InetSocketAddress(connectHost, port);
 			try {
 				long start = System.currentTimeMillis();
-				peerSocket.connect(peerAddr);
+				peerSocket.connect(peerAddr, 1000);
 				long end = System.currentTimeMillis();
 				Utils.print(this, "Creating peer [out]");
 				(new Thread(new Peer(peerSocket, end - start, 0))).start();
