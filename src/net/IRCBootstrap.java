@@ -62,6 +62,7 @@ public class IRCBootstrap implements Runnable {
 		// Join the channel.
 		writer.write("JOIN " + channel + "\r\n");
 		writer.flush();
+		Utils.print(this, "Joined bootstrap channel successfully");
 
 		try {
 			Thread.sleep(1000);
