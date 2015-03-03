@@ -32,8 +32,7 @@ public class HolePunchSTUN {
 		if (stunLocalAddress == null || stunLocalAddress.getSocketAddress() == null || stunLocalAddress.getSocketAddress().getAddress() == null) {
 			Utils.print(this, "STUN encountered an error, IP was null");
 		}
-
-		//just get the IP address.. the other info is excessive
+		Utils.print(this, "Identified: " + report.getNatType());
 		publicIP = stunLocalAddress.getSocketAddress().getAddress().getHostAddress();
 		publicPort = stunLocalAddress.getPort();
 	}
@@ -44,28 +43,5 @@ public class HolePunchSTUN {
 
 	public int getPublicPort() {
 		return publicPort;
-	}
-
-	public static void main(String[] args) {
-		try {
-			String stunServerAddress = new String("stun.ideasip.com");
-			int stunServerPort = 3478;
-
-			//this is the port your program wants to be able to use.
-			int desiredPort = 26606;
-
-			//create a stun utility tool (makes stun4j a little easier)
-			HolePunchSTUN stun = new HolePunchSTUN(stunServerAddress, stunServerPort, desiredPort);
-
-			//talk to the stun server and figure out the NAT information
-			stun.performSTUNLookup();
-
-			//now print out the info that users outside the internet can use to connect to you.
-			System.out.println("Internet users can connect to my IP address " + stun.getPublicIP() + " and port " + stun.getPublicPort());
-
-		} catch (Exception e) {
-			System.out.println("Failed to lookup NAT information via STUN: " + e.getMessage());
-		}
-
 	}
 }
