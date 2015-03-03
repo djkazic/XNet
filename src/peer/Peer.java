@@ -60,7 +60,6 @@ public class Peer implements Runnable, Comparable<Peer> {
 				Utils.print(this, "TLS enabled. Connections secured");
 			}
 			ps = sslSocket;
-			ps.setTcpNoDelay(true);
 			ps.setSoTimeout(5000);
 			dos = new DataOutputStream(ps.getOutputStream());
 			dis = new DataInputStream(ps.getInputStream());
