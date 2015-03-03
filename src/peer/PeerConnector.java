@@ -53,7 +53,8 @@ public class PeerConnector implements Runnable {
 			Core.potentialPeers.add(Core.mainWindow.debugHost);
 		} else {
 			try {
-				Core.discoveryLatch.await();
+				//Allocate 8 seconds for local peer discovery
+				Thread.sleep(8000);
 			} catch (InterruptedException e1) {e1.printStackTrace();}
 		}
 		while(!Core.killPeerConnector || Core.potentialPeers.size() > 0) {
