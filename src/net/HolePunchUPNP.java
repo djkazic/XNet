@@ -65,6 +65,9 @@ public class HolePunchUPNP implements Runnable {
 		try {
 			if(gdev.getSpecificPortMappingEntry(port, "TCP", pme)) {
 				Utils.print(this, "Port already mapped!");
+				if(Settings.removeMapping) {
+					gdev.deletePortMapping(port, "TCP");
+				}
 				return;
 			} else {
 				Utils.print(this, "Sending port mapping request");
