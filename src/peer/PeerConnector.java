@@ -60,7 +60,7 @@ public class PeerConnector implements Runnable {
 		while(!Core.killPeerConnector || Core.potentialPeers.size() > 0) {
 			//If we have no more hosts, wait a cycle
 			if(Core.potentialPeers.size() == 0) {
-				Utils.print(this, "No current hosts, thread sleeping");
+				//Utils.print(this, "No current hosts, thread sleeping");
 				try {
 					Thread.sleep(4000);
 				} catch (InterruptedException e) {
