@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+
+import main.Settings;
 import main.Utils;
+
 import org.wetorrent.upnp.GatewayDevice;
 import org.wetorrent.upnp.GatewayDiscover;
 import org.wetorrent.upnp.PortMappingEntry;
@@ -58,7 +61,6 @@ public class HolePunchUPNP implements Runnable {
 	
 	private void mapPort(GatewayDevice gdev, int port, String description) {
 		InetAddress localAddress = gdev.getLocalAddress();
-		Utils.print(this, "Local address is " + localAddress);
 		Utils.print(this, "Attempting to map port " + port);
 		PortMappingEntry pme = new PortMappingEntry();
 		Utils.print(this, "Querying if port already mapped");
@@ -67,6 +69,8 @@ public class HolePunchUPNP implements Runnable {
 				Utils.print(this, "Port already mapped!");
 				if(Settings.removeMapping) {
 					gdev.deletePortMapping(port, "TCP");
+					Utils.print(this, "Removed existing mapping");
+					writeResult(true);
 				}
 				return;
 			} else {
