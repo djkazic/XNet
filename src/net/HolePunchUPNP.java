@@ -5,9 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-
 import main.Utils;
-
 import org.wetorrent.upnp.GatewayDevice;
 import org.wetorrent.upnp.GatewayDiscover;
 import org.wetorrent.upnp.PortMappingEntry;
@@ -37,6 +35,8 @@ public class HolePunchUPNP implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
 		GatewayDiscover gd = new GatewayDiscover();
 		Utils.print(this, "Searching for UPNP router");
 		try {
@@ -45,14 +45,15 @@ public class HolePunchUPNP implements Runnable {
 			e.printStackTrace();
 		}
 		GatewayDevice gdev = gd.getValidGateway();
-		if(gdev == null) {
+		if(null != gdev) {
+			mapPort(gdev, 26606, "mainPort");
+			mapPort(gdev, 26607, "fsPort");
+		} else {
 			Utils.print(this, "No UPNP routers found");
 			writeResult(false);
 			return;
-		} else {
-			mapPort(gdev, 26606, "mainPort");
-			mapPort(gdev, 26607, "fsPort");
 		}
+		
 	}
 	
 	private void mapPort(GatewayDevice gdev, int port, String description) {
