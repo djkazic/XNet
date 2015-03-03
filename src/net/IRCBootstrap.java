@@ -89,9 +89,10 @@ public class IRCBootstrap implements Runnable {
 					if(str.startsWith("@")) {
 						str = str.substring(1);
 					}
-					if(//!str.equals(nick) && 
-							!(attemptDecode(str)).equals("")) {
-						Core.potentialPeers.add(attemptDecode(str));
+					if(!str.equals(nick) &&  !(attemptDecode(str)).equals("")) {
+						String decoded = attemptDecode(str);
+						Utils.print(this, "Got peer from IRC: " + decoded);
+						Core.potentialPeers.add(decoded);
 					}
 				}
 			}
