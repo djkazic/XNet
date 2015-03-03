@@ -32,7 +32,6 @@ public class Core {
 	public static PeerConnector pst;
 	public static boolean debugServer = false;
 	public static boolean killPeerConnector = false;
-	public static CountDownLatch discoveryLatch;
 	public static SocketWaiter ssm;
 	public static boolean fsThreadStarted = false;
 
@@ -65,7 +64,6 @@ public class Core {
 		blockDex = new ArrayList<BlockedFile> ();
 		index = new HashMap<String, ArrayList<String>> ();
 		potentialPeers = new ArrayList<String> ();
-		discoveryLatch = new CountDownLatch(1);
 		
 		//GUI inits
 		mainWindow = new MainWindow();
