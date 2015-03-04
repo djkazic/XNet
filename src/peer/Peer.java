@@ -5,10 +5,12 @@ import java.io.DataOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
+
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import main.Core;
+import main.Settings;
 import main.Utils;
 import net.ListenerThread;
 import net.SenderThread;
@@ -37,7 +39,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 		Core.mainWindow.updatePeerCount();
 		hwidLatch = new CountDownLatch(1);
 		//If in debug mode, trigger latch w/ incoming
-		if(Core.debugServer && inout == 1) {
+		if(Settings.debugServer && inout == 1) {
 			Core.incomingDebugReset();
 		}
 	}

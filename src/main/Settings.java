@@ -6,5 +6,7 @@ public class Settings {
 	public static String hwid = "";
 	public static long blockSize = 384000; //384kb blocks
 	public static boolean daemon = false;
-	public static boolean removeMapping = true;
+	public static boolean removeMapping = false;
+	public static boolean debugServer = false;
+	
 }

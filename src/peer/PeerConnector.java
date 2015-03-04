@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 import main.Core;
+import main.Settings;
 import main.Utils;
 
 public class PeerConnector implements Runnable {
@@ -30,7 +31,7 @@ public class PeerConnector implements Runnable {
 	
 	public void run() {
 		try {
-			if(!Core.debugServer) {
+			if(!Settings.debugServer) {
 				//Check config
 				peerConfig = new File(Utils.defineConfigDir() + "/" + "peers.dat");
 				if(!peerConfig.exists()) {
@@ -46,7 +47,7 @@ public class PeerConnector implements Runnable {
 		(new Thread(new DiscoveryServer())).start();
 		(new Thread(new DiscoveryThread())).start();
 		int attempts = 0;
-		if(Core.debugServer) {
+		if(Settings.debugServer) {
 			try {
 				debugLatch.await();
 			} catch (InterruptedException e) { e.printStackTrace(); }

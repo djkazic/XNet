@@ -234,7 +234,7 @@ public class MainWindow extends JFrame {
 					clearTable(searchModel);
 					//clear core index
 					Core.index.clear();
-					if(Core.debugServer) {
+					if(Settings.debugServer) {
 						debugHost = searchInput.getText();
 						if(debugHost.equals("")) {
 							out("You cannot enter a blank IP.");
@@ -242,7 +242,7 @@ public class MainWindow extends JFrame {
 							out("Debug host set!");
 							debugLatch.countDown();
 						}
-						Core.debugServer = false;
+						Settings.debugServer = false;
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

@@ -8,11 +8,8 @@ import java.lang.reflect.Constructor;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
-
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
-
 import net.IRCBootstrap;
 import net.SocketWaiter;
 import net.GlobalListener;
@@ -30,9 +27,8 @@ public class Core {
 	public static ArrayList <String> potentialPeers;
 	public static GlobalListener gl;
 	public static PeerConnector pst;
-	public static boolean debugServer = false;
-	public static boolean killPeerConnector = false;
 	public static SocketWaiter ssm;
+	public static boolean killPeerConnector = false;
 	public static boolean fsThreadStarted = false;
 
 	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
@@ -114,7 +110,7 @@ public class Core {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
 		//} else {
-			pst = new PeerConnector(debugServer);
+			pst = new PeerConnector(Settings.debugServer);
 			//Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
 			//TODO: remove debugging
@@ -125,7 +121,7 @@ public class Core {
 	public static void incomingDebugReset() {
 		killPeerConnector = true;
 		mainWindow.debugLatch.countDown();
-		debugServer = false;
+		Settings.debugServer = false;
 		mainWindow.resetTable();
 	}
 }
