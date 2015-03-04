@@ -42,7 +42,7 @@ public class IRCBootstrap implements Runnable {
 		String filePort = Utils.getExtIp(26607, true);
 		
 		//Set nick to long encoded IP
-		String nick = "X" + Utils.ipToLong(extIp);
+		String nick = "X" + Utils.ipToHex(extIp);
 		Utils.print(this, "Set " + nick + " for bootstrap");
 		String login = "xagent";
 
@@ -133,7 +133,7 @@ public class IRCBootstrap implements Runnable {
 
 	private String attemptDecode(String str) {
 		if(str.startsWith("X")) {
-			String ip = Utils.longToIp(str.substring(1));
+			String ip = Utils.hexToIp(str.substring(1));
 			int colonIndex = ip.indexOf(":");
 			String testIp = ip.substring(0, colonIndex);
 			if(Utils.isValidIPV4(testIp)) {
