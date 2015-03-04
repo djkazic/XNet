@@ -535,7 +535,7 @@ public class Utils {
 		return null;
 	}
 
-	public static String ipToLong(String ipAddressPort) {
+	public static String ipToHex(String ipAddressPort) {
 		String[] ipPortSplit = ipAddressPort.split(":");
 		String ipAddress = ipPortSplit[0];
 		String port = ipPortSplit[1];
@@ -550,7 +550,7 @@ public class Utils {
 		return ipResult + "|" + hexPort;
 	}
 
-	public static String longToIp(String ip) {
+	public static String hexToIp(String ip) {
 		String output = "";
 		String ipAddr = ip.substring(0, ip.indexOf("|"));
 		String port = ip.substring(ip.indexOf("|") + 1);
@@ -562,7 +562,7 @@ public class Utils {
 		return output + ":" + port;
 	}
 	
-	public static String getIpV4() {
+	public static String getLocalIpV4() {
 		try {
 			for(Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 				NetworkInterface intf = en.nextElement();

@@ -53,7 +53,7 @@ public class DiscoveryThread implements Runnable {
 			Utils.print(this, "Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
 
 			String message = new String(receivePacket.getData()).trim();
-			String ipv4 = Utils.getIpV4();
+			String ipv4 = Utils.getLocalIpV4();
 			if(!receivePacket.getAddress().getHostAddress().contains(ipv4) && message.equals("DISCOVER_XNET_RESPONSE")) {
 				String potentialPeer = receivePacket.getAddress().getHostAddress();
 				Core.potentialPeers.add(potentialPeer);
