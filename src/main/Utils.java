@@ -516,8 +516,8 @@ public class Utils {
 		return new String(in);
 	}
 
-	public static String getExtIp() {
-		HolePunchSTUN stun = new HolePunchSTUN("stun.ideasip.com", 3478, 26606);
+	public static String getExtIp(int port, boolean portOnly) {
+		HolePunchSTUN stun = new HolePunchSTUN("stun.ideasip.com", 3478, port);
 		try {
 			stun.performSTUNLookup();
 		} catch (Exception e) {
@@ -526,7 +526,11 @@ public class Utils {
 		String pubIp = stun.getPublicIP();
 		int pubPort = stun.getPublicPort();
 		if(pubIp != null && pubPort != -1) {
-			return pubIp + ":" + pubPort;
+			if(portOnly) {
+				return "" + pubPort;
+			} else {
+				return pubIp + ":" + pubPort;
+			}
 		}
 		return null;
 	}

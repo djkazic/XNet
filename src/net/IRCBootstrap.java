@@ -37,9 +37,10 @@ public class IRCBootstrap implements Runnable {
 	}
 
 	private void connect() throws IOException {
-		//Get external IP
-		String extIp = Utils.getExtIp();
-
+		//Get full external IP and filePort
+		String extIp = Utils.getExtIp(26606, false);
+		String filePort = Utils.getExtIp(26607, true);
+		
 		//Set nick to long encoded IP
 		String nick = "X" + Utils.ipToLong(extIp);
 		Utils.print(this, "Set " + nick + " for bootstrap");
@@ -112,7 +113,7 @@ public class IRCBootstrap implements Runnable {
 					String decoded = attemptDecode(encoded);
 					String ip = decoded.split(":")[0];
 					String port = decoded.split(":")[1];
-					//Send UDP to punch hole through own NAT
+					//Send UDP to punch hole (RECV)
 					DatagramSocket punchSocket = new DatagramSocket();
 					byte[] sendData = new byte[1024];
 					InetAddress iaIp = InetAddress.getByName(ip);
@@ -120,9 +121,13 @@ public class IRCBootstrap implements Runnable {
 					punchSocket.send(punchPacket);
 					Utils.print(this, "Sent punchPacket to " + ip);
 					punchSocket.close();
+					//TODO: If punching packets work for PS
+					//Mesage "encoded" and ask for fileSocket port
+					//Punch fileSocket after 200 ms to be able to DL files (secondary)
 				}
-			}
-			//System.out.println(line);
+			} //else if PRIVMSG from a peer requesting fileSocket, send filePort
+			  //First punch to be able to DL files
+			  //System.out.println(line);
 		}
 	}
 
