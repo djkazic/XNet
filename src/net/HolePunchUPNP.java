@@ -27,7 +27,7 @@ public class HolePunchUPNP implements Runnable {
 				StringBuilder sb = new StringBuilder();
 				String line = br.readLine();
 				br.close();
-				if(line != null) {
+				if(line != null && !line.equals("")) {
 					sb.append(line);
 				}
 				String configStatus = sb.toString();
