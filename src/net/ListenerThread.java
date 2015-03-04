@@ -43,6 +43,8 @@ public class ListenerThread implements Runnable {
 					String receivedQuery = Utils.readString(dis);
 					if(receivedQuery.length() >= 3) {
 						peer.st.sendBlockList(receivedQuery);
+					} else {
+						System.out.println("Received query but was too short");
 					}
 				}
 				if(currentFocus == 0x04) {
