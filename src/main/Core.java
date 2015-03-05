@@ -91,16 +91,17 @@ public class Core {
 		
 		//Local development tools
 		//debugServer = false;
-		//int sep = 1;
+		int sep = 1;
 		
-		//if(sep == 0) {
+		if(sep == 0) {
 			gl = new GlobalListener();
 			(new Thread(gl)).start();
-		//} else {
+		} else {
 			pst = new PeerConnector(Settings.debugServer);
-			//Core.potentialPeers.add("127.0.0.1");
+			Core.potentialPeers.add("127.0.0.1");
 			(new Thread(pst)).start();
-		//}
+			//TODO: remove debugging
+			//Core.discoveryLatch.countDown();
 	}
 	
 	public static void incomingDebugReset() {

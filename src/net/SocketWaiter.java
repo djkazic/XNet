@@ -1,8 +1,14 @@
 package net;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import main.Utils;
 import peer.Peer;
 import blocks.BlockAcceptor;
 
@@ -33,6 +39,18 @@ public class SocketWaiter implements Runnable {
 			try {	
 				fsSocket = fs.accept();
 				peer.fs = fsSocket;
+				//Enable TLS
+				SSLSocketFactory sf = ((SSLSocketFactory) SSLSocketFactory.getDefault());
+				InetSocketAddress remoteAddress = (InetSocketAddress) peer.fs.getRemoteSocketAddress();
+				SSLSocket sslSocket = (SSLSocket) (sf.createSocket(peer.fs, remoteAddress.getHostName(), peer.fs.getPort(), true));
+				sslSocket.setUseClientMode(false);
+				sslSocket.setEnabledProtocols(sslSocket.getSupportedProtocols());
+				sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
+				sslSocket.startHandshake();
+				if(sslSocket.isConnected()) {
+					Utils.print(this, "TLS enabled. File transmission [I] secured");
+				}
+				peer.fs = sslSocket;
 				(new Thread(new BlockAcceptor(peer, forFile, blockName, fileSize))).start();
 				System.out.println("FileListener spawned BlockAcceptor");
 				resetVars();

@@ -59,7 +59,7 @@ public class Peer implements Runnable, Comparable<Peer> {
 			sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
 			sslSocket.startHandshake();
 			if(sslSocket.isConnected()) {
-				Utils.print(this, "TLS enabled. Connections secured");
+				Utils.print(this, "TLS enabled. Main transmission secured");
 			}
 			ps = sslSocket;
 			ps.setSoTimeout(5000);
@@ -129,6 +129,21 @@ public class Peer implements Runnable, Comparable<Peer> {
 					}
 				}
 				Utils.print(this, "Connected to peer FS");
+				try {
+					SSLSocketFactory sf = ((SSLSocketFactory) SSLSocketFactory.getDefault());
+					InetSocketAddress remoteAddress = (InetSocketAddress) ps.getRemoteSocketAddress();
+					SSLSocket sslSocket = (SSLSocket) (sf.createSocket(fs, remoteAddress.getHostName(), fs.getPort(), true));
+					sslSocket.setUseClientMode(true);
+					sslSocket.setEnabledProtocols(sslSocket.getSupportedProtocols());
+					sslSocket.setEnabledCipherSuites(sslSocket.getSupportedCipherSuites());
+					sslSocket.startHandshake();
+					if(sslSocket.isConnected()) {
+						Utils.print(this, "TLS enabled. File transmission [O] secured");
+					}
+					fs = sslSocket;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				done.countDown();
 			}
 		};
