@@ -97,6 +97,8 @@ public class HolePunchUPNP implements Runnable {
 	
 	private void trySbbi() {
 		Utils.print(this, "WeUPNP failed, falling back to SBBI");
+		//Disable logging
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 		allDone = true;
 		int discoveryTimeout = 10000;
 		try {
