@@ -31,6 +31,8 @@ public class AboutWindow extends JDialog {
 	protected JButton iconsVisitSource;
 	protected JLabel lblBoon;
 	protected JButton boonVisitSource;
+	protected JLabel lblLogging;
+	protected JButton loggingVisitSource;
 	protected Label footerLabel;
 
 	/**
@@ -57,7 +59,7 @@ public class AboutWindow extends JDialog {
 		
 		lblNewLabel = new JLabel("Icons by Freepik / CC BY 3.0");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblNewLabel.setBounds(10, 37, 164, 14);
+		lblNewLabel.setBounds(10, 40, 164, 14);
 		contentPanel.add(lblNewLabel);
 		
 			iconsVisitSource = new JButton("Visit source");
@@ -71,13 +73,13 @@ public class AboutWindow extends JDialog {
 					}
 				}
 			});
-			iconsVisitSource.setBounds(279, 35, 100, 18);
+			iconsVisitSource.setBounds(279, 38, 100, 18);
 			iconsVisitSource.setFocusable(false);
 			contentPanel.add(iconsVisitSource);
 		
 		lblBoon = new JLabel("Boon by Richard Hightower / Apache 2.0");
 		lblBoon.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblBoon.setBounds(10, 56, 195, 14);
+		lblBoon.setBounds(10, 67, 195, 14);
 		contentPanel.add(lblBoon);
 		
 			boonVisitSource = new JButton("Visit source");
@@ -91,10 +93,32 @@ public class AboutWindow extends JDialog {
 					}
 				}
 			});
-			boonVisitSource.setBounds(279, 53, 100, 18);
+			boonVisitSource.setBounds(279, 65, 100, 18);
 			boonVisitSource.setFocusable(false);
 			contentPanel.add(boonVisitSource);
+	
+		lblLogging = new JLabel("Apache Commons Logging / Apache 2.0");
+		lblLogging.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblLogging.setBounds(10, 95, 226, 14);
+		contentPanel.add(lblLogging);
 		
+			loggingVisitSource = new JButton("Visit source");
+			loggingVisitSource.setFont(new Font("Dialog", Font.PLAIN, 11));
+			loggingVisitSource.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						Utils.openLink(new URI("http://commons.apache.org/proper/commons-logging/"));
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+			loggingVisitSource.setBounds(279, 92, 100, 18);
+			loggingVisitSource.setFocusable(false);
+			contentPanel.add(loggingVisitSource);
+			
+		//Footer
+			
 		footerLabel = new Label("Copyright 2015 - Kevin Cai");
 		footerLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
 		footerLabel.setBounds(122, 129, 142, 15);
