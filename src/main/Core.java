@@ -33,10 +33,11 @@ public class Core {
 		
 		//Version check
 		String strVer = System.getProperty("java.version");
-		if(!strVer.startsWith("1.7")) {
-			new WarningPopup("Your Java version too old! Update to Java 7.");
-			Thread.sleep(7000);
-			System.exit(0);
+		double ver = Double.parseDouble(strVer.substring(0, 3));
+		if(ver < 1.7) {
+			Thread warnThread = new Thread(new WarningPopup("Your Java version of " + ver + " is too old! Update to Java 7."));			
+			warnThread.start();
+			warnThread.join();
 		}
 		
 		//Calculate HWID

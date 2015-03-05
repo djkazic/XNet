@@ -1,5 +1,7 @@
 package net;
 
+import gui.WarningPopup;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -153,6 +155,8 @@ public class HolePunchUPNP implements Runnable {
 			} else {
 				if(allDone = true) {
 					writer.println("UPNP_DISABLE");
+					Thread warnThread = new Thread(new WarningPopup("Your router does not support UPNP. Please manually port forward port 26606 and 26607."));
+					warnThread.start();
 				}
 			}
 			writer.close();

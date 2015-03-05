@@ -40,7 +40,6 @@ public class AboutWindow extends JDialog {
 	 */
 	public AboutWindow() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 400, 180);
 		setVisible(true);
 		getContentPane().setLayout(new BorderLayout());
