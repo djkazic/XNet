@@ -36,7 +36,10 @@ public class HolePunchUPNP implements Runnable {
 					sb.append(line);
 				}
 				String configStatus = sb.toString();
-				if(configStatus.equals("UPNP_DISABLE") || configStatus.equals("UPNP_ENABLE")) {
+				if(configStatus.equals("UPNP_ENABLE")) {
+					return;
+				} else if(configStatus.equals("UPNP_ENABLE")) {
+					warnPortForward();
 					return;
 				}
 			}
@@ -155,13 +158,17 @@ public class HolePunchUPNP implements Runnable {
 			} else {
 				if(allDone = true) {
 					writer.println("UPNP_DISABLE");
-					Thread warnThread = new Thread(new WarningPopup("Your router does not support UPNP. Please manually port forward port 26606 and 26607."));
-					warnThread.start();
+					warnPortForward();
 				}
 			}
 			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void warnPortForward() {
+		Thread warnThread = new Thread(new WarningPopup("Your router does not support UPNP. Please manually port forward port 26606 and 26607."));
+		warnThread.start();
 	}
 }
