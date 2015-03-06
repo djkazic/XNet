@@ -35,7 +35,7 @@ public class Core {
 		String strVer = System.getProperty("java.version");
 		double ver = Double.parseDouble(strVer.substring(0, 3));
 		if(ver < 1.7) {
-			Thread warnThread = new Thread(new WarningPopup("Your Java version of " + ver + " is too old! Update to Java 7."));			
+			Thread warnThread = new Thread(new WarningPopup(true, "Your Java version of " + ver + " is too old! Update to Java 7."));			
 			warnThread.start();
 			warnThread.join();
 		}

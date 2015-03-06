@@ -15,11 +15,13 @@ public class WarningPopup extends JDialog implements Runnable {
 
 	private final JPanel contentPanel = new JPanel();
 	private String text;
+	private boolean close;
 
-	public WarningPopup(String text) {
+	public WarningPopup(boolean close, String text) {
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 340, 125);
+		setBounds(100, 100, 550, 125);
+		this.close = close;
 		this.text = text;
 	}
 	
@@ -30,7 +32,7 @@ public class WarningPopup extends JDialog implements Runnable {
 		contentPanel.setLayout(null);
 		{
 			JLabel lblSomeText = new JLabel(text);
-			lblSomeText.setBounds(10, 11, 304, 52);
+			lblSomeText.setBounds(10, 11, 350, 52);
 			contentPanel.add(lblSomeText);
 		}
 		{
@@ -38,32 +40,34 @@ public class WarningPopup extends JDialog implements Runnable {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 		}
-		addWindowListener(new WindowListener() {
-			public void windowOpened(WindowEvent e) {
-				//blank implementation
-			}
-			public void windowClosing(WindowEvent e) {
-				//blank implementation
-			}
-			public void windowIconified(WindowEvent e) {
-				//blank implementation
-				
-			}
-			public void windowDeiconified(WindowEvent e) {
-				//blank implementation
-				
-			}
-			public void windowActivated(WindowEvent e) {
-				//blank implementation
-				
-			}
-			public void windowDeactivated(WindowEvent e) {
-				//blank implementation
-			}
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
+		if(close) {
+			addWindowListener(new WindowListener() {
+				public void windowOpened(WindowEvent e) {
+					//blank implementation
+				}
+				public void windowClosing(WindowEvent e) {
+					//blank implementation
+				}
+				public void windowIconified(WindowEvent e) {
+					//blank implementation
+					
+				}
+				public void windowDeiconified(WindowEvent e) {
+					//blank implementation
+					
+				}
+				public void windowActivated(WindowEvent e) {
+					//blank implementation
+					
+				}
+				public void windowDeactivated(WindowEvent e) {
+					//blank implementation
+				}
+				public void windowClosed(WindowEvent e) {
+					System.exit(0);
+				}
+			});
+		}
 		while(true) {
 			try {
 				Thread.sleep(5000);

@@ -16,10 +16,14 @@ public class HolePunchSTUN {
 	private String publicIP; 
 
 	public HolePunchSTUN(String stunServer, int stunServerPort, int localPort) {
-		Logger root = Logger.getLogger("");
-		root.removeHandler(root.getHandlers()[0]);
 		this.localPort = localPort;
 		stunServerAddress = new StunAddress(stunServer, stunServerPort);
+		try {
+			Logger root = Logger.getLogger("");
+			root.removeHandler(root.getHandlers()[0]);
+		} catch (Exception e) {
+			Utils.print(this, "Problem detected removing logger");
+		}
 	}
 
 	public void performSTUNLookup() throws Exception {
